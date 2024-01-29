@@ -174,6 +174,7 @@ console.log(location.pathname)
   const container =
     window !== undefined ? () => window().document.body : undefined;
 
+
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
@@ -235,11 +236,14 @@ console.log(location.pathname)
           </Box>
           }
           <Stack  sx={{marginLeft: "15px"}}>
-          <Avatar alt={user.username} src="/broken-image.jpg" sx={{ bgcolor: "var(--basic-color)"}} />
+          <Avatar alt={user.username} src="/broken-image.jpg" sx={{ bgcolor: "var(--basic-color)"}} 
+          onClick={ user._id? ()=> setOpenLogoutModal(true): () => {
+            navigate(`/login`);
+          }}/>
           </Stack>
-
         </Toolbar>
       </AppBar>
+     
       <nav>
         <Drawer
           container={container}
@@ -261,6 +265,12 @@ console.log(location.pathname)
           {drawer}
         </Drawer>
       </nav>
+      <LogoutModal
+            open={openLogoutModal}
+            onClose={() => {
+              setOpenLogoutModal(false);
+            }}
+          />
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
       </Box>

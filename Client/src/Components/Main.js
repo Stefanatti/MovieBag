@@ -216,6 +216,12 @@ import * as React from "react";
                 </>
             )}
         </Grid>
+        <HaveToSignupModal
+            open={openHaveToSignupModal}
+            onClose={() => {
+              setOpenHaveToSignupModal(false);
+            }}
+          />
       </Container>
     </div>
   );

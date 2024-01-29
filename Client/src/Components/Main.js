@@ -136,10 +136,10 @@ import * as React from "react";
                   fontFamily: "Limelight",
                   fontSize: "72px",
                     cursor: "pointer",
+                    overflow: "hidden",
                     [theme.breakpoints.down("md")]: {
                     fontSize: "42px",
-                        whiteSpace: "nowrap",
-                    overflow: "hidden",
+                    whiteSpace: "nowrap",
                     textOverflow: "ellipsis"
 
                   },

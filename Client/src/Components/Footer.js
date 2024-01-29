@@ -14,7 +14,9 @@ function Footer(props) {
           alignItems: "center",
           justifyContent: "center",
           alignContent: 'flex-end',
-          marginTop: 'auto'
+          bottom: '0',
+          position: "absolute",
+           
         }}
       >
         <Typography

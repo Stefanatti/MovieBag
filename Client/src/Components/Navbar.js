@@ -236,7 +236,7 @@ console.log(location.pathname)
           </Box>
           }
           <Stack  sx={{marginLeft: "15px"}}>
-          <Avatar alt={user.username} src="/broken-image.jpg" sx={{ bgcolor: "var(--basic-color)"}} 
+          <Avatar alt={user.username} src="/broken-image.jpg" sx={{ bgcolor: "var(--basic-color)", cursor:'pointer'}} 
           onClick={ user._id? ()=> setOpenLogoutModal(true): () => {
             navigate(`/login`);
           }}/>

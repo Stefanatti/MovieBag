@@ -1,7 +1,7 @@
 // import "../Styles/Signup-Login.scss";
 // import { Container } from "react-bootstrap";
-import {Grid, Paper,CssBaseline, Button, Typography, Container, Box,TextField,Stack,FormControlLabel, useMediaQuery, keyframes} from "@mui/material";
-
+import {Grid, Paper,CssBaseline, Button, Typography, Container, Box,TextField,Stack,Link,FormControlLabel, useMediaQuery, keyframes} from "@mui/material";
+import LoginForm from "../Components/LoginForm";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -9,25 +9,16 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [signupForm, setSignupForm] = useState(false)
+  const [email, setEmail] = useState("");
+  const [formData, setFormData]= useState({
+    username: "",
+    password:""
+  })
+
   const navigate = useNavigate();
 
-  // const Poster = ({ url,width, height }) => {
-  //   return (
-       
-  //       <Paper
-  //         elevation={3}
-  //         sx={{
-  //           border: "2px solid var(--home-page-posters-color)",
-  //           width: `${width}px`,
-  //           height: `${height}px`,
-  //           backgroundImage: `url(${url})`,
-  //           backgroundSize: "cover",
-  //           backgroundRepeat: "no-repeat",
-  //           backgroundPosition: "center",
-  //         }}
-  //       >
-  //       </Paper>
-      
+
   //  );
   // };
 //   const styles = theme => ({
@@ -36,14 +27,15 @@ const Login = () => {
 //     }
 // });
 
-  const login = (e) => {
-    e.preventDefault();
-    axios
+const handleSubmit = async (e)=>{
+  e.preventDefault();
+  const {username, password}= formData
+  // console.log('Submitted username:', username + "," + password);
+  try {
+   await axios
       .post("http://localhost:3636/user/login", {
-        username,
-        password,
-      })
-      .then(({ data }) => {
+       username, password
+      }).then(({ data }) => {
         if (data.token) {
           localStorage.setItem("token", data.token);
           navigate("/");
@@ -51,10 +43,21 @@ const Login = () => {
           alert(data.message);
         }
       });
-  };
+  }catch(error){
+    console.error('Error submitting form:', error);
+ }
+}
+
+const handleChange = (e)=>{
+setFormData({
+  ...formData,
+  [e.target.name]: e.target.value
+})
+} 
 
   return (
    
+
      <Container component="main" maxWidth="lg">
        <Box
         sx={{
@@ -110,7 +113,7 @@ const Login = () => {
               <Box
                 component="form"
                 noValidate
-                onSubmit={{}}
+                onSubmit={handleSubmit}
                 sx={{ mt: 1, display: "flex",
                 flexDirection: "column", }}
               >
@@ -118,11 +121,14 @@ const Login = () => {
                   margin="normal"
                   required
                   fullWidth
-                  id="email"
-                  label="Email Address"
-                  name="email"
-                  autoComplete="email"
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete="username"
                   autoFocus
+                  value={formData.username}
+                  onChange={handleChange}
+
                   // inputProps={{ style: { color: "red", border: " 2px solid red" } }}
                   // sx={{ color:"var(--basic-color)"}}
                 />
@@ -136,6 +142,8 @@ const Login = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  value={formData.password}
+                  onChange={handleChange}
                 //   inputProps={{
                 //     classes: {
                 //     input: styles.multilineColor
@@ -154,18 +162,19 @@ const Login = () => {
                 >
                   Login
                 </Button>
-                {/* <Grid container>
-                  <Grid item xs>
+                <Grid container>
+                  {/* <Grid item xs>
                     <Link href="#" variant="body2">
                       Forgot password?
                     </Link>
-                  </Grid>
+                  </Grid> */}
                   <Grid item>
-                    <Link href="#" variant="body2">
+                    {/* <span onClick={()=>setSignupForm(true)}>{"Don't have an account? Sign Up"}</span> */}
+                    <Link href={"/signup"} variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
-                </Grid> */}
+                </Grid>
               </Box>
             </Box>
           

@@ -211,9 +211,13 @@ console.log(location.pathname)
           </Typography>
           <ColorSwitches />
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
+          <StyledNavbarButton onClick={()=> navigate("/")} >Home</StyledNavbarButton>
+          <StyledNavbarButton >About</StyledNavbarButton>
+          <StyledNavbarButton onClick={()=> navigate("/yourMovies")} >Your Movies</StyledNavbarButton>
+
+            {/* {navItems.map((item) => (
               <StyledNavbarButton key={item}>{item}</StyledNavbarButton>
-            ))}
+            ))} */}
           </Box>
           {location.pathname !== "/" &&
           <Box >

@@ -163,7 +163,7 @@ const YourMoviesLibrary = () => {
           {/*                                        setWatched={setWatched}/>*/}
           {/*):*/}
           {/*    (*/}
-          <TableContainer sx={{  overflow: "scroll" }}>
+          <TableContainer >
 
                   <MoviesTable
               search={search}
@@ -176,12 +176,12 @@ const YourMoviesLibrary = () => {
               watched={watched}
               setWatched={setWatched}
           />
-          {/*)}*/}
+          
 
           </TableContainer>
           <Pagination
           className= "down-pages"
-          //style={{marginTop: "40px"}}
+          style={{marginBottom: "60px"}}
             totalMovies={watched ? myUnwatchedMovies.length : myMovies.length}
             moviesPerPage={moviesPerPage}
             setCurrentPage={setCurrentPage}

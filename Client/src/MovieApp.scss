@@ -96,6 +96,7 @@ color: dimgrey;
   background: rgb(36, 35, 36);
   width: 600px;
   height: 400px;
+  border: 1px solid var(--basic-color);
   position: fixed;
   top: 300px;
   left: 50%;
@@ -110,7 +111,7 @@ color: dimgrey;
   .matrix-modal-poster {
     overflow: hidden;
     border-radius: 10px;
-    border: 1px solid white;
+    // border: 1px solid white;
     width: 550px;
     height: 300px;
     margin-top: 10px;

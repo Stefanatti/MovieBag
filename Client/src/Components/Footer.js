@@ -16,6 +16,7 @@ function Footer(props) {
           alignContent: 'flex-end',
           bottom: '0',
           position: "absolute",
+          // marginTop: "20px"
            
         }}
       >

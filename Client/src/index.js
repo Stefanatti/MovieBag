@@ -5,11 +5,11 @@ import MovieApp from "./MovieApp";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import userReducer from "./Features/user"
-
-
+import themeReducer from "./Features/theme"
 const store = configureStore({
   reducer: {
-    user: userReducer
+    user: userReducer,
+    theme: themeReducer
   }
 })
 

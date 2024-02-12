@@ -11,16 +11,16 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import WrongPage404 from "./Pages/WrongPage404";
 import { useState } from "react";
 import Footer from "./Components/Footer";
+import { useSelector } from "react-redux";
 
 function MovieApp() {
-  // const [theme, setTheme] = useState("other-theme");
-// console.log(theme)
+  let theme = useSelector((state) => state.theme.value);
+
   return (
-    <div className={`App ${theme}`}>
+    <div className={`App ${theme.theme}`}>
       <Router>
         <div>
           <Navbar />
-          {/* <ThemeSwitcher setTheme={setTheme} theme={theme} /> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />

@@ -18,7 +18,6 @@ import * as React from "react";
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-
     const getTitle = (e) => {
     e.preventDefault();
     if (title !== "") {

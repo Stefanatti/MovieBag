@@ -1,9 +1,12 @@
 
 import { useState, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { themeSwich } from "../Features/theme";
 
 const ThemeSwitcher = ({ theme, setTheme }) => {
   const [switcher, setSwitcher] = useState(false);
   const [moveBall, setMoveBall] = useState();
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (localStorage.getItem("theme")) {
@@ -17,7 +20,8 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
         <input
           onChange={() => {
             setMoveBall(3);
-            setTheme("");
+            dispatch(themeSwich({ theme: "" }));
+
             console.log(theme)
           }}
           type="radio"
@@ -28,7 +32,8 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
         <input
           onClick={() => {
             setMoveBall(27);
-            setTheme("blue-theme");
+            dispatch(themeSwich({ theme: "blue-theme" }));
+
             console.log(theme)
 
           }}
@@ -40,7 +45,8 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
         <input
           onChange={() => {
             setMoveBall(52);
-            setTheme("purple-theme");
+            dispatch(themeSwich({ theme: "purple-theme" }));
+
             console.log(theme)
 
           }}

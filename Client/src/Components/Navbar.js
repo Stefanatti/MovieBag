@@ -14,7 +14,7 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 import SearchIcon from "@mui/icons-material/Search";
 import { styled, alpha } from "@mui/material/styles";
 import InputBase from "@mui/material/InputBase";
-
+import ThemeSwitcher from "./ThemeSwitcher";
 //-------------------
 import * as React from "react";
 import PropTypes from "prop-types";
@@ -32,7 +32,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
-import ColorSwitches from "./ThemeSwitcher";
+// import ColorSwitches from "./ThemeSwitcher";
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 
@@ -119,7 +119,8 @@ const Navbar = (props) => {
   const path = location.pathname;
   const pageName = path.substring(1);
   const [mobileOpen, setMobileOpen] = useState(false);
-console.log(location.pathname)
+  const [theme, setTheme] = useState("other-theme");
+
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
@@ -156,7 +157,7 @@ console.log(location.pathname)
         MB
       </Typography>
       <Divider />
-      <ColorSwitches />
+      {/* <ColorSwitches /> */}
       <List>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
@@ -209,7 +210,9 @@ console.log(location.pathname)
             MovieBag
 
           </Typography>
-          <ColorSwitches />
+       {/* <ThemeSwitcher /> */}
+       <ThemeSwitcher setTheme={setTheme} theme={theme} />
+
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
           <StyledNavbarButton onClick={()=> navigate("/")} >Home</StyledNavbarButton>
           <StyledNavbarButton >About</StyledNavbarButton>

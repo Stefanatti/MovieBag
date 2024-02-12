@@ -1,5 +1,4 @@
 import "./MovieApp.scss";
-import ThemeSwitcher from "./Components/ThemeSwitcher";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Home from "./Pages/Home";
 import Signup from "./Pages/Signup";
@@ -14,13 +13,14 @@ import { useState } from "react";
 import Footer from "./Components/Footer";
 
 function MovieApp() {
-  const [theme, setTheme] = useState("other-theme");
-
+  // const [theme, setTheme] = useState("other-theme");
+// console.log(theme)
   return (
     <div className={`App ${theme}`}>
       <Router>
         <div>
           <Navbar />
+          {/* <ThemeSwitcher setTheme={setTheme} theme={theme} /> */}
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />

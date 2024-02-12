@@ -99,58 +99,63 @@ margin: 0;
 
 //////////////////////////////////
 
-// .switch {
-//   height: 20px;
-//   width: 70px;
-//   display: flex;
-//   justify-content: space-between;
-//   align-items: center;
-//   flex-direction: column;
-//   background-color: var(--switcher);
-//   border-radius: 50px;
-//   padding: 5px;
-//   position: relative;
-//   bottom: 37px;
+.switch {
+  height: 20px;
+  width: 70px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: column;
+  background-color: var(--switcher);
+  border-radius: 50px;
+  padding: 5px;
+  position: relative;
 
-//   cursor: pointer;
-// }
+  cursor: pointer;
+}
 
-// .orangeSwitch {
-//   background-color: #8b66c7;
-// }
+.orangeSwitch {
+  background-color: #8b66c7;
+}
 
-// .switch-radios {
-//   position: relative;
-// }
+.switch-radios {
+   height: 56px;
+   width: 56px;
+  display: flex;
+  justify-content: space-between;
+
+  // position: relative;
+  //  margin-top: 15px;
+}
 
 // .switch-radios > * {
-//   position: absolute;
+//   position: relative;
 // }
 
-// input[type="radio"]:first-of-type {
-//   right: 22px;
-// }
+input[type="radio"]:first-of-type {
+  right: 22px;
+}
 
-// input[type="radio"]:nth-of-type(2) {
-//   right: -8px;
-// }
+input[type="radio"]:nth-of-type(2) {
+  right: -8px;
+}
 
-// input[type="radio"]:last-of-type {
-//   right: -35px;
-// }
+input[type="radio"]:last-of-type {
+  right: -35px;
+}
 
-// .ball {
-//   background: var(--basic-color);
-//   height: 16px;
-//   width: 16px;
-//   border-radius: 50%;
-//   position: absolute;
-//   left: 3px;
-//   top: 2.5px;
-//   transition: all 0.5s ease;
-// }
+.ball {
+  background: var(--basic-color);
+  height: 16px;
+  width: 16px;
+  border-radius: 50%;
+  position: absolute;
+  left: 3px;
+  top: 2.5px;
+  transition: all 0.5s ease;
+}
 
-// input[type="radio"] {
-//   cursor: pointer;
-//   opacity: 0;
-// }
+input[type="radio"] {
+  cursor: pointer;
+  //  opacity: 0;
+}

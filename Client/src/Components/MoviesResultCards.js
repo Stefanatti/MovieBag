@@ -1,3 +1,4 @@
+
 const MoviesResultCards = ({ movies, navigate }) => {
   return (
     <div className="cards-container">

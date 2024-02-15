@@ -106,15 +106,15 @@ const YourMoviesLibrary = () => {
     );
   };
 
-  const filterDirectors = () => {
-    setMyMovies(
-      myMovies.filter((myMovie) => {
-        return search.toLowerCase() === ""
-          ? myMovie
-          : myMovie.director.toLowerCase().includes(search);
-      })
-    );
-  };
+  // const filterDirectors = () => {
+  //   setMyMovies(
+  //     myMovies.filter((myMovie) => {
+  //       return search.toLowerCase() === ""
+  //         ? myMovie
+  //         : myMovie.director.toLowerCase().includes(search);
+  //     })
+  //   );
+  // };
 
   return ( 
     <Container>
@@ -141,12 +141,12 @@ const YourMoviesLibrary = () => {
             setSearch={setSearch} 
             search={search}/>
 
-             <MovieLibraryFilter 
+             {/* <MovieLibraryFilter 
             filterFunction={filterDirectors}
             setMyMovies={setMyMovies} 
             myMovies={myMovies} 
             setSearch={setSearch} 
-            search={search}/>
+            search={search}/> */}
             
           </div>
 

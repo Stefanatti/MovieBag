@@ -4,14 +4,15 @@
 .library-header {
   text-align: center;
   color: var(--basic-color);
-  font-family: "Montserrat", sans-serif;
+  font-family: "Limelight";
   margin-top: 20px;
   margin-bottom: 30px;
 }
 
 .input-div {
   position: relative;
-  left: 30px;
+  width: 100%;
+  // left: 70px;
   text-align: center;
   display: flex;
   justify-content: center;

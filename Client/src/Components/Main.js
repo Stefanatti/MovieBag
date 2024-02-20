@@ -110,7 +110,7 @@ import * as React from "react";
         <div className="middle-div">
             <div className={"search-container"} >
 
-    <form onSubmit={getTitle} >
+    <form className="main-page-form" onSubmit={getTitle} >
 <input
                   type="text"
                   value={title}

@@ -17,7 +17,6 @@ const MoviesResultCards = ({ movies, navigate }) => {
                 <div className="movie-details-div">
                   <h1
                     className="movie-title"
-                    // onClick={() => navigate(`/movie?title=${movie.Title}`)}
                   >
                     Movie: {movie.Title}
                   </h1>

@@ -25,11 +25,7 @@ const YourMoviesLibrary = () => {
   const [watched, setWatched] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
-  const currentMyMovies = myMovies.slice(firstMovieIndex, lastMovieIndex);
-  const currentMyUnwatchedMovies = myUnwatchedMovies.slice(
-    firstMovieIndex,
-    lastMovieIndex
-  );
+  
   const isDesktopOrLaptop = useMediaQuery({
     query: '(min-width: 1224px)'
   })
@@ -46,6 +42,7 @@ const YourMoviesLibrary = () => {
     console.log(user._id)
 
     getMovies();
+    
   }, [user._id]);
 
   const getMovies = () => {
@@ -54,11 +51,25 @@ const YourMoviesLibrary = () => {
       .then(({ data }) => {
         console.log(data);
         setMyMovies(data);
-        setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
+        console.log(myMovies)
+setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
       })
       .catch((err) => console.log(err));
   };
 
+// const getMovies = async () => {
+//   try{
+//     const response = await axios.get("http://localhost:3636/movie/" + user._id)
+//     console.log(response.data)
+//     setMyMovies(response.data)
+//     setMyMoviesTitles(myMovies.map((movie) => movie.title))
+//     setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
+
+//   }catch(err)  {console.log(err)}
+// }
+
+
+//  console.log(myMovies.map((movie) => movie.title));
 
   const removeMovie = async (id) => {
     const data = axios
@@ -96,15 +107,13 @@ const YourMoviesLibrary = () => {
     }
   }, [search]);
 
-  const filterMovies = () => {
-    setMyMovies(
+  const filterMovies = 
       myMovies.filter((myMovie) => {
         return search.toLowerCase() === ""
           ? myMovie
           : myMovie.title.toLowerCase().includes(search);
       })
-    );
-  };
+          const currentMyMovies = filterMovies.slice(firstMovieIndex, lastMovieIndex);
 
   // const filterDirectors = () => {
   //   setMyMovies(
@@ -118,7 +127,7 @@ const YourMoviesLibrary = () => {
 
   return ( 
     <Container>
-    <Box>
+    <Box sx={{zIndex: "auto"}}>
       <h1 className="library-header">Your Movies:</h1>
       {loading ? (
         <ClipLoader
@@ -135,11 +144,9 @@ const YourMoviesLibrary = () => {
           <div className="input-div">
 
             <MovieLibraryFilter 
-            filterFunction={filterMovies}
-            setMyMovies={setMyMovies} 
-            myMovies={myMovies} 
             setSearch={setSearch} 
-            search={search}/>
+            search={search}
+            />
 
              {/* <MovieLibraryFilter 
             filterFunction={filterDirectors}
@@ -168,7 +175,7 @@ const YourMoviesLibrary = () => {
                   <MoviesTable
               search={search}
               myMovies={myMovies}
-              currentMyUnwatchedMovies={currentMyUnwatchedMovies}
+              filterMovies={filterMovies}
               currentMyMovies={currentMyMovies}
               watchedMovie={watchedMovie}
               navigate={navigate}
@@ -182,7 +189,7 @@ const YourMoviesLibrary = () => {
           <Pagination
           className= "down-pages"
           style={{marginBottom: "60px"}}
-            totalMovies={watched ? myUnwatchedMovies.length : myMovies.length}
+            totalMovies={filterMovies.length}
             moviesPerPage={moviesPerPage}
             setCurrentPage={setCurrentPage}
             currentPage={currentPage}

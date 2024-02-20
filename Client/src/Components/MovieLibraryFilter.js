@@ -1,32 +1,9 @@
 import React from 'react';
-import { SearchOutlined } from "@ant-design/icons";
 
-function MovieLibraryFilter({setMyMovies,myMovies,setSearch, search, filterFunction}) {
-
-    // const filterMovies = () => {
-    //     setMyMovies( 
-    //       myMovies.filter((myMovie) => {
-    //         return search.toLowerCase() === ""
-    //           ? myMovie
-    //           : myMovie.title.toLowerCase().includes(search);
-    //       })
-    //     );
-    //   };
-    
-    //   const filterDirectors = () => {
-    //     setMyMovies(
-    //       myMovies.filter((myMovie) => {
-    //         return search.toLowerCase() === ""
-    //           ? myMovie
-    //           : myMovie.director.toLowerCase().includes(search);
-    //       })
-    //     );
-    //   };
-
-    return (
-        <div>
-            <form
-              onChange={() => {filterFunction()}}
+function MovieLibraryFilter({setSearch, search}) {
+ 
+return (
+   <form
               className="d-flex"
               role="search"
             >
@@ -39,14 +16,9 @@ function MovieLibraryFilter({setMyMovies,myMovies,setSearch, search, filterFunct
                 aria-label="Search"
                 title="Type in a name"
               />
-
-              <button className="btn nav-link" type="submit">
-                <SearchOutlined className="search-icon" />
-              </button>
-            </form>
-            
-        </div>
-    );
+            </form>     
+)
 }
+   
 
 export default MovieLibraryFilter;

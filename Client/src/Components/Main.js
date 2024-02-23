@@ -31,6 +31,8 @@ import * as React from "react";
       <Grid item xs={md} md={md} sm={sm}>
         <Paper
           elevation={3}
+          loading = "lazy"
+          alt="Movie Poster"
           sx={{
             border: "2px solid var(--home-page-posters-color)",
             height: `${height}px`,
@@ -65,7 +67,6 @@ import * as React from "react";
                 />
                 <Poster
                     md={6}
-
                     num={"1"}
                     height={100}
                     url={

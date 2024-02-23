@@ -33,7 +33,7 @@ const RenderMovie = () => {
     axios
       .get("http://localhost:3636/movie/" + user._id)
       .then(({ data }) => {
-        console.log(data);
+        // console.log(data);
         setMyMovies(data);
         setMovieTitles(data.map((mov) => mov.title));
       })

@@ -13,40 +13,26 @@
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
-  //  overflow: hidden;
+  // overflow:scroll;
 }
 
 .search {
-  // display: flex;
- // justify-content: center;
-  // align-items: center;
-  // align-self: center;
+ 
   width: 250px;
   height: 40px;
   text-align: center;
   border: 1px solid var(--basic-color);
-//margin: 0 auto;
 }
-// .search-icon {
-//   color: var(--basic-color);
-//   margin-bottom: 20px;
 
-// }
-// .btn {
-//   width: 30px;
-//   height: 30px;
-//   overflow: hidden;
-
-// }
 
 .directors {
   margin-left: 50px;
 }
 
 .table-container{
-  width: 100%;
-  position: relative;
-  // overflow: auto;
+   overflow-x: auto;
+    overflow-y:hidden;
+
 }
 .tableMobile{
   width: 50%;
@@ -60,13 +46,7 @@ table {
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0 8px;
-  overflow:hidden;
-  position: relative;
-  // z-index: 0
-  //max-width: fit-content;
-  //
-  //overflow-x: auto;
-  //white-space: nowrap;
+ 
 }
 
 .thead {

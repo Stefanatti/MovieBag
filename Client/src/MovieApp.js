@@ -7,7 +7,6 @@ import MovieSearchResult from "./Pages/MovieSearch";
 import YourMoviesLibrary from "./Pages/YourMoviesLibrary";
 import RenderMovie from "./Pages/Movie";
 import Navbar from "./Components/Navbar";
-import "bootstrap/dist/css/bootstrap.min.css";
 import WrongPage404 from "./Pages/WrongPage404";
 import { useState } from "react";
 import Footer from "./Components/Footer";

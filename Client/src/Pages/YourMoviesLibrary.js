@@ -26,13 +26,6 @@ const YourMoviesLibrary = () => {
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
   
-  const isDesktopOrLaptop = useMediaQuery({
-    query: '(min-width: 1224px)'
-  })
-  const isBigScreen = useMediaQuery({ query: '(min-width: 1824px)' })
-  const isTabletOrMobile = useMediaQuery({ query: '(max-width: 1224px)' })
-  const isPortrait = useMediaQuery({ query: '(orientation: portrait)' })
-  const isRetina = useMediaQuery({ query: '(min-resolution: 2dppx)' })
   
   useEffect(() => {
     if (!user._id) {
@@ -45,28 +38,26 @@ const YourMoviesLibrary = () => {
     
   }, [user._id]);
 
-  const getMovies = () => {
-    axios
-      .get("http://localhost:3636/movie/" + user._id)
-      .then(({ data }) => {
-        console.log(data);
-        setMyMovies(data);
-        console.log(myMovies)
-setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
-      })
-      .catch((err) => console.log(err));
-  };
+//   const getMovies = () => {
+//     axios
+//       .get("http://localhost:3636/movie/" + user._id)
+//       .then(({ data }) => {
+//         console.log(data);
+//         setMyMovies(data);
+//         console.log(myMovies)
+// setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
+//       })
+//       .catch((err) => console.log(err));
+//   };
 
-// const getMovies = async () => {
-//   try{
-//     const response = await axios.get("http://localhost:3636/movie/" + user._id)
-//     console.log(response.data)
-//     setMyMovies(response.data)
-//     setMyMoviesTitles(myMovies.map((movie) => movie.title))
-//     setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
+const getMovies = async () => {
+  try{
+    const response = await axios.get("http://localhost:3636/movie/" + user._id)
+    setMyMovies(response.data)
+    setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
 
-//   }catch(err)  {console.log(err)}
-// }
+  }catch(err)  {console.log(err)}
+}
 
 
 //  console.log(myMovies.map((movie) => movie.title));

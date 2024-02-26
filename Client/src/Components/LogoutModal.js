@@ -1,29 +1,9 @@
-import axios from "axios";
-// import { useEffect, useState } from "react";
-// import { useSelector  } from "react-redux";
 import { logout } from "../Features/user"
 import { useDispatch } from "react-redux";
 
 const LogoutModal = ({ open, onClose }) => {
-  // const [user, setUser] = useState("");
-  // let userDetails = useSelector((state) => state.user.value)
   const dispatch = useDispatch()
-  // let user = useSelector((state) => state.user.value);
-
-
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     axios
-  //       .post("http://localhost:3636/user/verify", {
-  //         token: localStorage.getItem("token"),
-  //       })
-  //       .then(({ data }) => {
-  //         //console.log(data);
-  //         setUser(data);
-  //       })
-  //       .catch((err) => console.log(err));
-  //   }
-  // }, []);
+ 
 
   const logOut = () => {
     if (localStorage.getItem("token")) {

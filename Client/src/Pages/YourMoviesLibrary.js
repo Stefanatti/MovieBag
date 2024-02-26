@@ -8,8 +8,7 @@ import MoviesTable from "../Components/MoviesTable";
 import { useSelector  } from "react-redux";
 import {Container, Box, TableContainer} from "@mui/material";
 import MovieLibraryFilter from "../Components/MovieLibraryFilter";
-import { useMediaQuery } from 'react-responsive'
-import MoviesTableMobile from "../Components/MoviesTableMobile";
+
 
 
 const YourMoviesLibrary = () => {
@@ -20,7 +19,7 @@ const YourMoviesLibrary = () => {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [moviesPerPage, setMoviesPerPage] = useState(10);
+  const [moviesPerPage] = useState(10);
   const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
   const [watched, setWatched] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
@@ -59,9 +58,6 @@ const getMovies = async () => {
   }catch(err)  {console.log(err)}
 }
 
-
-//  console.log(myMovies.map((movie) => movie.title));
-
   const removeMovie = async (id) => {
     const data = axios
       .delete("http://localhost:3636/movie/" + id)
@@ -95,6 +91,7 @@ const getMovies = async () => {
   useEffect(() => {
     if (!search) {
       setMyMovies(myMovies);
+      
     }
   }, [search]);
 

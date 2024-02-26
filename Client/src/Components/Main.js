@@ -1,14 +1,12 @@
-import { useState, useEffect } from "react";
-import { useNavigate, Navigate } from "react-router-dom";
+import { useState} from "react";
+import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "./HaveToSignupModal";
 import SearchIcon from "@mui/icons-material/Search";
-import {Grid, Paper, Button, Typography, Container, Box, useMediaQuery, keyframes} from "@mui/material";
+import {Grid,Typography, Container, Box, useMediaQuery, keyframes} from "@mui/material";
 import { useSelector } from "react-redux";
-import {alpha, styled, useTheme} from "@mui/material/styles";
-import TextField from '@mui/material/TextField';
-import InputBase from "@mui/material/InputBase";
+import {useTheme} from "@mui/material/styles";
 import * as React from "react";
-
+import Poster from "./Poster";
 
   const Main = () => {
   const navigate = useNavigate();
@@ -26,32 +24,8 @@ import * as React from "react";
     }
   };
 
-  const Poster = ({ url,md,sm, height }) => {
-    return (
-      <Grid item xs={md} md={md} sm={sm}>
-        <Paper
-          elevation={3}
-          loading = "lazy"
-          alt="Movie Poster"
-          sx={{
-            border: "2px solid var(--home-page-posters-color)",
-            height: `${height}px`,
-            backgroundImage: `url(${url})`,
-            backgroundSize: "cover",
-            backgroundRepeat: "no-repeat",
-            backgroundPosition: "center",
-          }}
-        >
-        </Paper>
-      </Grid>
-    );
-  };
-
-
-
-
-
   return (
+
     <div className="main-div">
       <Container maxWidth="lg">
         <Grid container spacing={3} >
@@ -110,9 +84,8 @@ import * as React from "react";
         </Grid>
         <div className="middle-div">
             <div className={"search-container"} >
-
-    <form className="main-page-form" onSubmit={getTitle} >
-<input
+     <form className="main-page-form" onSubmit={getTitle} >
+          <input
                   type="text"
                   value={title}
                   placeholder="Search for movies or series"
@@ -157,8 +130,7 @@ import * as React from "react";
 
           </Box>
         </div>
-
-        <Grid
+         <Grid
           container
           spacing={3}
           marginTop="50px"
@@ -191,7 +163,6 @@ import * as React from "react";
                             "https://i.pinimg.com/originals/92/65/25/926525370b1e2147cf8d756138379456.jpg"
                         }
                     />
-                    {/*</Grid>*/}
                     <Poster
                         height={150}
                         md={4}

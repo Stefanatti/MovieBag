@@ -1,4 +1,4 @@
-# Movie-App
+# MovieBag
 A Full-Stuck Web Application providing users details and informations about movies from an open API. Users can sign up and login (with authentication and authorization), search for any movie and series they like and store them to their own libary. In addition a user can separate the movies that he already watched from the unwatched ones. It also contains a triple colour theme switch which can make the user's expierience more colorful and smoother.
 
 Technologies:
@@ -11,4 +11,4 @@ React,
 
 You can visit my web-app here: https://your-movies.onrender.com
 
-![Screenshot (33)](https://user-images.githubusercontent.com/101453394/236294077-75d9a8a8-e455-47a3-8a0a-1020422c8e2c.png)
+![Screenshot 2024-02-27 140104](https://github.com/Stefanatti/MovieBag/assets/101453394/23976728-9ed6-4e5f-8880-ee570c1068d0)

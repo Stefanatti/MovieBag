@@ -8,7 +8,6 @@ import YourMoviesLibrary from "./Pages/YourMoviesLibrary";
 import RenderMovie from "./Pages/Movie";
 import Navbar from "./Components/Navbar";
 import WrongPage404 from "./Pages/WrongPage404";
-import { useState } from "react";
 import Footer from "./Components/Footer";
 import { useSelector } from "react-redux";
 

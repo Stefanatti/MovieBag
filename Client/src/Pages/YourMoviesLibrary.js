@@ -5,15 +5,13 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../Components/Pagination";
 import MoviesTable from "../Components/MoviesTable";
-import { useSelector  } from "react-redux";
-import {Container, Box, TableContainer} from "@mui/material";
+import { useSelector } from "react-redux";
+import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../Components/MovieLibraryFilter";
-
-
 
 const YourMoviesLibrary = () => {
   const navigate = useNavigate();
-  let user = useSelector((state) => state.user.value)
+  let user = useSelector((state) => state.user.value);
 
   const [myMovies, setMyMovies] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -24,39 +22,40 @@ const YourMoviesLibrary = () => {
   const [watched, setWatched] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
-  
-  
+
   useEffect(() => {
     if (!user._id) {
       return;
     }
     setLoading(false);
-    console.log(user._id)
+    console.log(user._id);
 
     getMovies();
-    
   }, [user._id]);
 
-//   const getMovies = () => {
-//     axios
-//       .get("http://localhost:3636/movie/" + user._id)
-//       .then(({ data }) => {
-//         console.log(data);
-//         setMyMovies(data);
-//         console.log(myMovies)
-// setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
-//       })
-//       .catch((err) => console.log(err));
-//   };
+  //   const getMovies = () => {
+  //     axios
+  //       .get("http://localhost:3636/movie/" + user._id)
+  //       .then(({ data }) => {
+  //         console.log(data);
+  //         setMyMovies(data);
+  //         console.log(myMovies)
+  // setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
+  //       })
+  //       .catch((err) => console.log(err));
+  //   };
 
-const getMovies = async () => {
-  try{
-    const response = await axios.get("http://localhost:3636/movie/" + user._id)
-    setMyMovies(response.data)
-    setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
-
-  }catch(err)  {console.log(err)}
-}
+  const getMovies = async () => {
+    try {
+      const response = await axios.get(
+        "http://localhost:3636/movie/" + user._id
+      );
+      setMyMovies(response.data);
+      setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   const removeMovie = async (id) => {
     const data = axios
@@ -91,17 +90,15 @@ const getMovies = async () => {
   useEffect(() => {
     if (!search) {
       setMyMovies(myMovies);
-      
     }
   }, [search]);
 
-  const filterMovies = 
-      myMovies.filter((myMovie) => {
-        return search.toLowerCase() === ""
-          ? myMovie
-          : myMovie.title.toLowerCase().includes(search);
-      })
-          const currentMyMovies = filterMovies.slice(firstMovieIndex, lastMovieIndex);
+  const filterMovies = myMovies.filter((myMovie) => {
+    return search.toLowerCase() === ""
+      ? myMovie
+      : myMovie.title.toLowerCase().includes(search);
+  });
+  const currentMyMovies = filterMovies.slice(firstMovieIndex, lastMovieIndex);
 
   // const filterDirectors = () => {
   //   setMyMovies(
@@ -113,78 +110,67 @@ const getMovies = async () => {
   //   );
   // };
 
-  return ( 
+  return (
     <Container>
-    <Box sx={{zIndex: "auto"}}>
-      <h1 className="library-header">Your Movies:</h1>
-      {loading ? (
-        <ClipLoader
-          color={"  var(--basic-color)"}
-          className="loading"
-          loading={loading}
-          cssOverride={{ marginLeft: " 50vw", marginTop: " 10vw" }}
-          size={50}
-          aria-label="Loading Spinner"
-        />
-      ) : 
-      (
-        <div className="movies-table-div">
-          <div className="input-div">
+      <Box sx={{ zIndex: "auto" }}>
+        <h1 className="library-header">Your Movies:</h1>
+        {loading ? (
+          <ClipLoader
+            color={"  var(--basic-color)"}
+            className="loading"
+            loading={loading}
+            cssOverride={{ marginLeft: " 50vw", marginTop: " 10vw" }}
+            size={50}
+            aria-label="Loading Spinner"
+          />
+        ) : (
+          <div className="movies-table-div">
+            <div className="input-div">
+              <MovieLibraryFilter setSearch={setSearch} search={search} />
 
-            <MovieLibraryFilter 
-            setSearch={setSearch} 
-            search={search}
-            />
-
-             {/* <MovieLibraryFilter 
+              {/* <MovieLibraryFilter 
             filterFunction={filterDirectors}
             setMyMovies={setMyMovies} 
             myMovies={myMovies} 
             setSearch={setSearch} 
             search={search}/> */}
-            
+            </div>
+
+            {/*{isTabletOrMobile ? (<MoviesTableMobile search={search}*/}
+            {/*                                        myMovies={myMovies}*/}
+            {/*                                        currentMyUnwatchedMovies={currentMyUnwatchedMovies}*/}
+            {/*                                        currentMyMovies={currentMyMovies}*/}
+            {/*                                        watchedMovie={watchedMovie}*/}
+            {/*                                        navigate={navigate}*/}
+            {/*                                        removeMovie={removeMovie}*/}
+            {/*                                        watched={watched}*/}
+            {/*                                        setWatched={setWatched}/>*/}
+            {/*):*/}
+            {/*    (*/}
+            <TableContainer>
+              <MoviesTable
+                search={search}
+                myMovies={myMovies}
+                filterMovies={filterMovies}
+                currentMyMovies={currentMyMovies}
+                watchedMovie={watchedMovie}
+                navigate={navigate}
+                removeMovie={removeMovie}
+                watched={watched}
+                setWatched={setWatched}
+              />
+            </TableContainer>
+            <Pagination
+              className="down-pages"
+              style={{ marginBottom: "60px" }}
+              totalMovies={filterMovies.length}
+              moviesPerPage={moviesPerPage}
+              setCurrentPage={setCurrentPage}
+              currentPage={currentPage}
+            />
           </div>
-
-
-
-          {/*{isTabletOrMobile ? (<MoviesTableMobile search={search}*/}
-          {/*                                        myMovies={myMovies}*/}
-          {/*                                        currentMyUnwatchedMovies={currentMyUnwatchedMovies}*/}
-          {/*                                        currentMyMovies={currentMyMovies}*/}
-          {/*                                        watchedMovie={watchedMovie}*/}
-          {/*                                        navigate={navigate}*/}
-          {/*                                        removeMovie={removeMovie}*/}
-          {/*                                        watched={watched}*/}
-          {/*                                        setWatched={setWatched}/>*/}
-          {/*):*/}
-          {/*    (*/}
-          <TableContainer >
-
-                  <MoviesTable
-              search={search}
-              myMovies={myMovies}
-              filterMovies={filterMovies}
-              currentMyMovies={currentMyMovies}
-              watchedMovie={watchedMovie}
-              navigate={navigate}
-              removeMovie={removeMovie}
-              watched={watched}
-              setWatched={setWatched}
-          />
-          
-
-          </TableContainer>
-          <Pagination
-          className= "down-pages"
-          style={{marginBottom: "60px"}}
-            totalMovies={filterMovies.length}
-            moviesPerPage={moviesPerPage}
-            setCurrentPage={setCurrentPage}
-            currentPage={currentPage}
-          /> 
-        </div>
-      )}
-    </Box>
+        )}
+      </Box>
     </Container>
   );
 };

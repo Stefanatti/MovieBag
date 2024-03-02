@@ -1,13 +1,12 @@
 import "../Styles/Movie.scss";
 import useQueryParams from "../Hooks/useQueryParams";
-import MovieRatings from "../Components/MovieRatings";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "../Components/HaveToSignupModal";
 import MovieCard from "../Components/MovieCard";
-import { useSelector  } from "react-redux";
+import { useSelector } from "react-redux";
 
 const RenderMovie = () => {
   const params = useQueryParams();
@@ -20,7 +19,7 @@ const RenderMovie = () => {
   const [movieRates, setMovieRates] = useState([]);
   const [movieTitles, setMovieTitles] = useState([]);
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
-  let user = useSelector((state) => state.user.value)
+  let user = useSelector((state) => state.user.value);
 
   useEffect(() => {
     if (!user._id) {
@@ -33,7 +32,6 @@ const RenderMovie = () => {
     axios
       .get("http://localhost:3636/movie/" + user._id)
       .then(({ data }) => {
-        // console.log(data);
         setMyMovies(data);
         setMovieTitles(data.map((mov) => mov.title));
       })
@@ -104,7 +102,6 @@ const RenderMovie = () => {
           <MovieCard
             movie={movie}
             movieRates={movieRates}
-            MovieRatings={MovieRatings}
             user={user}
             toggle={toggle}
             AddToYourMovies={AddToYourMovies}

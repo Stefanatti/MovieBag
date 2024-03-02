@@ -1,24 +1,40 @@
 import "../Styles/Navbar.scss";
 import { useNavigate } from "react-router-dom";
-// import HaveToSignupModal from "./HaveToSignupModal";
-import LogoutModal from "./LogoutModal";
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import { useSelector,useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../Features/user";
 import { styled, alpha } from "@mui/material/styles";
 import ThemeSwitcher from "./ThemeSwitcher";
 //-------------------
 import * as React from "react";
+import { lazy, Suspense } from "react";
 import PropTypes from "prop-types";
- import MenuIcon from "@mui/icons-material/Menu";
-import {AppBar,CssBaseline,Divider,Drawer,IconButton,
-List,ListItem,ListItemButton,ListItemText, Button, Toolbar,
-Typography,Avatar,Hidden, Box, TableContainer} from "@mui/material";
+import MenuIcon from "@mui/icons-material/Menu";
+import {
+  AppBar,
+  CssBaseline,
+  Divider,
+  Drawer,
+  IconButton,
+  List,
+  ListItem,
+  ListItemButton,
+  ListItemText,
+  Button,
+  Toolbar,
+  Typography,
+  Avatar,
+  Hidden,
+  Box,
+  TableContainer,
+} from "@mui/material";
+const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
+const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
-const navItems = ["Home", "Your Movies"];
+const navItems = ["Home", "About", "Your Movies"];
 
 const StyledNavbarButton = styled(Button)`
   position: relative;
@@ -93,7 +109,7 @@ const Navbar = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [title, setTitle] = useState("");
+  // const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const dispatch = useDispatch();
@@ -105,8 +121,6 @@ const Navbar = (props) => {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-
-  
 
   useEffect(() => {
     if (localStorage.getItem("token")) {
@@ -123,27 +137,30 @@ const Navbar = (props) => {
     }
   }, [localStorage.getItem("token")]);
 
-  const getTitle = (e) => {
-    e.preventDefault();
-    if (title !== "") {
-      navigate(`/MovieSearch?title=${title}`);
-      setTitle("");
-    }
-  };
+  // const getTitle = (e) => {
+  //   e.preventDefault();
+  //   if (title !== "") {
+  //     navigate(`/MovieSearch?title=${title}`);
+  //     setTitle("");
+  //   }
+  // };
 
   let user = useSelector((state) => state.user.value);
-  console.log(user);
+  console.log(user._id);
 
   const handleItemClick = (item) => {
-    if (item === "Home"){
-      navigate("/")
-    } else if (item === "About"){
+    if (item === "Home") {
+      navigate("/");
+    } else if (item === "About") {
       console.log(`Clicked on ${item}`);
-    } else {
-      navigate("/yourMovies")
+    } else if (item === "Your Movies") {
+      if (user._id) {
+        navigate(`/yourmovies`);
+      } else {
+        setOpenHaveToSignupModal(true);
+      }
     }
-    };
-  
+  };
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -151,15 +168,19 @@ const Navbar = (props) => {
         MovieBag
       </Typography>
       <Divider />
-      <List >
-      <ListItem  sx={{display: "flex", flexDirection:"column"}}  disablePadding>
-      <ThemeSwitcher setTheme={setTheme} theme={theme}/>
-          </ListItem>
+      <List>
+        <ListItem
+          sx={{ display: "flex", flexDirection: "column" }}
+          disablePadding
+        >
+          <ThemeSwitcher setTheme={setTheme} theme={theme} />
+        </ListItem>
         {navItems.map((item) => (
           <ListItem key={item} disablePadding>
             <ListItemButton
               sx={{ textAlign: "center", color: "var(--basic-color)" }}
-              onClick={() => handleItemClick(item)}>
+              onClick={() => handleItemClick(item)}
+            >
               <ListItemText primary={item} />
             </ListItemButton>
           </ListItem>
@@ -170,7 +191,6 @@ const Navbar = (props) => {
 
   const container =
     window !== undefined ? () => window().document.body : undefined;
-
 
   return (
     <Box sx={{ display: "flex" }}>
@@ -203,15 +223,16 @@ const Navbar = (props) => {
               color: "var(--basic-color)",
             }}
           >
-
             MovieBag
-
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item)=>(
-              <StyledNavbarButton key={item} 
-              onClick={() => handleItemClick(item)}
-              >{item}</StyledNavbarButton>
+            {navItems.map((item) => (
+              <StyledNavbarButton
+                key={item}
+                onClick={() => handleItemClick(item)}
+              >
+                {item}
+              </StyledNavbarButton>
             ))}
           </Box>
           {/* {location.pathname !== "/" &&
@@ -235,20 +256,33 @@ const Navbar = (props) => {
           </Box>
           } */}
 
-          <Box   
-           sx={{marginLeft: "15px", display:"flex", alignItems:"center", gap:"15px", }}
+          <Box
+            sx={{
+              marginLeft: "15px",
+              display: "flex",
+              alignItems: "center",
+              gap: "15px",
+            }}
           >
-             <Hidden smDown>
-          <ThemeSwitcher setTheme={setTheme} theme={theme}  />
-          </Hidden>
-          <Avatar alt={user.username} src="/broken-image.jpg" sx={{ bgcolor: "var(--basic-color)", cursor:'pointer'}} 
-          onClick={ user._id? ()=> setOpenLogoutModal(true): () => {
-            navigate(`/login`);
-          }}/>
+            <Hidden smDown>
+              <ThemeSwitcher setTheme={setTheme} theme={theme} />
+            </Hidden>
+            <Avatar
+              alt={user.username}
+              src="/broken-image.jpg"
+              sx={{ bgcolor: "var(--basic-color)", cursor: "pointer" }}
+              onClick={
+                user._id
+                  ? () => setOpenLogoutModal(true)
+                  : () => {
+                      navigate(`/login`);
+                    }
+              }
+            />
           </Box>
         </Toolbar>
       </AppBar>
-     
+
       <nav>
         <Drawer
           container={container}
@@ -265,18 +299,25 @@ const Navbar = (props) => {
               width: drawerWidth,
               background: "var(--background-app-color)",
             },
-            
           }}
         >
           {drawer}
         </Drawer>
       </nav>
-      <LogoutModal
-            open={openLogoutModal}
-            onClose={() => {
-              setOpenLogoutModal(false);
-            }}
-          />
+      <Suspense fallback={<div> Please Wait... </div>}>
+        <LogoutModal
+          open={openLogoutModal}
+          onClose={() => {
+            setOpenLogoutModal(false);
+          }}
+        />
+        <HaveToSignupModal
+          open={openHaveToSignupModal}
+          onClose={() => {
+            setOpenHaveToSignupModal(false);
+          }}
+        />
+      </Suspense>
       <Box component="main" sx={{ p: 3 }}>
         <Toolbar />
       </Box>

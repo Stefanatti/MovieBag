@@ -1,11 +1,14 @@
-
 const MoviesResultCards = ({ movies, navigate }) => {
   return (
-    <div className="cards-container" >
+    <div className="cards-container">
       {movies ? (
         movies.map((movie) => {
           return (
-            <div key={movie.imdbID} className="movie-cards" onClick={() => navigate(`/movie?title=${movie.Title}`)}>
+            <div
+              key={movie.imdbID}
+              className="movie-cards"
+              onClick={() => navigate(`/movie?title=${movie.Title}`)}
+            >
               {movie.Poster !== "N/A" ? (
                 <div className="movie-poster">
                   <img src={movie.Poster} alt="poster" />
@@ -15,11 +18,7 @@ const MoviesResultCards = ({ movies, navigate }) => {
               )}
               <div className="card-bodies">
                 <div className="movie-details-div">
-                  <h1
-                    className="movie-title"
-                  >
-                    Movie: {movie.Title}
-                  </h1>
+                  <h1 className="movie-title">Movie: {movie.Title}</h1>
                   <h3>{movie.Year}</h3>
                   <h5>{movie.Type}</h5>
                 </div>

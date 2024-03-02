@@ -1,6 +1,18 @@
-// import "../Styles/Signup-Login.scss";
-// import { Container } from "react-bootstrap";
-import {Grid, Paper,CssBaseline, Button, Typography, Container, Box,TextField,Stack,Link,FormControlLabel, useMediaQuery, keyframes} from "@mui/material";
+import {
+  Grid,
+  Paper,
+  CssBaseline,
+  Button,
+  Typography,
+  Container,
+  Box,
+  TextField,
+  Stack,
+  Link,
+  FormControlLabel,
+  useMediaQuery,
+  keyframes,
+} from "@mui/material";
 import LoginForm from "../Components/LoginForm";
 import { useState } from "react";
 import axios from "axios";
@@ -9,59 +21,58 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [signupForm, setSignupForm] = useState(false)
+  const [signupForm, setSignupForm] = useState(false);
   const [email, setEmail] = useState("");
-  const [formData, setFormData]= useState({
+  const [formData, setFormData] = useState({
     username: "",
-    password:""
-  })
+    password: "",
+  });
 
   const navigate = useNavigate();
 
-
   //  );
   // };
-//   const styles = theme => ({
-//     multilineColor:{
-//         color:'red'
-//     }
-// });
+  //   const styles = theme => ({
+  //     multilineColor:{
+  //         color:'red'
+  //     }
+  // });
 
-const handleSubmit = async (e)=>{
-  e.preventDefault();
-  const {username, password}= formData
-  // console.log('Submitted username:', username + "," + password);
-  try {
-   await axios
-      .post("http://localhost:3636/user/login", {
-       username, password
-      }).then(({ data }) => {
-        if (data.token) {
-          localStorage.setItem("token", data.token);
-          navigate("/");
-        } else {
-          alert(data.message);
-        }
-      });
-  }catch(error){
-    console.error('Error submitting form:', error);
- }
-}
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const { username, password } = formData;
+    // console.log('Submitted username:', username + "," + password);
+    try {
+      await axios
+        .post("http://localhost:3636/user/login", {
+          username,
+          password,
+        })
+        .then(({ data }) => {
+          if (data.token) {
+            localStorage.setItem("token", data.token);
+            navigate("/");
+          } else {
+            alert(data.message);
+          }
+        });
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
 
-const handleChange = (e)=>{
-setFormData({
-  ...formData,
-  [e.target.name]: e.target.value
-})
-} 
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
   return (
-   
-
-     <Container component="main" maxWidth="lg">
-       <Box
+    <Container component="main" maxWidth="lg">
+      <Box
         sx={{
-           marginTop: 5,
+          marginTop: 5,
         }}
       >
         <Grid container>
@@ -72,16 +83,16 @@ setFormData({
             sm={4}
             md={7}
             sx={{
-              backgroundImage: "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
+              backgroundImage:
+                "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
               backgroundRepeat: "no-repeat",
-              backgroundColor: 
-              (t) =>
+              backgroundColor: (t) =>
                 t.palette.mode === "light"
                   ? t.palette.grey[50]
                   : t.palette.grey[900],
               backgroundSize: "cover",
               backgroundPosition: "center",
-              
+
               border: "2px solid var(--basic-color)",
             }}
           />
@@ -93,29 +104,26 @@ setFormData({
             component={Paper}
             elevation={6}
             square
-            border= "2px solid var(--basic-color)"
+            border="2px solid var(--basic-color)"
             //  backgroundColor= "transparent"
           >
-            <Box 
+            <Box
               sx={{
                 my: 8,
                 mx: 4,
                 display: "flex",
                 flexDirection: "column",
                 alignItems: "center",
-                
               }}
             >
-             
-              <Typography component="h1" variant="h5" >
+              <Typography component="h1" variant="h5">
                 Login
               </Typography>
               <Box
                 component="form"
                 noValidate
                 onSubmit={handleSubmit}
-                sx={{ mt: 1, display: "flex",
-                flexDirection: "column", }}
+                sx={{ mt: 1, display: "flex", flexDirection: "column" }}
               >
                 <TextField
                   margin="normal"
@@ -134,7 +142,7 @@ setFormData({
                 />
                 <TextField
                   margin="normal"
-                  className = "textfield"
+                  className="textfield"
                   required
                   fullWidth
                   name="password"
@@ -144,21 +152,20 @@ setFormData({
                   autoComplete="current-password"
                   value={formData.password}
                   onChange={handleChange}
-                //   inputProps={{
-                //     classes: {
-                //     input: styles.multilineColor
-                // }  }}
+                  //   inputProps={{
+                  //     classes: {
+                  //     input: styles.multilineColor
+                  // }  }}
                 />
                 {/* <FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                 /> */}
                 <Button
-                  
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2 , background:"var(--basic-color)"}}
+                  sx={{ mt: 3, mb: 2, background: "var(--basic-color)" }}
                 >
                   Login
                 </Button>
@@ -177,22 +184,17 @@ setFormData({
                 </Grid>
               </Box>
             </Box>
-          
           </Grid>
         </Grid>
       </Box>
-       
-      </Container>
-     
+    </Container>
   );
 };
 
 export default Login;
 
-
-
-
- {/* <div className="signup-poster">
+{
+  /* <div className="signup-poster">
           <img src="https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg" />
         </div>
         <div className="signup-form">
@@ -240,4 +242,5 @@ export default Login;
             </main>
           </Container>
         </div>
-      </div>  */}
+      </div>  */
+}

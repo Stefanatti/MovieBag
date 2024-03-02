@@ -1,7 +1,7 @@
 import { DeleteOutlined, PushpinFilled } from "@ant-design/icons";
 import { useState } from "react";
 import Pagination from "../Components/Pagination";
-import {Container} from "@mui/material";
+import { Container } from "@mui/material";
 
 const MoviesTable = ({
   currentMyMovies,
@@ -9,31 +9,29 @@ const MoviesTable = ({
   navigate,
   removeMovie,
   watched,
-  setWatched
+  setWatched,
 }) => {
-
   return (
     <div className="table-container">
-
-    <table >
-       <thead>
-        <tr className="thead">
-          <th
-            className="watched-th"
-            onClick={() => {
-              watched ? setWatched(false) : setWatched(true);
-            }}
-          >
-            Watched ?
-          </th>
-          <th className="table-th">Title</th>
-          <th className="table-th">Year</th>
-          <th className="table-th">Type</th>
-          <th className="table-th">Director</th>
-          <th className="table-th">Delete</th>
-        </tr>
-      </thead>
-      {/* {watched ? ( */}
+      <table>
+        <thead>
+          <tr className="thead">
+            <th
+              className="watched-th"
+              onClick={() => {
+                watched ? setWatched(false) : setWatched(true);
+              }}
+            >
+              Watched ?
+            </th>
+            <th className="table-th">Title</th>
+            <th className="table-th">Year</th>
+            <th className="table-th">Type</th>
+            <th className="table-th">Director</th>
+            <th className="table-th">Delete</th>
+          </tr>
+        </thead>
+        {/* {watched ? ( */}
         <tbody>
           {currentMyMovies.map((myMovie, index) => {
             return (
@@ -67,8 +65,7 @@ const MoviesTable = ({
           })}
         </tbody>
 
-
-      {/* // ) : (
+        {/* // ) : (
       //   <tbody>
       //     {filterMovies.map((myMovie, index) => { 
       //       return (
@@ -102,8 +99,7 @@ const MoviesTable = ({
       //     })}
       //   </tbody>
       // )}*/}
-    </table>
-
+      </table>
     </div>
   );
 };

@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { themeSwich } from "../Features/theme";
@@ -21,8 +20,6 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
           onChange={() => {
             setMoveBall(3);
             dispatch(themeSwich({ theme: "" }));
-
-            console.log(theme)
           }}
           type="radio"
           name="theme-type"
@@ -33,9 +30,6 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
           onClick={() => {
             setMoveBall(27);
             dispatch(themeSwich({ theme: "blue-theme" }));
-
-            console.log(theme)
-
           }}
           type="radio"
           name="theme-type"
@@ -46,9 +40,6 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
           onChange={() => {
             setMoveBall(52);
             dispatch(themeSwich({ theme: "purple-theme" }));
-
-            console.log(theme)
-
           }}
           type="radio"
           name="theme-type"

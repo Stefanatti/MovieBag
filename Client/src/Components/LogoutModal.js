@@ -1,15 +1,13 @@
-import { logout } from "../Features/user"
+import { logout } from "../Features/user";
 import { useDispatch } from "react-redux";
 
 const LogoutModal = ({ open, onClose }) => {
-  const dispatch = useDispatch()
- 
+  const dispatch = useDispatch();
 
   const logOut = () => {
     if (localStorage.getItem("token")) {
       localStorage.removeItem("token");
-      dispatch(logout())
-
+      dispatch(logout());
     }
   };
 
@@ -29,7 +27,7 @@ const LogoutModal = ({ open, onClose }) => {
           <button
             className="logout-button yes"
             onClick={() => {
-            logOut();
+              logOut();
             }}
           >
             Yes

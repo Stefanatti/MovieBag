@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import MoviesResultCards from "../Components/MoviesResultCards";
-import { useSelector  } from "react-redux";
+import { useSelector } from "react-redux";
 
 const MovieSearchResult = () => {
   const params = useQueryParams();
@@ -13,7 +13,7 @@ const MovieSearchResult = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  let user = useSelector((state) => state.user.value)
+  let user = useSelector((state) => state.user.value);
 
   useEffect(() => {
     if (!movieTitle) return null;

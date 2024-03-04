@@ -1,5 +1,9 @@
 // import "../Styles/Signup-Login.scss";
-// import { Container } from "react-bootstrap";
+import * as yup from "yup";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+
+import { userSchema } from "../Validations/UserValidation";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -14,9 +18,6 @@ import {
   TextField,
   Stack,
   Link,
-  FormControlLabel,
-  useMediaQuery,
-  keyframes,
 } from "@mui/material";
 
 const Signup = () => {
@@ -26,6 +27,7 @@ const Signup = () => {
     email: "",
     password: "",
   });
+  const [error, setError] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -34,18 +36,19 @@ const Signup = () => {
     });
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userSchema),
+  });
 
-    const { username, email, password } = formData;
-
+  const createUser = async (e) => {
     try {
       await axios
-        .post("http://localhost:3636/user/signup", {
-          username,
-          email,
-          password,
-        })
+        .post("http://localhost:3636/user/signup", formData)
         .then(({ data }) => {
           console.log(data);
           if (data.message === true) {
@@ -113,10 +116,11 @@ const Signup = () => {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
+                onSubmit={handleSubmit(createUser)}
                 sx={{ mt: 1, display: "flex", flexDirection: "column" }}
               >
                 <TextField
+                  variant="filled"
                   margin="normal"
                   required
                   fullWidth
@@ -124,13 +128,18 @@ const Signup = () => {
                   label="Username"
                   name="username"
                   autoComplete="username"
+                  {...register("username")}
+                  error={errors.username}
+                  helperText={errors.username?.message}
                   autoFocus
                   value={formData.username}
                   onChange={handleChange}
                   // inputProps={{ style: { color: "red", border: " 2px solid red" } }}
                   // sx={{ color:"var(--basic-color)"}}
                 />
+                {/* <span>{errors.username?.message}</span> */}
                 <TextField
+                  variant="filled"
                   margin="normal"
                   required
                   fullWidth
@@ -138,13 +147,19 @@ const Signup = () => {
                   label="Email Address"
                   name="email"
                   autoComplete="email"
+                  {...register("email")}
+                  error={errors.email}
+                  helperText={errors.email?.message}
                   autoFocus
                   value={formData.email}
                   onChange={handleChange}
                   // inputProps={{ style: { color: "red", border: " 2px solid red" } }}
                   // sx={{ color:"var(--basic-color)"}}
                 />
+                <span>{errors.email?.message}</span>
+
                 <TextField
+                  variant="filled"
                   margin="normal"
                   className="textfield"
                   required
@@ -154,6 +169,9 @@ const Signup = () => {
                   type="password"
                   id="password"
                   autoComplete="current-password"
+                  error={errors.password}
+                  helperText={errors.password?.message}
+                  {...register("password")}
                   value={formData.password}
                   onChange={handleChange}
                   //   inputProps={{
@@ -161,6 +179,8 @@ const Signup = () => {
                   //     input: styles.multilineColor
                   // }  }}
                 />
+                <span>{errors.password?.message}</span>
+
                 {/* <FormControlLabel
                control={<Checkbox value="remember" color="primary" />}
                label="Remember me"

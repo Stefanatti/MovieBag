@@ -193,7 +193,7 @@ const Navbar = (props) => {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex" }}>
+    <Box sx={{ display: "flex", overflowX: "hidden" }}>
       <CssBaseline />
       <AppBar color="transparent" component="nav" position="static">
         <Toolbar sx={{ display: "flex", justifyContent: "center" }}>

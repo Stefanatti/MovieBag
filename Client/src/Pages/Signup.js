@@ -58,10 +58,6 @@ const Signup = () => {
     resolver: yupResolver(userSchema),
   });
 
-  const onBasicSubmit = (formData) => {
-    console.log(formData);
-  };
-
   const createUser = async (e) => {
     try {
       await axios
@@ -141,7 +137,7 @@ const Signup = () => {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit(onBasicSubmit)}
+                onSubmit={handleSubmit(createUser)}
                 sx={{
                   mt: 1,
                   display: "flex",
@@ -181,6 +177,12 @@ const Signup = () => {
                         "&:focus-within fieldset, &:focus-visible fieldset": {
                           border: "2px solid var(--basic-color)!important",
                         },
+                        "& input:-webkit-autofill, & textarea:-webkit-autofill, & select:-webkit-autofill":
+                          {
+                            WebkitTextFillColor: "var(--basic-color)",
+                            WebkitBoxShadow: "red inset",
+                            transition: "background-color 5000s ease-in-out 0s",
+                          },
                       },
                       endAdornment: field.name === "password" && (
                         <InputAdornment position="end">

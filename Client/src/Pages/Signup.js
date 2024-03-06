@@ -3,6 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { userSchema } from "../Validations/UserValidation";
 import { useState } from "react";
 import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
@@ -20,7 +21,12 @@ import {
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
-import { getOverflowOptions } from "antd/es/_util/placements";
+
+const fields = [
+  { label: "Username", name: "username" },
+  { label: "Email", name: "email" },
+  { label: "Password", name: "password" },
+];
 const Signup = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -29,6 +35,7 @@ const Signup = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+
   const handleClickShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
 
@@ -51,6 +58,10 @@ const Signup = () => {
     resolver: yupResolver(userSchema),
   });
 
+  const onBasicSubmit = (formData) => {
+    console.log(formData);
+  };
+
   const createUser = async (e) => {
     try {
       await axios
@@ -68,7 +79,6 @@ const Signup = () => {
       reset();
     }
   };
-
   return (
     <Container component="main" maxWidth="lg">
       <Box
@@ -131,117 +141,63 @@ const Signup = () => {
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit(createUser)}
+                onSubmit={handleSubmit(onBasicSubmit)}
                 sx={{
                   mt: 1,
                   display: "flex",
                   flexDirection: "column",
                 }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="username"
-                  placeholder="Username"
-                  name="username"
-                  autoComplete="username"
-                  {...register("username")}
-                  error={errors.username}
-                  helperText={errors.username?.message}
-                  value={formData.username}
-                  onChange={handleChange}
-                  InputProps={{
-                    style: {
-                      color: "var(--basic-color)",
-                      border: "2px solid var(--basic-color)",
-                    },
-                    sx: {
-                      "&:hover fieldset": {
+                {fields.map((field) => (
+                  <TextField
+                    key={field.name}
+                    margin="normal"
+                    required
+                    fullWidth
+                    placeholder={field.label}
+                    name={field.name}
+                    type={
+                      field.name === "password"
+                        ? showPassword
+                          ? "text"
+                          : "password"
+                        : "text"
+                    }
+                    {...register(`${field.name}`)}
+                    error={Boolean(errors[field.name])}
+                    helperText={errors[field.name]?.message}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    InputProps={{
+                      style: {
+                        color: "var(--basic-color)",
                         border: "2px solid var(--basic-color)",
-                        borderRadius: 0,
                       },
-                      "&:focus-within fieldset, &:focus-visible fieldset": {
-                        border: "2px solid var(--basic-color)!important",
+                      sx: {
+                        "&:hover fieldset": {
+                          border: "2px solid var(--basic-color)",
+                          borderRadius: 0,
+                        },
+                        "&:focus-within fieldset, &:focus-visible fieldset": {
+                          border: "2px solid var(--basic-color)!important",
+                        },
                       },
-                    },
-                  }}
-                />
-
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="email"
-                  placeholder="Email Address"
-                  name="email"
-                  autoComplete="email"
-                  {...register("email")}
-                  error={errors.email}
-                  helperText={errors.email?.message}
-                  value={formData.email}
-                  onChange={handleChange}
-                  InputProps={{
-                    style: {
-                      color: "var(--basic-color)",
-                      border: "2px solid var(--basic-color)",
-                    },
-                    sx: {
-                      "&:hover fieldset": {
-                        border: "2px solid var(--basic-color)",
-                        borderRadius: 0,
-                      },
-                      "&:focus-within fieldset, &:focus-visible fieldset": {
-                        border: "2px solid var(--basic-color)!important",
-                      },
-                    },
-                  }}
-                />
-
-                <TextField
-                  margin="normal"
-                  className="textfield"
-                  required
-                  fullWidth
-                  name="password"
-                  placeholder="Password"
-                  type={showPassword ? "text" : "password"}
-                  id="password"
-                  autoComplete="current-password"
-                  error={errors.password}
-                  helperText={errors.password?.message}
-                  {...register("password")}
-                  value={formData.password}
-                  onChange={handleChange}
-                  InputProps={{
-                    style: {
-                      color: "var(--basic-color)",
-                      border: "2px solid var(--basic-color)",
-                    },
-                    sx: {
-                      "&:hover fieldset": {
-                        border: "2px solid var(--basic-color)",
-                        borderRadius: 0,
-                      },
-                      "&:focus-within fieldset, &:focus-visible fieldset": {
-                        border: "2px solid var(--basic-color)!important",
-                      },
-                    },
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          sx={{ color: "var(--basic-color)" }}
-                          aria-label="toggle password visibility"
-                          onClick={handleClickShowPassword}
-                          onMouseDown={handleMouseDownPassword}
-                          edge="end"
-                        >
-                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
+                      endAdornment: field.name === "password" && (
+                        <InputAdornment position="end">
+                          <IconButton
+                            sx={{ color: "var(--basic-color)" }}
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                ))}
 
                 <Button
                   type="submit"

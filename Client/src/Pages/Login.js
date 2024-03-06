@@ -13,7 +13,6 @@ import {
   useMediaQuery,
   keyframes,
 } from "@mui/material";
-import LoginForm from "../Components/LoginForm";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -125,21 +124,6 @@ const Login = () => {
                 onSubmit={handleSubmit}
                 sx={{ mt: 1, display: "flex", flexDirection: "column" }}
               >
-                <TextField
-                  margin="normal"
-                  required
-                  fullWidth
-                  id="username"
-                  label="Username"
-                  name="username"
-                  autoComplete="username"
-                  autoFocus
-                  value={formData.username}
-                  onChange={handleChange}
-
-                  // inputProps={{ style: { color: "red", border: " 2px solid red" } }}
-                  // sx={{ color:"var(--basic-color)"}}
-                />
                 <TextField
                   margin="normal"
                   className="textfield"

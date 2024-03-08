@@ -1,3 +1,6 @@
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { userLogInSchema } from "../Validations/UserValidation";
 import {
   Grid,
   Paper,
@@ -9,44 +12,55 @@ import {
   TextField,
   Stack,
   Link,
-  FormControlLabel,
-  useMediaQuery,
-  keyframes,
+  InputAdornment,
+  IconButton,
 } from "@mui/material";
 import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+
+const fields = [
+  { label: "Username", name: "username" },
+  { label: "Password", name: "password" },
+];
 
 const Login = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [signupForm, setSignupForm] = useState(false);
-  const [email, setEmail] = useState("");
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
 
   const navigate = useNavigate();
+  const [showPassword, setShowPassword] = useState(false);
 
-  //  );
-  // };
-  //   const styles = theme => ({
-  //     multilineColor:{
-  //         color:'red'
-  //     }
-  // });
+  const handleClickShowPassword = () =>
+    setShowPassword((prevShowPassword) => !prevShowPassword);
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const { username, password } = formData;
-    // console.log('Submitted username:', username + "," + password);
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
+  };
+  const {
+    reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userLogInSchema),
+  });
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const loginUser = async (e) => {
     try {
       await axios
-        .post("http://localhost:3636/user/login", {
-          username,
-          password,
-        })
+        .post("http://localhost:3636/user/login", formData)
         .then(({ data }) => {
           if (data.token) {
             localStorage.setItem("token", data.token);
@@ -60,18 +74,12 @@ const Login = () => {
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   return (
     <Container component="main" maxWidth="lg">
       <Box
         sx={{
-          marginTop: 5,
+          marginBottom: 5,
+          overflow: "hidden",
         }}
       >
         <Grid container>
@@ -83,7 +91,7 @@ const Login = () => {
             md={7}
             sx={{
               backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
+                "url(https://alternativemovieposters.com/wp-content/uploads/2013/12/mementobg.jpg)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"
@@ -91,8 +99,8 @@ const Login = () => {
                   : t.palette.grey[900],
               backgroundSize: "cover",
               backgroundPosition: "center",
-
-              border: "2px solid var(--basic-color)",
+              border: "2px solid var(--home-page-posters-color)",
+              marginBottom: 5,
             }}
           />
           <Grid
@@ -103,8 +111,7 @@ const Login = () => {
             component={Paper}
             elevation={6}
             square
-            border="2px solid var(--basic-color)"
-            //  backgroundColor= "transparent"
+            sx={{ backgroundColor: "var(--main-card-color)" }}
           >
             <Box
               sx={{
@@ -115,52 +122,100 @@ const Login = () => {
                 alignItems: "center",
               }}
             >
-              <Typography component="h1" variant="h5">
-                Login
+              <Typography
+                component="h1"
+                variant="h5"
+                sx={{
+                  color: "var(--basic-color)",
+                  fontFamily: "Limelight",
+                  marginBottom: 3,
+                }}
+              >
+                Log In
               </Typography>
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit}
-                sx={{ mt: 1, display: "flex", flexDirection: "column" }}
+                onSubmit={handleSubmit(loginUser)}
+                sx={{
+                  mt: 1,
+                  display: "flex",
+                  flexDirection: "column",
+                }}
               >
-                <TextField
-                  margin="normal"
-                  className="textfield"
-                  required
-                  fullWidth
-                  name="password"
-                  label="Password"
-                  type="password"
-                  id="password"
-                  autoComplete="current-password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  //   inputProps={{
-                  //     classes: {
-                  //     input: styles.multilineColor
-                  // }  }}
-                />
-                {/* <FormControlLabel
-                  control={<Checkbox value="remember" color="primary" />}
-                  label="Remember me"
-                /> */}
+                {fields.map((field) => (
+                  <TextField
+                    key={field.name}
+                    margin="normal"
+                    required
+                    fullWidth
+                    placeholder={field.label}
+                    name={field.name}
+                    type={
+                      field.name === "password"
+                        ? showPassword
+                          ? "text"
+                          : "password"
+                        : "text"
+                    }
+                    {...register(`${field.name}`)}
+                    error={Boolean(errors[field.name])}
+                    helperText={errors[field.name]?.message}
+                    value={formData[field.name]}
+                    onChange={handleChange}
+                    InputProps={{
+                      style: {
+                        color: "var(--basic-color)",
+                        border: "2px solid var(--basic-color)",
+                      },
+                      sx: {
+                        "&:hover fieldset": {
+                          border: "2px solid var(--basic-color)",
+                          borderRadius: 0,
+                        },
+                        "&:focus-within fieldset, &:focus-visible fieldset": {
+                          border: "2px solid var(--basic-color)!important",
+                        },
+                        "& input:-webkit-autofill, & textarea:-webkit-autofill, & select:-webkit-autofill":
+                          {
+                            WebkitTextFillColor: "var(--basic-color)",
+                            WebkitBoxShadow: "red inset",
+                            transition: "background-color 5000s ease-in-out 0s",
+                          },
+                      },
+                      endAdornment: field.name === "password" && (
+                        <InputAdornment position="end">
+                          <IconButton
+                            sx={{ color: "var(--basic-color)" }}
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            onMouseDown={handleMouseDownPassword}
+                            edge="end"
+                          >
+                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                  />
+                ))}
+
                 <Button
                   type="submit"
                   fullWidth
                   variant="contained"
-                  sx={{ mt: 3, mb: 2, background: "var(--basic-color)" }}
+                  sx={{
+                    mt: 3,
+                    mb: 2,
+                    background: "var(--basic-color)",
+                    "&:hover": { bgcolor: "var(--basic-color)" },
+                  }}
                 >
-                  Login
+                  Log in
                 </Button>
+
                 <Grid container>
-                  {/* <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
-                  </Grid> */}
                   <Grid item>
-                    {/* <span onClick={()=>setSignupForm(true)}>{"Don't have an account? Sign Up"}</span> */}
                     <Link href={"/signup"} variant="body2">
                       {"Don't have an account? Sign Up"}
                     </Link>
@@ -176,55 +231,3 @@ const Login = () => {
 };
 
 export default Login;
-
-{
-  /* <div className="signup-poster">
-          <img src="https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg" />
-        </div>
-        <div className="signup-form">
-          <Container id="main-container">
-            <main className="form-signin w-100 m-auto">
-              <form>
-                <h1 className="h3 mb-3 fw-normal">Please Login</h1>
-
-                <div className="form-floating">
-                  <input
-                    type="text"
-                    className="form-control"
-                    id="floatingInput"
-                    placeholder="username"
-                    onChange={(e) => {
-                      setUsername(e.target.value);
-                    }}
-                  />
-                  <label htmlFor="floatingInput">Username</label>
-                </div>
-
-                <div className="form-floating">
-                  <input
-                    type="password"
-                    className="form-control"
-                    id="floatingPassword"
-                    placeholder="Password"
-                    onChange={(e) => {
-                      setPassword(e.target.value);
-                    }}
-                  />
-                  <label htmlFor="floatingPassword">Password</label>
-                </div>
-
-                <button
-                  className="button-submit"
-                  type="submit"
-                  onClick={(e) => {
-                    login(e);
-                  }}
-                >
-                  Login
-                </button>
-              </form>
-            </main>
-          </Container>
-        </div>
-      </div>  */
-}

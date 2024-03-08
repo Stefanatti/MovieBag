@@ -4,7 +4,6 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  // overflow-x: hidden;
 }
 
 body {
@@ -14,7 +13,7 @@ body {
 }
 
 .App {
-  min-height: 100vh;
+  min-height: 118vh;
   // min-width: 100vw;
   background: var(--background-app-color);
   overflow: hidden;

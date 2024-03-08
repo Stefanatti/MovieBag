@@ -1,9 +1,8 @@
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userSchema } from "../Validations/UserValidation";
+import { userSignInSchema } from "../Validations/UserValidation";
 import { useState } from "react";
 import axios from "axios";
-
 import { useNavigate } from "react-router-dom";
 import {
   Grid,
@@ -55,7 +54,7 @@ const Signup = () => {
     handleSubmit,
     formState: { errors },
   } = useForm({
-    resolver: yupResolver(userSchema),
+    resolver: yupResolver(userSignInSchema),
   });
 
   const createUser = async (e) => {
@@ -100,7 +99,8 @@ const Signup = () => {
                   : t.palette.grey[900],
               backgroundSize: "cover",
               backgroundPosition: "center",
-              border: "2px solid grey",
+              border: "2px solid var(--home-page-posters-color)",
+              borderRadius: "2%",
               marginBottom: 5,
             }}
           />

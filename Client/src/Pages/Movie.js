@@ -22,23 +22,6 @@ const RenderMovie = () => {
   let user = useSelector((state) => state.user.value);
 
   useEffect(() => {
-    if (!user._id) {
-      return;
-    }
-    getMovies();
-  }, [user._id]);
-
-  const getMovies = () => {
-    axios
-      .get("http://localhost:3636/movie/" + user._id)
-      .then(({ data }) => {
-        setMyMovies(data);
-        setMovieTitles(data.map((mov) => mov.title));
-      })
-      .catch((err) => console.log(err));
-  };
-
-  useEffect(() => {
     if (!movieTitle) return null;
 
     axios

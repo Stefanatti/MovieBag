@@ -5,15 +5,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
+  min-height: 20vh;
 }
 
 .movie-card {
   font-family: "Montserrat", sans-serif;
   border: 1px solid;
   margin-bottom: 130px;
-  max-width: 850px;
-  min-height: 400px;
+  // max-width: 850px;
+  // min-height: 400px;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;

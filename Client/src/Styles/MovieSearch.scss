@@ -24,16 +24,16 @@
     cursor: pointer;
 
     .movie-poster {
-      .movie-poster {
-        // position: relative;
-        width: 400px;
-        overflow: hidden;
-      }
-      img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-      }
+      // position: relative;
+      width: 400px;
+      // overflow: hidden;
+    }
+    img {
+      width: 100%;
+      height: 100%;
+      background-size: cover;
+      object-fit: cover;
+      overflow: auto;
     }
 
     .card-bodies {
@@ -47,13 +47,10 @@
       text-align: center;
       font-size: 16px;
       gap: 20px;
-
     }
 
     .movie-title {
-      
       overflow: hidden;
-
     }
     .movie-title:hover {
       color: var(--basic-color);

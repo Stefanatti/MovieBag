@@ -33,18 +33,6 @@ const YourMoviesLibrary = () => {
     getMovies();
   }, [user._id]);
 
-  //   const getMovies = () => {
-  //     axios
-  //       .get("http://localhost:3636/movie/" + user._id)
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //         setMyMovies(data);
-  //         console.log(myMovies)
-  // setMyUnwatchedMovies(data.filter((mov) => !mov.watched));
-  //       })
-  //       .catch((err) => console.log(err));
-  //   };
-
   const getMovies = async () => {
     try {
       const response = await axios.get(
@@ -66,7 +54,7 @@ const YourMoviesLibrary = () => {
       });
     getMovies();
     setMyMovies((myMovies) =>
-      myMovies.filter((myMovie) => myMovie._id !== data._id)
+      myMovies.filter((myMovie) => myMovie.id !== data.id)
     );
   };
 
@@ -78,7 +66,7 @@ const YourMoviesLibrary = () => {
       .catch((err) => console.error("Error:", err));
     setMyMovies((myMovies) =>
       myMovies.map((myMovie) => {
-        if (myMovie._id === data._id) {
+        if (myMovie.id === data.id) {
           myMovie.watched = data.watched;
         }
         console.log(myMovies);

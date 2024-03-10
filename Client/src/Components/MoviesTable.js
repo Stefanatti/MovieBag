@@ -11,6 +11,7 @@ const MoviesTable = ({
   watched,
   setWatched,
 }) => {
+  console.log(currentMyMovies);
   return (
     <div className="table-container">
       <table>
@@ -45,7 +46,7 @@ const MoviesTable = ({
                   />
                 </td>
                 <td
-                  onClick={() => navigate(`/movie?title=${myMovie.title}`)}
+                  onClick={() => navigate(`/movie?id=${myMovie.id}`)}
                   className="movie-title-td"
                 >
                   {myMovie.title}
@@ -56,7 +57,7 @@ const MoviesTable = ({
                 <td>
                   <DeleteOutlined
                     onClick={() => {
-                      removeMovie(myMovie._id);
+                      removeMovie(myMovie.id);
                     }}
                   />
                 </td>

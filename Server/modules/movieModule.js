@@ -1,6 +1,7 @@
 const mongoose = require("../modules/connection");
 
 const MovieSchema = new mongoose.Schema({
+  id: { type: String, required: true },
   title: { type: String, required: true },
   year: { type: String },
   type: { type: String },

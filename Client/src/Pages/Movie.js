@@ -11,6 +11,8 @@ import { useSelector } from "react-redux";
 const RenderMovie = () => {
   const params = useQueryParams();
   const movieTitle = params.get("title");
+
+  const movieID = params.get("id");
   const navigate = useNavigate();
   const [myMovies, setMyMovies] = useState([]);
   const [movie, setMovie] = useState("");
@@ -22,14 +24,14 @@ const RenderMovie = () => {
   let user = useSelector((state) => state.user.value);
 
   useEffect(() => {
-    if (!movieTitle) return null;
+    if (!movieID) return null;
 
     axios
-      .get(`http://localhost:3636/api/title/${movieTitle}`)
+      .get(`http://localhost:3636/api/id/${movieID}`)
       .then(({ data }) => {
         console.log(data);
         setMovie(data);
-        setMovieRates(data.Ratings);
+        // setMovieRates(data.Ratings);
       })
       .catch((err) => console.log(err))
       .finally(() => {
@@ -49,10 +51,11 @@ const RenderMovie = () => {
     }
   };
 
-  const AddToYourMovies = async (title, year, type, director) => {
+  const AddToYourMovies = async (id, title, year, type, director) => {
     if (!movieTitles.includes(title)) {
       await axios
         .post("http://localhost:3636/movie/", {
+          id: id,
           title: title,
           year: year,
           type: type,

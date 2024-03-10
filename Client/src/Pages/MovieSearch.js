@@ -21,7 +21,7 @@ const MovieSearchResult = () => {
       .get(`http://localhost:3636/api/${movieTitle}`)
       .then(({ data }) => {
         console.log(data);
-        setMovies(data.Search);
+        setMovies(data.results);
       })
       .catch((err) => console.log(err))
       .finally(() => {

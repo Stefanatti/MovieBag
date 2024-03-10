@@ -2,14 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "./HaveToSignupModal";
 import SearchIcon from "@mui/icons-material/Search";
-import {
-  Grid,
-  Typography,
-  Container,
-  Box,
-  useMediaQuery,
-  keyframes,
-} from "@mui/material";
+import { Grid, Typography, Container, Box, useMediaQuery } from "@mui/material";
 import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";

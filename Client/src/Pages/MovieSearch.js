@@ -28,7 +28,7 @@ const MovieSearchResult = () => {
         setLoading(false);
       });
   }, [movieTitle]);
-
+  console.log(user);
   return (
     <div>
       {loading ? (

@@ -16,10 +16,13 @@ import {
   IconButton,
 } from "@mui/material";
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { login, logout } from "../Features/user";
 
 const fields = [
   { label: "Username", name: "username" },
@@ -27,6 +30,8 @@ const fields = [
 ];
 
 const Login = () => {
+  const dispatch = useDispatch();
+
   const [formData, setFormData] = useState({
     username: "",
     password: "",
@@ -73,6 +78,26 @@ const Login = () => {
       console.error("Error submitting form:", error);
     }
   };
+
+  // const verifyUser = () => {
+  //   if (localStorage.getItem("token")) {
+  //     axios
+  //       .post("http://localhost:3636/user/verify", {
+  //         token: localStorage.getItem("token"),
+  //       })
+  //       .then(({ data }) => {
+  //         console.log(data);
+  //         localStorage.setItem("user", data.username);
+  //         localStorage.setItem("id", data._id);
+
+  //         dispatch(login({ _id: data._id, username: data.username }));
+  //         navigate("/");
+  //       })
+  //       .catch((err) => console.log(err));
+  //   } else {
+  //     dispatch(logout());
+  //   }
+  // };
 
   return (
     <Container component="main" maxWidth="lg">

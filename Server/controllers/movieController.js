@@ -18,7 +18,7 @@ const addMovie = (req, res) => {
 };
 
 const deleteMovie = async (req, res) => {
-  await Movie.deleteOne({ _id: req.params.id });
+  await Movie.deleteOne({ id: req.params.id });
   res.send({ message: "Movie deleted" });
 };
 

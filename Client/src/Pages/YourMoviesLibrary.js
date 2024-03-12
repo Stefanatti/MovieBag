@@ -5,9 +5,10 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
 import Pagination from "../Components/Pagination";
 import MoviesTable from "../Components/MoviesTable";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../Components/MovieLibraryFilter";
+import { getUserMovies } from "../Features/movies";
 
 const YourMoviesLibrary = () => {
   const navigate = useNavigate();
@@ -22,6 +23,7 @@ const YourMoviesLibrary = () => {
   const [watched, setWatched] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!user._id) {
@@ -38,7 +40,17 @@ const YourMoviesLibrary = () => {
       const response = await axios.get(
         "http://localhost:3636/movie/" + user._id
       );
+      console.log(response.data);
+      dispatch(
+        getUserMovies({
+          id: response.data.id,
+          title: response.data.title,
+          director: response.data.director,
+        })
+      );
+
       setMyMovies(response.data);
+
       setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
     } catch (err) {
       console.log(err);

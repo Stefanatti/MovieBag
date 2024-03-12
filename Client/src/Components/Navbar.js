@@ -5,6 +5,7 @@ import axios from "axios";
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "../Features/user";
+import { getUserMovies } from "../Features/movies";
 import { styled, alpha } from "@mui/material/styles";
 import ThemeSwitcher from "./ThemeSwitcher";
 //-------------------
@@ -109,6 +110,8 @@ const Navbar = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
+  const [myMovies, setMyMovies] = useState([]);
+
   // const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
@@ -147,6 +150,38 @@ const Navbar = (props) => {
 
   let user = useSelector((state) => state.user.value);
   console.log(user._id);
+
+  // useEffect(() => {
+  //   if (!user._id) {
+  //     return;
+  //   }
+  //   setLoading(false);
+  //   console.log(user._id);
+
+  //   getMovies();
+  // }, [user._id]);
+
+  // const getMovies = async () => {
+  //   try {
+  //     const response = await axios.get(
+  //       "http://localhost:3636/movie/" + user._id
+  //     );
+  //     console.log(response.data);
+  //     dispatch(
+  //       getUserMovies({
+  //         id: response.data.id,
+  //         title: response.data.title,
+  //         director: response.data.director,
+  //       })
+  //     );
+
+  //     setMyMovies(response.data);
+
+  //     setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
 
   const handleItemClick = (item) => {
     if (item === "Home") {

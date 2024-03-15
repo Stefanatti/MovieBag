@@ -5,17 +5,34 @@ const fetch = (...args) =>
 
 // const url = `${process.env.API_URL}/?apikey=${process.env.API_KEY}`;
 const url = "https://api.themoviedb.org/3/";
-const apikey = "&api_key=59f83dbb2b6e7e5393bfbfd3ca454401";
+const apikey = "59f83dbb2b6e7e5393bfbfd3ca454401";
 const options = {
   method: "GET",
 };
 
 const searchForMovies = (req, res) => {
   const query = req.params.search;
-  fetch(`${url}search/movie?query=${query}${apikey}`, options)
+  fetch(`${url}search/multi?query=${query}&api_key=${apikey}`, options)
     .then((res) => res.json())
     .then((json) => res.send(json))
     .catch((err) => console.error("error:" + err));
+};
+
+const searchForOneMovie = async (req, res) => {
+  const query = req.params.id;
+  try {
+    const response = await fetch(
+      `${url}movie/${query}?&append_to_response=credits&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    res.send(json);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movie data." });
+  }
 };
 
 // const searchForMovies = (req, res) => {
@@ -26,23 +43,30 @@ const searchForMovies = (req, res) => {
 //     .catch((err) => console.error("error:" + err));
 // };
 
-const searchForOneMovie = (req, res) => {
-  const query = req.params.id;
-  fetch(`${url}movie/${query}?&append_to_response=credits${apikey}`, options)
-    .then((res) => res.json())
-    .then((json) => res.send(json))
-    .catch((err) => console.error("error:" + err));
-};
-
 // const searchForOneMovie = (req, res) => {
-//   const query = req.params.title;
-//   fetch(`${url}&t=${query}`, options)
+//   const query = req.params.id;
+//   fetch(
+//     `${url}movie/${query}?&append_to_response=credits&api_key=${apikey}`,
+//     options
+//   )
 //     .then((res) => res.json())
 //     .then((json) => res.send(json))
 //     .catch((err) => console.error("error:" + err));
 // };
 
+const searchForOneTvShow = (req, res) => {
+  const query = req.params.id;
+  fetch(
+    `${url}tv/${query}?&append_to_response=credits&api_key=${apikey}`,
+    options
+  )
+    .then((res) => res.json())
+    .then((json) => res.send(json))
+    .catch((err) => console.error("error:" + err));
+};
+
 module.exports = {
   searchForMovies,
   searchForOneMovie,
+  searchForOneTvShow,
 };

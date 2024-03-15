@@ -7,7 +7,13 @@ const MoviesResultCards = ({ movies, navigate }) => {
             <div
               key={movie.id}
               className="movie-cards"
-              onClick={() => navigate(`/movie?id=${movie.id}`)}
+              onClick={() =>
+                navigate(
+                  movie.media_type === "movie"
+                    ? `/movie?id=${movie.id}`
+                    : `/tvShow?id=${movie.id}`
+                )
+              }
             >
               {movie.Poster !== "N/A" ? (
                 <div className="movie-poster">
@@ -21,7 +27,12 @@ const MoviesResultCards = ({ movies, navigate }) => {
               )}
               <div className="card-bodies">
                 <div className="movie-details-div">
-                  <h1 className="movie-title">Movie: {movie.title}</h1>
+                  <h1 className="movie-title">
+                    {movie.media_type === "movie"
+                      ? `Movie: ${movie.title}`
+                      : `TV Show: ${movie.name}`}
+                  </h1>
+
                   <h3>{movie.release_date}</h3>
                   {/* <h5>{movie.Type}</h5> */}
                 </div>

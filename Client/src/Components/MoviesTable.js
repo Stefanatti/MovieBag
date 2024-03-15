@@ -1,7 +1,4 @@
 import { DeleteOutlined, PushpinFilled } from "@ant-design/icons";
-import { useState } from "react";
-import Pagination from "../Components/Pagination";
-import { Container } from "@mui/material";
 
 const MoviesTable = ({
   currentMyMovies,
@@ -10,8 +7,8 @@ const MoviesTable = ({
   removeMovie,
   watched,
   setWatched,
+  path,
 }) => {
-  console.log(currentMyMovies);
   return (
     <div className="table-container">
       <table>
@@ -46,14 +43,14 @@ const MoviesTable = ({
                   />
                 </td>
                 <td
-                  onClick={() => navigate(`/movie?id=${myMovie.id}`)}
+                  onClick={() => navigate(path + `${myMovie.id}`)}
                   className="movie-title-td"
                 >
-                  {myMovie.title}
+                  {myMovie.title || myMovie.name}
                 </td>
                 <td>{myMovie.year}</td>
                 <td>{myMovie.type}</td>
-                <td>{myMovie.director}</td>
+                <td>{myMovie.director || myMovie.creator}</td>
                 <td>
                   <DeleteOutlined
                     onClick={() => {

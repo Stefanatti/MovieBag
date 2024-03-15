@@ -16,20 +16,19 @@ import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import MovieRatings from "../Components/MovieRatings";
 
-const MovieCard = ({
-  movie,
+const TvShowCard = ({
+  tvShow,
   movieRates,
   user,
   toggle,
-  AddToYourMovies,
+  AddToYourTvShows,
   setOpenHaveToSignupModal,
 }) => {
-  const [director, setDirector] = useState("");
+  const [creator, setCreator] = useState("");
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
-  const [movieYear, setMovieYear] = useState("");
+  const [tvShowYear, setTvShowYear] = useState("");
 
-  console.log(movie);
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -38,29 +37,23 @@ const MovieCard = ({
   }));
 
   useEffect(() => {
-    setDirector(movie.credits.crew.find((obj) => obj.job === "Director"));
-    setWriter(
-      movie.credits.crew
-        .filter((obj) => obj.job === "Writer" || obj.job === "Screenplay")
-        .map((writer) => writer.name)
-        .join(", ")
-    );
+    setCreator(tvShow.created_by.map((obj) => obj.name).join(", "));
     setActors(
-      movie.credits.cast
+      tvShow.credits.cast
         .map((obj) => obj.name)
         .slice(0, 4)
         .join(", ")
     );
-    setMovieYear(movie.release_date.slice(0, 4));
-  }, [movie]);
-  console.log(movie);
+    setTvShowYear(tvShow.first_air_date.slice(0, 4));
+  }, [tvShow]);
+
   return (
     <Grid container>
       <Grid item xs={12} sm={4}>
         <Paper
           sx={{
             height: { xs: 400, sm: 650, md: 650, lg: 650 },
-            backgroundImage: `url(${`https://image.tmdb.org/t/p/w500/${movie.poster_path}`})`,
+            backgroundImage: `url(${`https://image.tmdb.org/t/p/w500/${tvShow.poster_path}`})`,
             backgroundSize: "cover",
             backgroundPosition: "center",
             border: "2px solid grey",
@@ -90,7 +83,7 @@ const MovieCard = ({
                   textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
                 }}
               >
-                {movie.title}
+                {tvShow.name}
               </Typography>
               <Box
                 sx={{
@@ -101,12 +94,12 @@ const MovieCard = ({
                 }}
               >
                 <StyledTypography variant={"h4"} fontFamily={"lato"}>
-                  {movieYear}{" "}
+                  {tvShowYear}{" "}
                 </StyledTypography>
                 <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                  {`${movie.runtime} min`}{" "}
+                  {`Seasons: ${tvShow.number_of_seasons}`}{" "}
                 </StyledTypography>
-                <a
+                {/* <a
                   href={`https://www.imdb.com/title/${movie.imdb_id}/?ref_=fn_al_tt_1`}
                 >
                   <StyledTypography
@@ -117,12 +110,12 @@ const MovieCard = ({
                   >
                     IMDB
                   </StyledTypography>
-                </a>
+                </a> */}
               </Box>
               <Box sx={{ display: "flex", gap: "8px" }}>
-                {movie.genres.map((genre, index) => (
+                {tvShow.genres.map((genre, index) => (
                   <StyledTypography
-                    key={index}
+                    key={genre.id}
                     variant={"h6"}
                     fontFamily={"lato"}
                     sx={{
@@ -135,16 +128,16 @@ const MovieCard = ({
                 ))}
               </Box>
               <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                {` Director: ${director.name}`}{" "}
+                {` Creator: ${creator}`}{" "}
               </StyledTypography>
-              <StyledTypography variant={"h5"} fontFamily={"lato"}>
+              {/* <StyledTypography variant={"h5"} fontFamily={"lato"}>
                 {` Writer: ${writer}`}{" "}
-              </StyledTypography>
+              </StyledTypography> */}
               <StyledTypography variant={"h6"} fontFamily={"lato"}>
                 {` Actors: ${actors}`}{" "}
               </StyledTypography>
               <StyledTypography variant={"h7"} fontFamily={"lato"}>
-                {`${movie.overview}`}{" "}
+                {`${tvShow.overview}`}{" "}
               </StyledTypography>
 
               <Box sx={{ display: "flex" }}>
@@ -152,12 +145,12 @@ const MovieCard = ({
                   <>
                     <Avatar
                       onClick={() => {
-                        AddToYourMovies(
-                          movie.id,
-                          movie.title,
-                          movieYear,
-                          `movie`,
-                          director == "N/A" ? "-" : `${director.name}`
+                        AddToYourTvShows(
+                          tvShow.id,
+                          tvShow.name,
+                          tvShowYear,
+                          `Tv Show`,
+                          creator == "N/A" ? "-" : `${creator}`
                         );
                       }}
                       sx={{
@@ -203,91 +196,7 @@ const MovieCard = ({
         </Paper>
       </Grid>
     </Grid>
-    // <Paper
-
-    //   elevation={3}
-    //   sx={{
-    //     display: "flex",
-    //     flexWrap: "wrap",
-    //     backgroundColor: "white",
-    //     m: 4,
-    //     minWidth: "90%",
-    //     height: 550,
-    //   }}
-    // >
-    //   <Box sx={{ backgroundColor: "red", width: "30%" }}></Box>
-    //   <Box sx={{ backgroundColor: "green", width: "70%" }}></Box>
-    // </Paper>
   );
 };
 
-export default MovieCard;
-
-{
-  /* <div className="movie-card">
-<div className="movie-poster">
-  <img
-    className="movie-img"
-    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-    alt="movie-poster"
-  />
-</div>
-<div className="card-body">
-  <div className="movie-details">
-    <h1>{movie.title}</h1>{" "}
-    <h3>
-      {movie.runtime == "1 min" ? "" : `${movie.runtime} min`}
-      {"   "} {movieYear}{" "}
-    </h3>
-    <h3>{movie.genres[0].name}</h3>
-    <h3>{movie.director == "N/A" ? "" : `Director: ${director.name}`}</h3>
-    <h3>Writer: {writer.name}</h3>
-    <h3>Actors: {actors}</h3>
-    <h4>Plot: {movie.overview}</h4>{" "}
-  </div>
-  <div className="reviews">
-    <div className="imdb rating">
-      <a href={`https://www.imdb.com/title/${movie.imdbID}/`}>
-        IMDB: {movie.imdbRating}
-      </a>
-    </div>
-    <div>{movieRates && <MovieRatings movieRates={movieRates} />}</div>
-  </div>
-  {user ? (
-    <div className="button-div">
-      <button
-        style={
-          toggle
-            ? { backgroundColor: " var(--movie-card-button-added)" }
-            : { backgroundColor: "var(--movie-card-button-add)" }
-        }
-        className="addMovie-button"
-        onClick={() => {
-          AddToYourMovies(
-            movie.id,
-            movie.title,
-            movieYear,
-            `movie`,
-            director == "N/A" ? "-" : `${director.name}`
-          );
-        }}
-      >
-        {toggle ? "In your movies!" : "Add to your movies"}
-      </button>
-    </div>
-  ) : (
-    <div className="button-div">
-      <button
-        style={{ backgroundColor: "var(--movie-card-button-add)" }}
-        className="addMovie-button"
-        onClick={() => {
-          setOpenHaveToSignupModal(true);
-        }}
-      >
-        Add to your movies
-      </button>
-    </div>
-  )}
-</div>
-</div> */
-}
+export default TvShowCard;

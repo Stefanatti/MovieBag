@@ -10,52 +10,20 @@ import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../Components/MovieLibraryFilter";
 import { getUserMovies } from "../Features/movies";
 
-const YourMoviesLibrary = () => {
+const YourTvShowsList = () => {
   const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
 
-  const [myMovies, setMyMovies] = useState([]);
+  const [myTvShows, setMyTvShows] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [error, setError] = useState("");
-  // const [user, setUser] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [moviesPerPage] = useState(10);
-  const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
+  const [tvShowsPerPage] = useState(10);
+  const [myUnwatchedTvShows, setMyUnwatchedTvShows] = useState([]);
   const [watched, setWatched] = useState(false);
-  const lastMovieIndex = currentPage * moviesPerPage;
-  const firstMovieIndex = lastMovieIndex - moviesPerPage;
+  const lastTvShowIndex = currentPage * tvShowsPerPage;
+  const firstTvShowIndex = lastTvShowIndex - tvShowsPerPage;
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const getMovies = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(
-          `http://localhost:3636/movie/${user._id}`
-        );
-        setMyMovies(response.data);
-        dispatch(
-          getUserMovies({
-            id: response.data.map((data) => data.id),
-            title: response.data.map((data) => data.title),
-            director: response.map((data) => data.director),
-          })
-        );
-        // setMovieIds(response.data.map((mov) => mov.id));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user._id) {
-      getMovies();
-    }
-  }, [user._id]);
-
   useEffect(() => {
     if (!user._id) {
       return;
@@ -63,71 +31,76 @@ const YourMoviesLibrary = () => {
     setLoading(false);
     console.log(user._id);
 
-    getMovies();
+    getTvShows();
   }, [user._id]);
 
-  const getMovies = async () => {
+  const getTvShows = async () => {
     try {
       const response = await axios.get(
-        "http://localhost:3636/movie/" + user._id
+        "http://localhost:3636/tvShow/" + user._id
       );
-      dispatch(
-        getUserMovies({
-          id: response.data.map((item) => item.id),
-          title: response.data.map((item) => item.title),
-          director: response.data.map((item) => item.director),
-        })
-      );
+      console.log(response.data);
+      //   dispatch(
+      //     getUserMovies({
+      //       id: response.data.id,
+      //       title: response.data.title,
+      //       director: response.data.director,
+      //     })
+      //   );
 
-      setMyMovies(response.data);
+      setMyTvShows(response.data);
 
-      setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
+      //   setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
     } catch (err) {
       console.log(err);
     }
   };
 
-  const removeMovie = async (id) => {
-    const data = axios
-      .delete("http://localhost:3636/movie/" + id)
+  const removeTvShow = async (id) => {
+    const data = await axios
+      .delete("http://localhost:3636/tvShow/" + id)
       .then((res) => {
-        getMovies();
+        getTvShows();
         return res;
       });
-    getMovies();
-    setMyMovies((myMovies) =>
-      myMovies.filter((myMovie) => myMovie.id !== data.id)
+    getTvShows();
+    setMyTvShows((myTvShows) =>
+      myTvShows.filter((myTvShow) => myTvShow.id !== data.id)
     );
   };
 
-  const watchedMovie = async (id) => {
+  const watchedTvShow = async (id) => {
     const data = await fetch("http://localhost:3636/movie/watched/" + id, {
       method: "PUT",
     })
       .then((res) => res.json())
       .catch((err) => console.error("Error:", err));
-    setMyMovies((myMovies) =>
-      myMovies.map((myMovie) => {
-        if (myMovie.id === data.id) {
-          myMovie.watched = data.watched;
+    setMyTvShows((myTvShows) =>
+      myTvShows.map((myTvShow) => {
+        if (myTvShow.id === data.id) {
+          myTvShow.watched = data.watched;
         }
-        return myMovie;
+        console.log(myTvShows);
+        return myTvShow;
       })
     );
   };
 
   useEffect(() => {
     if (!search) {
-      setMyMovies(myMovies);
+      setMyTvShows(myTvShows);
     }
   }, [search]);
 
-  const filterMovies = myMovies.filter((myMovie) => {
+  const filterTvShows = myTvShows.filter((myTvShow) => {
     return search.toLowerCase() === ""
-      ? myMovie
-      : myMovie.title.toLowerCase().includes(search);
+      ? myTvShow
+      : myTvShow.title.toLowerCase().includes(search);
   });
-  const currentMyMovies = filterMovies.slice(firstMovieIndex, lastMovieIndex);
+  const currentMyTvShows = filterTvShows.slice(
+    firstTvShowIndex,
+    lastTvShowIndex
+  );
 
   // const filterDirectors = () => {
   //   setMyMovies(
@@ -142,7 +115,7 @@ const YourMoviesLibrary = () => {
   return (
     <Container>
       <Box sx={{ zIndex: "auto" }}>
-        <h1 className="library-header">Your Movies:</h1>
+        <h1 className="library-header">Your Tv Shows:</h1>
         {loading ? (
           <ClipLoader
             color={"  var(--basic-color)"}
@@ -168,13 +141,13 @@ const YourMoviesLibrary = () => {
             <TableContainer>
               <MoviesTable
                 search={search}
-                myMovies={myMovies}
-                filterMovies={filterMovies}
-                path={`/movie?id=`}
-                currentMyMovies={currentMyMovies}
-                watchedMovie={watchedMovie}
+                myMovies={myTvShows}
+                filterMovies={filterTvShows}
+                path={`/tvShow?id=`}
+                currentMyMovies={currentMyTvShows}
+                watchedMovie={watchedTvShow}
                 navigate={navigate}
-                removeMovie={removeMovie}
+                removeMovie={removeTvShow}
                 watched={watched}
                 setWatched={setWatched}
               />
@@ -182,8 +155,8 @@ const YourMoviesLibrary = () => {
             <Pagination
               className="down-pages"
               style={{ marginBottom: "60px" }}
-              totalMovies={filterMovies.length}
-              moviesPerPage={moviesPerPage}
+              totalMovies={filterTvShows.length}
+              moviesPerPage={tvShowsPerPage}
               setCurrentPage={setCurrentPage}
               currentPage={currentPage}
             />
@@ -194,4 +167,4 @@ const YourMoviesLibrary = () => {
   );
 };
 
-export default YourMoviesLibrary;
+export default YourTvShowsList;

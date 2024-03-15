@@ -18,10 +18,11 @@ const Main = () => {
 
   const getTitle = (e) => {
     e.preventDefault();
-    if (title !== "") {
-      navigate(`/MovieSearch?title=${title}`);
-      setTitle("");
-    }
+    console.log(title);
+    // if (title !== "") {
+    //   navigate(`/MovieSearch?title=${title}`);
+    //   setTitle("");
+    // }
   };
 
   return (
@@ -82,23 +83,7 @@ const Main = () => {
           )}
         </Grid>
         <div className="middle-div">
-          <div className={"search-container"}>
-            <form className="main-page-form" onSubmit={getTitle}>
-              <input
-                type="text"
-                value={title}
-                placeholder="Search for movies or series"
-                aria-label="Search"
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              />
-              <button className="btnon" type="submit">
-                <SearchIcon fontSize="large" />
-              </button>
-            </form>
-          </div>
-
+          {/* <div className={"search-container"}> */}
           <Box>
             <Typography
               variant="h1"
@@ -123,6 +108,32 @@ const Main = () => {
               }
             >
               Your <br /> Movies
+            </Typography>
+          </Box>
+          <Box>
+            <Typography
+              variant="h1"
+              sx={{
+                color: "var(--basic-color)",
+                fontFamily: "Limelight",
+                fontSize: "72px",
+                cursor: "pointer",
+                overflow: "hidden",
+                [theme.breakpoints.down("md")]: {
+                  fontSize: "42px",
+                  whiteSpace: "nowrap",
+                  textOverflow: "ellipsis",
+                },
+              }}
+              onClick={
+                user._id
+                  ? () => navigate(`/yourTvShows`)
+                  : () => {
+                      setOpenHaveToSignupModal(true);
+                    }
+              }
+            >
+              Your <br /> TV Shows
             </Typography>
           </Box>
         </div>

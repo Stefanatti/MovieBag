@@ -23,6 +23,7 @@ import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login, logout } from "../Features/user";
+import { wait } from "@testing-library/user-event/dist/utils";
 
 const fields = [
   { label: "Username", name: "username" },
@@ -79,9 +80,9 @@ const Login = () => {
     }
   };
 
-  // const verifyUser = () => {
+  // const verifyUser = async () => {
   //   if (localStorage.getItem("token")) {
-  //     axios
+  //  await  axios
   //       .post("http://localhost:3636/user/verify", {
   //         token: localStorage.getItem("token"),
   //       })

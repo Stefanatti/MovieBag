@@ -13,6 +13,8 @@ import * as React from "react";
 import { lazy, Suspense } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@mui/icons-material/Menu";
+import SearchIcon from "@mui/icons-material/Search";
+
 import {
   AppBar,
   CssBaseline,
@@ -30,6 +32,7 @@ import {
   Hidden,
   Box,
   TableContainer,
+  InputBase,
 } from "@mui/material";
 const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 const LogoutModal = lazy(() => import("./LogoutModal"));
@@ -61,58 +64,62 @@ const StyledNavbarButton = styled(Button)`
   }
 `;
 
-// const Search = styled("div")(({ theme }) => ({
-//   position: "relative",
-//   borderRadius: theme.shape.borderRadius,
-//   backgroundColor: alpha(theme.palette.common.white, 0.15),
-//   "&:hover": {
-//     backgroundColor: alpha(theme.palette.common.white, 0.25),
-//   },
-//   marginLeft: 0,
-//   width: "100%",
-//   [theme.breakpoints.up("sm")]: {
-//     marginLeft: theme.spacing(1),
-//     width: "auto",
-//   },
-// }));
+const Search = styled("form")(({ theme }) => ({
+  position: "relative",
+  borderRadius: "30px",
+  backgroundColor: alpha(theme.palette.common.white, 0.15),
+  "&:hover": {
+    backgroundColor: alpha(theme.palette.common.white, 0.25),
+  },
+  width: "100%",
+  [theme.breakpoints.up("sm")]: {
+    marginLeft: theme.spacing(3),
+    width: "auto",
+  },
+}));
 
-// const SearchIconWrapper = styled("div")(({ theme }) => ({
-//   padding: theme.spacing(0, 2),
-//   height: "100%",
-//   position: "absolute",
-//   pointerEvents: "none",
-//   display: "flex",
-//   alignItems: "center",
-//   justifyContent: "center",
-//   color: "var(--basic-color)",
-// }));
+const SearchIconWrapper = styled("div")(({ theme }) => ({
+  padding: theme.spacing(0, 2),
+  height: "100%",
+  position: "absolute",
+  pointerEvents: "none",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  color: "var(--basic-color)",
+}));
 
-// const StyledInputBase = styled(InputBase)(({ theme }) => ({
-//   color: "var(--basic-color)",
-
-//   "& .MuiInputBase-input": {
-//     padding: theme.spacing(1, 1, 1, 0),
-//     // vertical padding + font size from searchIcon
-//     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
-//     transition: theme.transitions.create("width"),
-//     width: "100%",
-//     [theme.breakpoints.up("sm")]: {
-//       width: "12ch",
-//       "&:focus": {
-//         width: "20ch",
-//       },
-//     },
-//   },
-// }));
+const StyledInputBase = styled(InputBase)(({ theme }) => ({
+  color: "var(--basic-color)",
+  border: "1px solid var(--basic-color)",
+  borderRadius: "30px",
+  height: "43px",
+  "& .MuiInputBase-input": {
+    padding: theme.spacing(1, 1, 1, 0),
+    // vertical padding + font size from searchIcon
+    paddingLeft: `calc(1em + ${theme.spacing(4)})`,
+    transition: theme.transitions.create("width"),
+    width: "100%",
+    [theme.breakpoints.up("sm")]: {
+      width: "30ch",
+      "&:focus": {
+        width: "40ch",
+      },
+    },
+  },
+}));
 
 const Navbar = (props) => {
   const { window } = props;
+  let user = useSelector((state) => state.user.value);
+  console.log(user);
 
   const navigate = useNavigate();
   const location = useLocation();
   const [myMovies, setMyMovies] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
 
-  // const [title, setTitle] = useState("");
+  const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const dispatch = useDispatch();
@@ -124,7 +131,6 @@ const Navbar = (props) => {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-
   useEffect(() => {
     if (localStorage.getItem("token")) {
       axios
@@ -132,6 +138,7 @@ const Navbar = (props) => {
           token: localStorage.getItem("token"),
         })
         .then(({ data }) => {
+          console.log(data);
           dispatch(login({ _id: data._id, username: data.username }));
         })
         .catch((err) => console.log(err));
@@ -140,48 +147,13 @@ const Navbar = (props) => {
     }
   }, [localStorage.getItem("token")]);
 
-  // const getTitle = (e) => {
-  //   e.preventDefault();
-  //   if (title !== "") {
-  //     navigate(`/MovieSearch?title=${title}`);
-  //     setTitle("");
-  //   }
-  // };
-
-  let user = useSelector((state) => state.user.value);
-  console.log(user._id);
-
-  // useEffect(() => {
-  //   if (!user._id) {
-  //     return;
-  //   }
-  //   setLoading(false);
-  //   console.log(user._id);
-
-  //   getMovies();
-  // }, [user._id]);
-
-  // const getMovies = async () => {
-  //   try {
-  //     const response = await axios.get(
-  //       "http://localhost:3636/movie/" + user._id
-  //     );
-  //     console.log(response.data);
-  //     dispatch(
-  //       getUserMovies({
-  //         id: response.data.id,
-  //         title: response.data.title,
-  //         director: response.data.director,
-  //       })
-  //     );
-
-  //     setMyMovies(response.data);
-
-  //     setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
-  //   } catch (err) {
-  //     console.log(err);
-  //   }
-  // };
+  const getTitle = (e) => {
+    e.preventDefault();
+    if (title !== "") {
+      navigate(`/MovieSearch?title=${title}`);
+      setTitle("");
+    }
+  };
 
   const handleItemClick = (item) => {
     if (item === "Home") {
@@ -231,46 +203,96 @@ const Navbar = (props) => {
     <Box sx={{ display: "flex", overflowX: "hidden" }}>
       <CssBaseline />
       <AppBar color="transparent" component="nav" position="static">
-        <Toolbar sx={{ display: "flex", justifyContent: "center" }}>
-          <IconButton
-            color="secondary"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{
-              mr: 2,
-              marginRight: "73%",
-              display: {
-                sm: "none",
-              },
-              color: "var(--basic-color)",
-            }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontFamily: "Limelight",
-              flexGrow: 1,
-              display: { xs: "none", sm: "inherit" },
-              color: "var(--basic-color)",
-            }}
-          >
-            MovieBag
-          </Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <StyledNavbarButton
-                key={item}
-                onClick={() => handleItemClick(item)}
-              >
-                {item}
-              </StyledNavbarButton>
-            ))}
+        <Toolbar sx={{ display: "flex" }}>
+          <Box sx={{ display: "flex", flexGrow: 1 }}>
+            <IconButton
+              color="secondary"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{
+                mr: 2,
+                // marginRight: "73%",
+                display: {
+                  sm: "none",
+                },
+                color: "var(--basic-color)",
+              }}
+            >
+              <MenuIcon />
+            </IconButton>
+            {/* <Box sx={{ display: "flex" }}> */}
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{
+                fontFamily: "Limelight",
+                //  flexGrow: 1,
+                display: { xs: "none", sm: "inherit" },
+                color: "var(--basic-color)",
+              }}
+            >
+              MovieBag
+            </Typography>
+
+            <Search
+              sx={{ display: "flex" }}
+              component="form"
+              onSubmit={getTitle}
+            >
+              <SearchIconWrapper>
+                <SearchIcon onClick={getTitle} />
+              </SearchIconWrapper>
+              <StyledInputBase
+                type="text"
+                value={title}
+                onChange={(e) => {
+                  setTitle(e.target.value);
+                }}
+                placeholder="Search for a movie…"
+                inputProps={{ "aria-label": "search" }}
+              />
+            </Search>
           </Box>
-          {/* {location.pathname !== "/" &&
+
+          {/* <Box
+            sx={{
+              flexGrow: 1,
+              display: "flex",
+              alignItems: "center",
+              border: "1px solid white",
+              marginRight: "50px",
+            }}
+          >
+            <Hidden smDown>
+              <InputBase
+                placeholder="Search..."
+                value={searchValue}
+                onChange={(e) => setSearchValue(e.target.value)}
+                sx={{
+                  ml: 2,
+                  flex: 1,
+                  color: "white",
+                }}
+              />
+            </Hidden>
+          </Box> */}
+          <Box sx={{ display: "flex" }}>
+            <Box
+              sx={{
+                display: { xs: "none", sm: "none", md: "block", flexGrow: "1" },
+              }}
+            >
+              {navItems.map((item) => (
+                <StyledNavbarButton
+                  key={item}
+                  onClick={() => handleItemClick(item)}
+                >
+                  {item}
+                </StyledNavbarButton>
+              ))}
+            </Box>
+            {/* {location.pathname !== "/" &&
           <Box >
           <form onSubmit={getTitle}>
           <Search>
@@ -291,29 +313,30 @@ const Navbar = (props) => {
           </Box>
           } */}
 
-          <Box
-            sx={{
-              marginLeft: "15px",
-              display: "flex",
-              alignItems: "center",
-              gap: "15px",
-            }}
-          >
-            <Hidden smDown>
-              <ThemeSwitcher setTheme={setTheme} theme={theme} />
-            </Hidden>
-            <Avatar
-              alt={user.username}
-              src="/broken-image.jpg"
-              sx={{ bgcolor: "var(--basic-color)", cursor: "pointer" }}
-              onClick={
-                user._id
-                  ? () => setOpenLogoutModal(true)
-                  : () => {
-                      navigate(`/login`);
-                    }
-              }
-            />
+            <Box
+              sx={{
+                marginLeft: "15px",
+                display: "flex",
+                alignItems: "center",
+                gap: "15px",
+              }}
+            >
+              <Hidden smDown>
+                <ThemeSwitcher setTheme={setTheme} theme={theme} />
+              </Hidden>
+              <Avatar
+                alt={user.username}
+                src="/broken-image.jpg"
+                sx={{ bgcolor: "var(--basic-color)", cursor: "pointer" }}
+                onClick={
+                  user._id
+                    ? () => setOpenLogoutModal(true)
+                    : () => {
+                        navigate(`/login`);
+                      }
+                }
+              />
+            </Box>
           </Box>
         </Toolbar>
       </AppBar>

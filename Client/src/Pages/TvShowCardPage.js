@@ -1,97 +1,90 @@
-// import "../Styles/Movie.scss";
 import useQueryParams from "../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "../Components/HaveToSignupModal";
-import MovieCard from "../Components/MovieCard";
+import TvShowCard from "../Components/TvShowCard";
 import { useSelector } from "react-redux";
 import { Container } from "@mui/material";
-const RenderMovie = () => {
+
+const RenderTvShowCard = () => {
   const params = useQueryParams();
-  const movieID = params.get("id");
+  const tvShowID = params.get("id");
+
   const navigate = useNavigate();
-  const [myMovies, setMyMovies] = useState([]);
+  const [myTvShows, setMyTvShows] = useState([]);
   const [movie, setMovie] = useState("");
+  const [tvShow, setTvShow] = useState("");
+
   const [loading, setLoading] = useState(true);
   const [toggle, setToggle] = useState(false);
   const [movieRates, setMovieRates] = useState([]);
-  const [movieIds, setMovieIds] = useState([]);
-  const [error, setError] = useState("");
+  const [tvShowIds, setTvShowIds] = useState([]);
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
-  let movies = useSelector((state) => state.movies.value);
-  console.log(movies);
-  // const movieIds = movies.map((movie) => movie.id);
-  // console.log(movieIds);
-
-  // useEffect(() => {
-  //   const getMovies = async () => {
-  //     setLoading(true);
-  //     setError(null);
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:3636/movie/${user._id}`
-  //       );
-  //       setMyMovies(response.data);
-  //       setMovieIds(response.data.map((mov) => mov.id));
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (user._id) {
-  //     getMovies();
-  //   }
-  // }, [user._id]);
-
+  // let movies = useSelector((state) => state.movies.value);
+  console.log(tvShowID);
   useEffect(() => {
-    const getMovieDetails = async () => {
-      try {
-        const response = await axios.get(
-          `http://localhost:3636/api/id/${movieID}`
-        );
-        setMovie(response.data);
-      } catch (err) {
-        console.log(err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (movieID) {
-      getMovieDetails();
+    if (!user._id) {
+      return;
     }
-  }, [movieID]);
+    getTvShows();
+  }, [user._id]);
+
+  const getTvShows = () => {
+    axios
+      .get("http://localhost:3636/tvShow/" + user._id)
+      .then(({ data }) => {
+        console.log(data);
+        setMyTvShows(data);
+        setTvShowIds(data.map((mov) => mov.id));
+      })
+      .catch((err) => console.log(err));
+  };
 
   useEffect(() => {
-    if (!movieID) return;
+    if (!tvShowID) return;
+    axios
+      .get(`http://localhost:3636/api/tv/id/${tvShowID}`)
+      .then(({ data }) => {
+        console.log(data);
+
+        setTvShow(data);
+        // setMovieRates(data.Ratings);
+      })
+      .catch((err) => console.log(err))
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [tvShowID]);
+
+  useEffect(() => {
+    if (!tvShowID) return;
 
     toggleTheButton();
-  }, [movieID]);
+  }, [tvShowID]);
 
   const toggleTheButton = () => {
-    if (movieIds.includes(movieID)) {
+    if (tvShowIds.includes(tvShowID)) {
       setToggle(true);
     }
   };
 
-  const AddToYourMovies = async (id, title, year, type, director) => {
-    if (!movieIds.includes(id)) {
+  const AddToYourTvShows = async (id, name, year, type, creator) => {
+    if (!tvShowIds.includes(id)) {
       await axios
-        .post("http://localhost:3636/movie/", {
+        .post("http://localhost:3636/tvShow/", {
           id: id,
-          title: title,
+          name: name,
           year: year,
           type: type,
-          director: director,
+          creator: creator,
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      // setMovieIds([...movieIds, id]);
+      setTvShowIds([...tvShowIds, id]);
       setToggle(true);
     } else {
       alert("This movie already has been added.");
@@ -112,12 +105,12 @@ const RenderMovie = () => {
             data-testid="loader"
           />
         ) : (
-          <MovieCard
-            movie={movie}
-            movieRates={movieRates}
+          <TvShowCard
+            tvShow={tvShow}
+            //   movieRates={movieRates}
             user={user}
             toggle={toggle}
-            AddToYourMovies={AddToYourMovies}
+            AddToYourTvShows={AddToYourTvShows}
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />
         )}
@@ -132,4 +125,4 @@ const RenderMovie = () => {
   );
 };
 
-export default RenderMovie;
+export default RenderTvShowCard;

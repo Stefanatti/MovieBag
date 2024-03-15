@@ -17,8 +17,6 @@ const YourMoviesLibrary = () => {
   const [myMovies, setMyMovies] = useState([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [error, setError] = useState("");
-  // const [user, setUser] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
   const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
@@ -26,35 +24,6 @@ const YourMoviesLibrary = () => {
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    const getMovies = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(
-          `http://localhost:3636/movie/${user._id}`
-        );
-        setMyMovies(response.data);
-        dispatch(
-          getUserMovies({
-            id: response.data.map((data) => data.id),
-            title: response.data.map((data) => data.title),
-            director: response.map((data) => data.director),
-          })
-        );
-        // setMovieIds(response.data.map((mov) => mov.id));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user._id) {
-      getMovies();
-    }
-  }, [user._id]);
 
   useEffect(() => {
     if (!user._id) {
@@ -71,11 +40,12 @@ const YourMoviesLibrary = () => {
       const response = await axios.get(
         "http://localhost:3636/movie/" + user._id
       );
+      console.log(response.data);
       dispatch(
         getUserMovies({
-          id: response.data.map((item) => item.id),
-          title: response.data.map((item) => item.title),
-          director: response.data.map((item) => item.director),
+          id: response.data.id,
+          title: response.data.title,
+          director: response.data.director,
         })
       );
 
@@ -111,6 +81,7 @@ const YourMoviesLibrary = () => {
         if (myMovie.id === data.id) {
           myMovie.watched = data.watched;
         }
+        console.log(myMovies);
         return myMovie;
       })
     );
@@ -170,7 +141,6 @@ const YourMoviesLibrary = () => {
                 search={search}
                 myMovies={myMovies}
                 filterMovies={filterMovies}
-                path={`/movie?id=`}
                 currentMyMovies={currentMyMovies}
                 watchedMovie={watchedMovie}
                 navigate={navigate}

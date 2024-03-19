@@ -1,5 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
+import Popover from "@mui/material/Popover";
 
 import {
   Grid,
@@ -28,6 +29,7 @@ const TvShowCard = ({
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
   const [tvShowYear, setTvShowYear] = useState("");
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
@@ -46,6 +48,16 @@ const TvShowCard = ({
     );
     setTvShowYear(tvShow.first_air_date.slice(0, 4));
   }, [tvShow]);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Grid container>
@@ -160,6 +172,10 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
+                      aria-owns={open ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      onMouseEnter={handlePopoverOpen}
+                      onMouseLeave={handlePopoverClose}
                     >
                       {toggle ? (
                         <PlaylistAddCheckIcon sx={{ color: "white" }} />
@@ -183,6 +199,10 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
+                      aria-owns={open ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      onMouseEnter={handlePopoverOpen}
+                      onMouseLeave={handlePopoverClose}
                     >
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>
@@ -194,6 +214,28 @@ const TvShowCard = ({
             </Stack>
           </Container>
         </Paper>
+        <Popover
+          id="mouse-over-popover"
+          sx={{
+            pointerEvents: "none",
+          }}
+          open={open}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
+        >
+          <Typography sx={{ p: 1 }}>
+            {toggle ? "In your List" : "Add to list"}
+          </Typography>
+        </Popover>
       </Grid>
     </Grid>
   );

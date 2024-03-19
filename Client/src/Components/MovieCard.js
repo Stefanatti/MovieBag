@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-
+import Popover from "@mui/material/Popover";
+// import MouseOverPopover from "../Components/PopOver";
 import {
   Grid,
   Typography,
@@ -28,8 +29,7 @@ const MovieCard = ({
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
   const [movieYear, setMovieYear] = useState("");
-
-  // console.log(movie);
+  const [anchorEl, setAnchorEl] = useState(null);
 
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
@@ -54,6 +54,16 @@ const MovieCard = ({
     );
     setMovieYear(movie.release_date.slice(0, 4));
   }, [movie]);
+
+  const handlePopoverOpen = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverClose = () => {
+    setAnchorEl(null);
+  };
+
+  const open = Boolean(anchorEl);
 
   return (
     <Grid container>
@@ -168,6 +178,10 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
+                      aria-owns={open ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      onMouseEnter={handlePopoverOpen}
+                      onMouseLeave={handlePopoverClose}
                     >
                       {toggle ? (
                         <PlaylistAddCheckIcon sx={{ color: "white" }} />
@@ -175,8 +189,6 @@ const MovieCard = ({
                         <ListIcon sx={{ color: "white" }} />
                       )}
                     </Avatar>
-
-                    <Typography variant="body1" component="span"></Typography>
                   </>
                 ) : (
                   <>
@@ -191,104 +203,45 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
+                      aria-owns={open ? "mouse-over-popover" : undefined}
+                      aria-haspopup="true"
+                      onMouseEnter={handlePopoverOpen}
+                      onMouseLeave={handlePopoverClose}
                     >
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>
-
-                    <Typography variant="body1" component="span"></Typography>
                   </>
                 )}
               </Box>
             </Stack>
           </Container>
         </Paper>
+
+        <Popover
+          id="mouse-over-popover"
+          sx={{
+            pointerEvents: "none",
+          }}
+          open={open}
+          anchorEl={anchorEl}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left",
+          }}
+          transformOrigin={{
+            vertical: "top",
+            horizontal: "left",
+          }}
+          onClose={handlePopoverClose}
+          disableRestoreFocus
+        >
+          <Typography sx={{ p: 1 }}>
+            {toggle ? "In your List" : "Add to list"}
+          </Typography>
+        </Popover>
       </Grid>
     </Grid>
-    // <Paper
-
-    //   elevation={3}
-    //   sx={{
-    //     display: "flex",
-    //     flexWrap: "wrap",
-    //     backgroundColor: "white",
-    //     m: 4,
-    //     minWidth: "90%",
-    //     height: 550,
-    //   }}
-    // >
-    //   <Box sx={{ backgroundColor: "red", width: "30%" }}></Box>
-    //   <Box sx={{ backgroundColor: "green", width: "70%" }}></Box>
-    // </Paper>
   );
 };
 
 export default MovieCard;
-
-{
-  /* <div className="movie-card">
-<div className="movie-poster">
-  <img
-    className="movie-img"
-    src={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
-    alt="movie-poster"
-  />
-</div>
-<div className="card-body">
-  <div className="movie-details">
-    <h1>{movie.title}</h1>{" "}
-    <h3>
-      {movie.runtime == "1 min" ? "" : `${movie.runtime} min`}
-      {"   "} {movieYear}{" "}
-    </h3>
-    <h3>{movie.genres[0].name}</h3>
-    <h3>{movie.director == "N/A" ? "" : `Director: ${director.name}`}</h3>
-    <h3>Writer: {writer.name}</h3>
-    <h3>Actors: {actors}</h3>
-    <h4>Plot: {movie.overview}</h4>{" "}
-  </div>
-  <div className="reviews">
-    <div className="imdb rating">
-      <a href={`https://www.imdb.com/title/${movie.imdbID}/`}>
-        IMDB: {movie.imdbRating}
-      </a>
-    </div>
-    <div>{movieRates && <MovieRatings movieRates={movieRates} />}</div>
-  </div>
-  {user ? (
-    <div className="button-div">
-      <button
-        style={
-          toggle
-            ? { backgroundColor: " var(--movie-card-button-added)" }
-            : { backgroundColor: "var(--movie-card-button-add)" }
-        }
-        className="addMovie-button"
-        onClick={() => {
-          AddToYourMovies(
-            movie.id,
-            movie.title,
-            movieYear,
-            `movie`,
-            director == "N/A" ? "-" : `${director.name}`
-          );
-        }}
-      >
-        {toggle ? "In your movies!" : "Add to your movies"}
-      </button>
-    </div>
-  ) : (
-    <div className="button-div">
-      <button
-        style={{ backgroundColor: "var(--movie-card-button-add)" }}
-        className="addMovie-button"
-        onClick={() => {
-          setOpenHaveToSignupModal(true);
-        }}
-      >
-        Add to your movies
-      </button>
-    </div>
-  )}
-</div>
-</div> */
-}

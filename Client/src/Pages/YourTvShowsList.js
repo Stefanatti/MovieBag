@@ -29,7 +29,6 @@ const YourTvShowsList = () => {
       return;
     }
     setLoading(false);
-    console.log(user._id);
 
     getTvShows();
   }, [user._id]);
@@ -39,14 +38,13 @@ const YourTvShowsList = () => {
       const response = await axios.get(
         "http://localhost:3636/tvShow/" + user._id
       );
-      console.log(response.data);
-      //   dispatch(
-      //     getUserMovies({
-      //       id: response.data.id,
-      //       title: response.data.title,
-      //       director: response.data.director,
-      //     })
-      //   );
+      dispatch(
+        getUserMovies({
+          id: response.data.id,
+          title: response.data.title,
+          director: response.data.director,
+        })
+      );
 
       setMyTvShows(response.data);
 
@@ -69,22 +67,22 @@ const YourTvShowsList = () => {
     );
   };
 
-  const watchedTvShow = async (id) => {
-    const data = await fetch("http://localhost:3636/movie/watched/" + id, {
-      method: "PUT",
-    })
-      .then((res) => res.json())
-      .catch((err) => console.error("Error:", err));
-    setMyTvShows((myTvShows) =>
-      myTvShows.map((myTvShow) => {
-        if (myTvShow.id === data.id) {
-          myTvShow.watched = data.watched;
-        }
-        console.log(myTvShows);
-        return myTvShow;
-      })
-    );
-  };
+  // const watchedTvShow = async (id) => {
+  //   const data = await fetch("http://localhost:3636/movie/watched/" + id, {
+  //     method: "PUT",
+  //   })
+  //     .then((res) => res.json())
+  //     .catch((err) => console.error("Error:", err));
+  //   setMyTvShows((myTvShows) =>
+  //     myTvShows.map((myTvShow) => {
+  //       if (myTvShow.id === data.id) {
+  //         myTvShow.watched = data.watched;
+  //       }
+  //       console.log(myTvShows);
+  //       return myTvShow;
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     if (!search) {
@@ -95,7 +93,7 @@ const YourTvShowsList = () => {
   const filterTvShows = myTvShows.filter((myTvShow) => {
     return search.toLowerCase() === ""
       ? myTvShow
-      : myTvShow.title.toLowerCase().includes(search);
+      : myTvShow.name.toLowerCase().includes(search);
   });
   const currentMyTvShows = filterTvShows.slice(
     firstTvShowIndex,
@@ -128,7 +126,11 @@ const YourTvShowsList = () => {
         ) : (
           <div className="movies-table-div">
             <div className="input-div">
-              <MovieLibraryFilter setSearch={setSearch} search={search} />
+              <MovieLibraryFilter
+                placeholder={"Search for a Tv Show"}
+                setSearch={setSearch}
+                search={search}
+              />
 
               {/* <MovieLibraryFilter 
             filterFunction={filterDirectors}
@@ -145,7 +147,7 @@ const YourTvShowsList = () => {
                 filterMovies={filterTvShows}
                 path={`/tvShow?id=`}
                 currentMyMovies={currentMyTvShows}
-                watchedMovie={watchedTvShow}
+                //watchedMovie={watchedTvShow}
                 navigate={navigate}
                 removeMovie={removeTvShow}
                 watched={watched}

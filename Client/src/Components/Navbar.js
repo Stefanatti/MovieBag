@@ -14,6 +14,7 @@ import { lazy, Suspense } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
+import useFetchData from "../Hooks/useFetchData";
 
 import {
   AppBar,
@@ -38,12 +39,11 @@ const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
-const navItems = ["Home", "About", "Your Movies"];
+const navItems = ["Home", "Your Tv Shows", "Your Movies"];
 
 const StyledNavbarButton = styled(Button)`
   position: relative;
   color: var(--basic-color);
-
   &::after {
     content: "";
     opacity: 0;
@@ -112,7 +112,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 const Navbar = (props) => {
   const { window } = props;
   let user = useSelector((state) => state.user.value);
-  console.log(user);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -131,21 +130,38 @@ const Navbar = (props) => {
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      axios
-        .post("http://localhost:3636/user/verify", {
-          token: localStorage.getItem("token"),
-        })
-        .then(({ data }) => {
-          console.log(data);
-          dispatch(login({ _id: data._id, username: data.username }));
-        })
-        .catch((err) => console.log(err));
-    } else {
-      dispatch(logout());
-    }
-  }, [localStorage.getItem("token")]);
+
+  // const { data, loading, error } = useFetchData(
+  //   `http://localhost:3636/movie/`,
+  //   user._id
+  // );
+
+  // useEffect(() => {
+  //   if (data) setMyMovies(data);
+  //   dispatch(
+  //     getUserMovies({
+  //       id: myMovies.map((myMovie) => myMovie.id),
+  //       title: myMovies.map((myMovie) => myMovie.title),
+  //       director: myMovies.map((myMovie) => myMovie.director),
+  //     })
+  //   );
+  // }, [data]);
+  // console.log(myMovies);
+  // useEffect(() => {
+  //   if (localStorage.getItem("token")) {
+  //     axios
+  //       .post("http://localhost:3636/user/verify", {
+  //         token: localStorage.getItem("token"),
+  //       })
+  //       .then(({ data }) => {
+  //         console.log(data);
+  //         dispatch(login({ _id: data._id, username: data.username }));
+  //       })
+  //       .catch((err) => console.log(err));
+  //   } else {
+  //     dispatch(logout());
+  //   }
+  // }, [localStorage.getItem("token")]);
 
   const getTitle = (e) => {
     e.preventDefault();
@@ -158,8 +174,10 @@ const Navbar = (props) => {
   const handleItemClick = (item) => {
     if (item === "Home") {
       navigate("/");
-    } else if (item === "About") {
-      console.log(`Clicked on ${item}`);
+    } else if (item === "Your Tv Shows") {
+      if (user._id) {
+        navigate(`/yourtvShows`);
+      }
     } else if (item === "Your Movies") {
       if (user._id) {
         navigate(`/yourmovies`);
@@ -214,7 +232,7 @@ const Navbar = (props) => {
                 mr: 2,
                 // marginRight: "73%",
                 display: {
-                  sm: "none",
+                  lg: "none",
                 },
                 color: "var(--basic-color)",
               }}
@@ -226,6 +244,7 @@ const Navbar = (props) => {
               variant="h6"
               component="div"
               sx={{
+                mt: 1,
                 fontFamily: "Limelight",
                 //  flexGrow: 1,
                 display: { xs: "none", sm: "inherit" },
@@ -280,7 +299,13 @@ const Navbar = (props) => {
           <Box sx={{ display: "flex" }}>
             <Box
               sx={{
-                display: { xs: "none", sm: "none", md: "block", flexGrow: "1" },
+                display: {
+                  xs: "none",
+                  sm: "none",
+                  md: "none",
+                  lg: "block",
+                  flexGrow: "1",
+                },
               }}
             >
               {navItems.map((item) => (
@@ -351,7 +376,7 @@ const Navbar = (props) => {
             keepMounted: true, // Better open performance on mobile.
           }}
           sx={{
-            display: { xs: "block", sm: "none" },
+            display: { xs: "block", sm: "block", md: "block" },
             "& .MuiDrawer-paper": {
               boxSizing: "border-box",
               width: drawerWidth,
@@ -362,7 +387,7 @@ const Navbar = (props) => {
           {drawer}
         </Drawer>
       </nav>
-      <Suspense fallback={<div> Please Wait... </div>}>
+      <Suspense>
         <LogoutModal
           open={openLogoutModal}
           onClose={() => {

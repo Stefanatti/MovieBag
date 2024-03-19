@@ -2,7 +2,7 @@ import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
 
-function MovieLibraryFilter({ setSearch, search }) {
+function MovieLibraryFilter({ placeholder, setSearch, search }) {
   return (
     <Box
       component="form"
@@ -16,7 +16,7 @@ function MovieLibraryFilter({ setSearch, search }) {
         onChange={(e) => setSearch(e.target.value)}
         value={search}
         type="text"
-        placeholder="Search for a movie"
+        placeholder={placeholder}
         aria-label="Search"
         title="Type in a name"
         InputProps={{

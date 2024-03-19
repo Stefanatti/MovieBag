@@ -9,16 +9,15 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../Components/MovieLibraryFilter";
 import { getUserMovies } from "../Features/movies";
-
+import useFetchData from "../Hooks/useFetchData";
 const YourMoviesLibrary = () => {
   const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
 
   const [myMovies, setMyMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+  //const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [error, setError] = useState("");
-  // const [user, setUser] = useState("");
+  // const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
   const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
@@ -27,94 +26,46 @@ const YourMoviesLibrary = () => {
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
   const dispatch = useDispatch();
 
-  useEffect(() => {
-    const getMovies = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await axios.get(
-          `http://localhost:3636/movie/${user._id}`
-        );
-        setMyMovies(response.data);
-        dispatch(
-          getUserMovies({
-            id: response.data.map((data) => data.id),
-            title: response.data.map((data) => data.title),
-            director: response.map((data) => data.director),
-          })
-        );
-        // setMovieIds(response.data.map((mov) => mov.id));
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (user._id) {
-      getMovies();
-    }
-  }, [user._id]);
+  const { data, loading, error } = useFetchData(
+    `http://localhost:3636/movie/`,
+    user._id
+  );
 
   useEffect(() => {
-    if (!user._id) {
-      return;
-    }
-    setLoading(false);
-    console.log(user._id);
-
-    getMovies();
-  }, [user._id]);
-
-  const getMovies = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:3636/movie/" + user._id
-      );
-      dispatch(
-        getUserMovies({
-          id: response.data.map((item) => item.id),
-          title: response.data.map((item) => item.title),
-          director: response.data.map((item) => item.director),
-        })
-      );
-
-      setMyMovies(response.data);
-
-      setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
-    } catch (err) {
-      console.log(err);
-    }
-  };
-
-  const removeMovie = async (id) => {
-    const data = axios
-      .delete("http://localhost:3636/movie/" + id)
-      .then((res) => {
-        getMovies();
-        return res;
-      });
-    getMovies();
-    setMyMovies((myMovies) =>
-      myMovies.filter((myMovie) => myMovie.id !== data.id)
-    );
-  };
-
-  const watchedMovie = async (id) => {
-    const data = await fetch("http://localhost:3636/movie/watched/" + id, {
-      method: "PUT",
-    })
-      .then((res) => res.json())
-      .catch((err) => console.error("Error:", err));
-    setMyMovies((myMovies) =>
-      myMovies.map((myMovie) => {
-        if (myMovie.id === data.id) {
-          myMovie.watched = data.watched;
-        }
-        return myMovie;
+    if (data) setMyMovies(data);
+    dispatch(
+      getUserMovies({
+        id: myMovies.map((myMovie) => myMovie.id),
+        title: myMovies.map((myMovie) => myMovie.title),
+        director: myMovies.map((myMovie) => myMovie.director),
       })
     );
+  }, [data]);
+
+  const removeMovie = async (id) => {
+    try {
+      await axios.delete(`http://localhost:3636/movie/${id}`);
+      setMyMovies((MyMovies) => MyMovies.filter((movie) => movie._id !== id));
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
+  // const watchedMovie = async (id) => {
+  //   const data = await fetch("http://localhost:3636/movie/watched/" + id, {
+  //     method: "PUT",
+  //   })
+  //     .then((res) => res.json())
+  //     .catch((err) => console.error("Error:", err));
+  //   setMyMovies((myMovies) =>
+  //     myMovies.map((myMovie) => {
+  //       if (myMovie.id === data.id) {
+  //         myMovie.watched = data.watched;
+  //       }
+  //       return myMovie;
+  //     })
+  //   );
+  // };
 
   useEffect(() => {
     if (!search) {
@@ -155,7 +106,11 @@ const YourMoviesLibrary = () => {
         ) : (
           <div className="movies-table-div">
             <div className="input-div">
-              <MovieLibraryFilter setSearch={setSearch} search={search} />
+              <MovieLibraryFilter
+                placeholder={"Search for a Movie"}
+                setSearch={setSearch}
+                search={search}
+              />
 
               {/* <MovieLibraryFilter 
             filterFunction={filterDirectors}
@@ -172,7 +127,7 @@ const YourMoviesLibrary = () => {
                 filterMovies={filterMovies}
                 path={`/movie?id=`}
                 currentMyMovies={currentMyMovies}
-                watchedMovie={watchedMovie}
+                // watchedMovie={watchedMovie}
                 navigate={navigate}
                 removeMovie={removeMovie}
                 watched={watched}

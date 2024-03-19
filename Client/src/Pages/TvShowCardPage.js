@@ -7,6 +7,7 @@ import HaveToSignupModal from "../Components/HaveToSignupModal";
 import TvShowCard from "../Components/TvShowCard";
 import { useSelector } from "react-redux";
 import { Container } from "@mui/material";
+import useFetchData from "../Hooks/useFetchData";
 
 const RenderTvShowCard = () => {
   const params = useQueryParams();
@@ -25,24 +26,34 @@ const RenderTvShowCard = () => {
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
   // let movies = useSelector((state) => state.movies.value);
-  console.log(tvShowID);
-  useEffect(() => {
-    if (!user._id) {
-      return;
-    }
-    getTvShows();
-  }, [user._id]);
 
-  const getTvShows = () => {
-    axios
-      .get("http://localhost:3636/tvShow/" + user._id)
-      .then(({ data }) => {
-        console.log(data);
-        setMyTvShows(data);
-        setTvShowIds(data.map((mov) => mov.id));
-      })
-      .catch((err) => console.log(err));
-  };
+  const { data } = useFetchData(`http://localhost:3636/tvShow/`, user._id);
+
+  useEffect(() => {
+    if (data) {
+      const allTvShowIds = data.map((value) => +value.id);
+      setTvShowIds(allTvShowIds);
+      if (allTvShowIds.includes(+tvShowID)) setToggle(true);
+    }
+  }, [data]);
+  // console.log(tvShowID);
+  // useEffect(() => {
+  //   if (!user._id) {
+  //     return;
+  //   }
+  //   getTvShows();
+  // }, [user._id]);
+
+  // const getTvShows = () => {
+  //   axios
+  //     .get("http://localhost:3636/tvShow/" + user._id)
+  //     .then(({ data }) => {
+  //       console.log(data);
+  //       setMyTvShows(data);
+  //       setTvShowIds(data.map((mov) => mov.id));
+  //     })
+  //     .catch((err) => console.log(err));
+  // };
 
   useEffect(() => {
     if (!tvShowID) return;

@@ -29,7 +29,8 @@ const MovieCard = ({
   const [actors, setActors] = useState("");
   const [movieYear, setMovieYear] = useState("");
 
-  console.log(movie);
+  // console.log(movie);
+
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -53,7 +54,7 @@ const MovieCard = ({
     );
     setMovieYear(movie.release_date.slice(0, 4));
   }, [movie]);
-  console.log(movie);
+
   return (
     <Grid container>
       <Grid item xs={12} sm={4}>

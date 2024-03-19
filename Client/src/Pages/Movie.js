@@ -6,8 +6,11 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "../Components/HaveToSignupModal";
 import MovieCard from "../Components/MovieCard";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Container } from "@mui/material";
+import useFetchData from "../Hooks/useFetchData";
+import { getUserMovies, addMovie } from "../Features/movies";
+
 const RenderMovie = () => {
   const params = useQueryParams();
   const movieID = params.get("id");
@@ -17,39 +20,26 @@ const RenderMovie = () => {
   const [loading, setLoading] = useState(true);
   const [toggle, setToggle] = useState(false);
   const [movieRates, setMovieRates] = useState([]);
-  const [movieIds, setMovieIds] = useState([]);
+  const [moviesIds, setMoviesIds] = useState([]);
   const [error, setError] = useState("");
+  const dispatch = useDispatch();
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
-  let movies = useSelector((state) => state.movies.value);
-  console.log(movies);
-  // const movieIds = movies.map((movie) => movie.id);
-  // console.log(movieIds);
 
-  // useEffect(() => {
-  //   const getMovies = async () => {
-  //     setLoading(true);
-  //     setError(null);
-  //     try {
-  //       const response = await axios.get(
-  //         `http://localhost:3636/movie/${user._id}`
-  //       );
-  //       setMyMovies(response.data);
-  //       setMovieIds(response.data.map((mov) => mov.id));
-  //     } catch (err) {
-  //       setError(err.message);
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   if (user._id) {
-  //     getMovies();
-  //   }
-  // }, [user._id]);
+  const { data } = useFetchData(`http://localhost:3636/movie/`, user._id);
 
   useEffect(() => {
+    if (data) {
+      const moviesssIds = data.map((value) => +value.id);
+      setMoviesIds(moviesssIds);
+      if (moviesssIds.includes(+movieID)) setToggle(true);
+    }
+  }, [data]);
+
+  useEffect(() => {
+    if (!movieID) return;
+
     const getMovieDetails = async () => {
       try {
         const response = await axios.get(
@@ -67,20 +57,8 @@ const RenderMovie = () => {
     }
   }, [movieID]);
 
-  useEffect(() => {
-    if (!movieID) return;
-
-    toggleTheButton();
-  }, [movieID]);
-
-  const toggleTheButton = () => {
-    if (movieIds.includes(movieID)) {
-      setToggle(true);
-    }
-  };
-
   const AddToYourMovies = async (id, title, year, type, director) => {
-    if (!movieIds.includes(id)) {
+    if (!moviesIds.includes(id)) {
       await axios
         .post("http://localhost:3636/movie/", {
           id: id,
@@ -91,7 +69,9 @@ const RenderMovie = () => {
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      // setMovieIds([...movieIds, id]);
+      // dispatch(addMovie({ id: id, title: title, director: director }));
+
+      setMoviesIds([...moviesIds, id]);
       setToggle(true);
     } else {
       alert("This movie already has been added.");

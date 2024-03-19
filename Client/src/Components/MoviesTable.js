@@ -54,7 +54,7 @@ const MoviesTable = ({
                 <td>
                   <DeleteOutlined
                     onClick={() => {
-                      removeMovie(myMovie.id);
+                      removeMovie(myMovie._id);
                     }}
                   />
                 </td>

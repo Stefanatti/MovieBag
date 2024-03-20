@@ -1,4 +1,5 @@
 const Movie = require("../modules/movieModule");
+// const WatchlistMovie = require("../modules/watchlistMovieModule");
 //const fetch = import("node-fetch");
 
 const getMovie = async (req, res) => {
@@ -29,6 +30,11 @@ const watchMovie = async (req, res) => {
   res.send(movie);
 };
 
+const addWatchlist = (req, res) => {
+  let newWatchlistMovie = new WatchlistMovie(req.body);
+  newWatchlistMovie.save();
+  res.send({ message: "Inserted in watchlist " });
+};
 // const fetch = (...args) =>
 //   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
@@ -54,5 +60,6 @@ module.exports = {
   addMovie,
   deleteMovie,
   watchMovie,
+  addWatchlist,
   //fetchMovies,
 };

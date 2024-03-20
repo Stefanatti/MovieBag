@@ -15,6 +15,8 @@ import {
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import MovieRatings from "../Components/MovieRatings";
 
 const MovieCard = ({
@@ -23,6 +25,7 @@ const MovieCard = ({
   user,
   toggle,
   AddToYourMovies,
+  AddToYourWatchlist,
   setOpenHaveToSignupModal,
 }) => {
   const [director, setDirector] = useState("");
@@ -158,7 +161,7 @@ const MovieCard = ({
                 {`${movie.overview}`}{" "}
               </StyledTypography>
 
-              <Box sx={{ display: "flex" }}>
+              <Box sx={{ display: "flex", gap: "20px" }}>
                 {user ? (
                   <>
                     <Avatar
@@ -189,6 +192,37 @@ const MovieCard = ({
                         <ListIcon sx={{ color: "white" }} />
                       )}
                     </Avatar>
+
+                    <Avatar
+                      onClick={() => {
+                        AddToYourWatchlist(
+                          movie.id,
+                          movie.title,
+                          movieYear,
+                          `movie`,
+                          director == "N/A" ? "-" : `${director.name}`,
+                          movie.poster_path,
+                          movie.overview
+                        );
+                      }}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "var(--basic-color)",
+                        width: 60,
+                        height: 60,
+                        marginTop: 5,
+                      }}
+                      // aria-owns={open ? "mouse-over-popover" : undefined}
+                      // aria-haspopup="true"
+                      // onMouseEnter={handlePopoverOpen}
+                      // onMouseLeave={handlePopoverClose}
+                    >
+                      {toggle ? (
+                        <BookmarkAddedIcon sx={{ color: "white" }} />
+                      ) : (
+                        <BookmarkAddIcon sx={{ color: "white" }} />
+                      )}
+                    </Avatar>
                   </>
                 ) : (
                   <>
@@ -207,6 +241,25 @@ const MovieCard = ({
                       aria-haspopup="true"
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
+                    >
+                      <ListIcon style={{ color: "white" }} />
+                    </Avatar>
+
+                    <Avatar
+                      onClick={() => {
+                        setOpenHaveToSignupModal(true);
+                      }}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "var(--basic-color)",
+                        width: 60,
+                        height: 60,
+                        marginTop: 5,
+                      }}
+                      // aria-owns={open ? "mouse-over-popover" : undefined}
+                      // aria-haspopup="true"
+                      // onMouseEnter={handlePopoverOpen}
+                      // onMouseLeave={handlePopoverClose}
                     >
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>

@@ -66,6 +66,38 @@ const RenderMovie = () => {
           year: year,
           type: type,
           director: director,
+
+          owner: user._id,
+        })
+        .catch((err) => console.log(err));
+      // dispatch(addMovie({ id: id, title: title, director: director }));
+
+      setMoviesIds([...moviesIds, id]);
+      setToggle(true);
+    } else {
+      alert("This movie already has been added.");
+    }
+  };
+
+  const AddToYourWatchlist = async (
+    id,
+    title,
+    year,
+    type,
+    director,
+    poster,
+    plot
+  ) => {
+    if (!moviesIds.includes(id)) {
+      await axios
+        .post("http://localhost:3636/watchlist/movie/", {
+          id: id,
+          title: title,
+          year: year,
+          type: type,
+          director: director,
+          poster: poster,
+          plot: plot,
           owner: user._id,
         })
         .catch((err) => console.log(err));
@@ -98,6 +130,7 @@ const RenderMovie = () => {
             user={user}
             toggle={toggle}
             AddToYourMovies={AddToYourMovies}
+            AddToYourWatchlist={AddToYourWatchlist}
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />
         )}

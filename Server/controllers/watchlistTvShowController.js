@@ -20,7 +20,7 @@ const addWatchlistTvShow = (req, res) => {
 };
 
 const deleteWatchlistTvShow = async (req, res) => {
-  await WatchlistTvShow.deleteOne({ id: req.params.id });
+  await WatchlistTvShow.deleteOne({ _id: req.params.id });
   res.send({ message: "TvShow deleted from Watchlist" });
 };
 

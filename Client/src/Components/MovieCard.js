@@ -23,7 +23,8 @@ const MovieCard = ({
   movie,
   movieRates,
   user,
-  toggle,
+  toggleForList,
+  toggleForWatchlist,
   AddToYourMovies,
   AddToYourWatchlist,
   setOpenHaveToSignupModal,
@@ -186,7 +187,7 @@ const MovieCard = ({
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
-                      {toggle ? (
+                      {toggleForList ? (
                         <PlaylistAddCheckIcon sx={{ color: "white" }} />
                       ) : (
                         <ListIcon sx={{ color: "white" }} />
@@ -217,7 +218,7 @@ const MovieCard = ({
                       // onMouseEnter={handlePopoverOpen}
                       // onMouseLeave={handlePopoverClose}
                     >
-                      {toggle ? (
+                      {toggleForWatchlist ? (
                         <BookmarkAddedIcon sx={{ color: "white" }} />
                       ) : (
                         <BookmarkAddIcon sx={{ color: "white" }} />
@@ -289,7 +290,7 @@ const MovieCard = ({
           disableRestoreFocus
         >
           <Typography sx={{ p: 1 }}>
-            {toggle ? "In your List" : "Add to list"}
+            {toggleForList ? "In your List" : "Add to list"}
           </Typography>
         </Popover>
       </Grid>

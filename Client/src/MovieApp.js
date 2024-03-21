@@ -10,6 +10,7 @@ import RenderMovie from "./Pages/Movie";
 import RenderTvShowCard from "./Pages/TvShowCardPage";
 import Navbar from "./Components/Navbar";
 import WatchlistMovies from "./Pages/WatchlistMovies";
+import WatchlistTvShows from "./Pages/WatchlistTvShows";
 import WrongPage404 from "./Pages/WrongPage404";
 import Footer from "./Components/Footer";
 import { useSelector } from "react-redux";
@@ -55,6 +56,7 @@ function MovieApp() {
             <Route path="/yourmovies" element={<YourMoviesLibrary />} />
             <Route path="/yourTvShows" element={<YourTvShowsList />} />
             <Route path="/watchlist/movies" element={<WatchlistMovies />} />
+            <Route path="/watchlist/TvShows" element={<WatchlistTvShows />} />
 
             <Route path="/movieSearch" element={<MovieSearchResult />} />
             <Route path="/movie" element={<RenderMovie />} />

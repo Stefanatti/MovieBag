@@ -39,7 +39,12 @@ const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
-const navItems = ["Home", "Your Tv Shows", "Your Movies"];
+const navItems = [
+  "Your Tv Shows",
+  "Your Movies",
+  "Your Movie Watchlist",
+  "Your Tv Watchlist",
+];
 
 const StyledNavbarButton = styled(Button)`
   position: relative;
@@ -172,8 +177,8 @@ const Navbar = (props) => {
   };
 
   const handleItemClick = (item) => {
-    if (item === "Home") {
-      navigate("/");
+    if (item === "Your Tv Watchlist") {
+      navigate("/watchlist/tvShows");
     } else if (item === "Your Tv Shows") {
       if (user._id) {
         navigate(`/yourtvShows`);
@@ -184,12 +189,22 @@ const Navbar = (props) => {
       } else {
         setOpenHaveToSignupModal(true);
       }
+    } else if (item === "Your Movie Watchlist") {
+      if (user._id) {
+        navigate(`/watchlist/movies`);
+      } else {
+        setOpenHaveToSignupModal(true);
+      }
     }
   };
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
-      <Typography variant="h6" sx={{ my: 2, color: "var(--basic-color)" }}>
+      <Typography
+        variant="h6"
+        sx={{ my: 2, color: "var(--basic-color)" }}
+        onClick={() => navigate("/")}
+      >
         MovieBag
       </Typography>
       <Divider />
@@ -246,10 +261,11 @@ const Navbar = (props) => {
               sx={{
                 mt: 1,
                 fontFamily: "Limelight",
-                //  flexGrow: 1,
+                cursor: "pointer",
                 display: { xs: "none", sm: "inherit" },
                 color: "var(--basic-color)",
               }}
+              onClick={() => navigate("/")}
             >
               MovieBag
             </Typography>

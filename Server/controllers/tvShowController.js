@@ -18,7 +18,7 @@ const addTvShow = (req, res) => {
 };
 
 const deleteTvShow = async (req, res) => {
-  await TvShow.deleteOne({ id: req.params.id });
+  await TvShow.deleteOne({ _id: req.params.id });
   res.send({ message: "TvShow deleted" });
 };
 

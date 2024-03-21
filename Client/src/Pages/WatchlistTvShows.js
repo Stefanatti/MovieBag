@@ -27,22 +27,22 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-const WatchlistMovies = () => {
+const WatchlistTvShows = () => {
   const navigate = useNavigate();
 
   //   const params = useQueryParams();
   //   const movieTitle = params.get("title");
   //   const navigate = useNavigate();
-  const [watchlistMovies, setWatchlistMovies] = useState([]);
+  const [watchlistTvShows, setWatchlistTvShows] = useState([]);
   //   const [loading, setLoading] = useState(true);
   //   let user = useSelector((state) => state.user.value);
   const [page, setPage] = useState(1);
   const handleChange = (event, value) => {
     setPage(value);
   };
-  const moviesPerPage = 10; // Number of movies per page
-  const startIndex = (page - 1) * moviesPerPage;
-  const endIndex = startIndex + moviesPerPage;
+  const TvShowsPerPage = 10; // Number of movies per page
+  const startIndex = (page - 1) * TvShowsPerPage;
+  const endIndex = startIndex + TvShowsPerPage;
   //   useEffect(() => {
   //     if (!movieTitle) return null;
   //     axios
@@ -60,30 +60,30 @@ const WatchlistMovies = () => {
   let user = useSelector((state) => state.user.value);
 
   const { data } = useFetchData(
-    `http://localhost:3636/watchlist/movie/`,
+    `http://localhost:3636/watchlist/tvShow/`,
     user._id
   );
 
   useEffect(() => {
     if (data) {
       console.log(data);
-      const allWatchlistMovies = data;
-      setWatchlistMovies(allWatchlistMovies);
+      const allWatchlistTvShows = data;
+      setWatchlistTvShows(allWatchlistTvShows);
     }
     //   const moviesssIds = data.map((value) => +value.id);
     //   setMoviesIds(moviesssIds);
     //   if (moviesssIds.includes(+movieID)) setToggle(true);
     // }
   }, [data]);
-  const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
+  const displayedTvShows = watchlistTvShows.slice(startIndex, endIndex);
 
-  console.log(watchlistMovies);
+  console.log(watchlistTvShows);
 
-  const removeWatchlistMovie = async (id) => {
+  const removeWatchlistTvShow = async (id) => {
     try {
-      await axios.delete(`http://localhost:3636/watchlist/movie/${id}`);
-      setWatchlistMovies((WatchlistMovies) =>
-        WatchlistMovies.filter((movie) => movie._id !== id)
+      await axios.delete(`http://localhost:3636/watchlist/TvShow/${id}`);
+      setWatchlistTvShows((WatchlistTvShows) =>
+        WatchlistTvShows.filter((TvShow) => TvShow._id !== id)
       );
     } catch (error) {
       console.log(error.message);
@@ -101,7 +101,7 @@ const WatchlistMovies = () => {
           marginBottom: "50px",
         }}
       >
-        Your Movies Watchlist:
+        Your Tv Shows Watchlist:
       </Typography>
       <Box>
         <Grid
@@ -112,8 +112,8 @@ const WatchlistMovies = () => {
           alignItems="center"
           style={{ minHeight: "100vh" }}
         >
-          {displayedMovies.map((watchlistMovie) => (
-            <Grid key={watchlistMovie._id} item xs={12} sm={6} md={4}>
+          {displayedTvShows.map((watchlistTvShow) => (
+            <Grid key={watchlistTvShow._id} item xs={12} sm={6} md={4}>
               <Card
                 sx={{
                   maxWidth: 745,
@@ -123,8 +123,8 @@ const WatchlistMovies = () => {
               >
                 <CardMedia
                   component="img"
-                  image={`https://image.tmdb.org/t/p/w500${watchlistMovie.poster}`}
-                  title={watchlistMovie.title}
+                  image={`https://image.tmdb.org/t/p/w500${watchlistTvShow.poster}`}
+                  title={watchlistTvShow.title}
                   sx={{
                     height: 250,
                     objectFit: "contain",
@@ -137,22 +137,22 @@ const WatchlistMovies = () => {
                     gutterBottom
                     variant="h5"
                     component="div"
-                    onClick={() => navigate(`/movie?id=${watchlistMovie.id}`)}
+                    onClick={() => navigate(`/TvShow?id=${watchlistTvShow.id}`)}
                     sx={{ cursor: "pointer" }}
                   >
-                    {watchlistMovie.title}
+                    {watchlistTvShow.name}
                   </Typography>
                   <Typography gutterBottom variant="h7" component="div">
-                    Director: {watchlistMovie.director}
+                    Director: {watchlistTvShow.director}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
-                    {watchlistMovie.plot}
+                    {watchlistTvShow.plot}
                   </Typography>
                 </CardContent>
                 <CardActions>
                   <DeleteIcon
                     onClick={() => {
-                      removeWatchlistMovie(watchlistMovie._id);
+                      removeWatchlistTvShow(watchlistTvShow._id);
                     }}
                     sx={{ cursor: "pointer" }}
                   />
@@ -164,7 +164,7 @@ const WatchlistMovies = () => {
           ))}
           <Stack spacing={2}>
             <Pagination
-              count={Math.ceil(watchlistMovies.length / moviesPerPage)} // Calculate number of pages
+              count={Math.ceil(watchlistTvShows.length / TvShowsPerPage)} // Calculate number of pages
               page={page}
               onChange={handleChange}
               size="large"
@@ -192,20 +192,4 @@ const WatchlistMovies = () => {
   );
 };
 
-export default WatchlistMovies;
-
-{
-  /* {loading ? (
-        <ClipLoader
-          color={"  var(--basic-color)"}
-          className="loading"
-          loading={loading}
-          cssOverride={{ marginLeft: " 50vw", marginTop: " 10vw" }}
-          size={50}
-        />
-      ) : (
-        <div>
-          <MoviesResultCards movies={movies} navigate={navigate} />
-        </div>
-      )} */
-}
+export default WatchlistTvShows;

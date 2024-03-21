@@ -1,7 +1,8 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Popover from "@mui/material/Popover";
-
+import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
+import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import {
   Grid,
   Typography,
@@ -21,8 +22,10 @@ const TvShowCard = ({
   tvShow,
   movieRates,
   user,
-  toggle,
+  toggleForList,
+  toggleForWatchlist,
   AddToYourTvShows,
+  AddToYouTvShowsWatchlist,
   setOpenHaveToSignupModal,
 }) => {
   const [creator, setCreator] = useState("");
@@ -152,7 +155,7 @@ const TvShowCard = ({
                 {`${tvShow.overview}`}{" "}
               </StyledTypography>
 
-              <Box sx={{ display: "flex" }}>
+              <Box sx={{ display: "flex", gap: "20px" }}>
                 {user ? (
                   <>
                     <Avatar
@@ -177,14 +180,43 @@ const TvShowCard = ({
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
-                      {toggle ? (
+                      {toggleForList ? (
                         <PlaylistAddCheckIcon sx={{ color: "white" }} />
                       ) : (
                         <ListIcon sx={{ color: "white" }} />
                       )}
                     </Avatar>
 
-                    <Typography variant="body1" component="span"></Typography>
+                    <Avatar
+                      onClick={() => {
+                        AddToYouTvShowsWatchlist(
+                          tvShow.id,
+                          tvShow.name,
+                          tvShowYear,
+                          `tvShow`,
+                          creator == "N/A" ? "-" : `${creator}`,
+                          tvShow.poster_path,
+                          tvShow.overview
+                        );
+                      }}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "var(--basic-color)",
+                        width: 60,
+                        height: 60,
+                        marginTop: 5,
+                      }}
+                      // aria-owns={open ? "mouse-over-popover" : undefined}
+                      // aria-haspopup="true"
+                      // onMouseEnter={handlePopoverOpen}
+                      // onMouseLeave={handlePopoverClose}
+                    >
+                      {toggleForWatchlist ? (
+                        <BookmarkAddedIcon sx={{ color: "white" }} />
+                      ) : (
+                        <BookmarkAddIcon sx={{ color: "white" }} />
+                      )}
+                    </Avatar>
                   </>
                 ) : (
                   <>
@@ -207,7 +239,24 @@ const TvShowCard = ({
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>
 
-                    <Typography variant="body1" component="span"></Typography>
+                    <Avatar
+                      onClick={() => {
+                        setOpenHaveToSignupModal(true);
+                      }}
+                      sx={{
+                        cursor: "pointer",
+                        backgroundColor: "var(--basic-color)",
+                        width: 60,
+                        height: 60,
+                        marginTop: 5,
+                      }}
+                      // aria-owns={open ? "mouse-over-popover" : undefined}
+                      // aria-haspopup="true"
+                      // onMouseEnter={handlePopoverOpen}
+                      // onMouseLeave={handlePopoverClose}
+                    >
+                      <ListIcon style={{ color: "white" }} />
+                    </Avatar>
                   </>
                 )}
               </Box>
@@ -233,7 +282,7 @@ const TvShowCard = ({
           disableRestoreFocus
         >
           <Typography sx={{ p: 1 }}>
-            {toggle ? "In your List" : "Add to list"}
+            {toggleForList ? "In your List" : "Add to list"}
           </Typography>
         </Popover>
       </Grid>

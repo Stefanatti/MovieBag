@@ -22,7 +22,7 @@ const searchForOneMovie = async (req, res) => {
   const query = req.params.id;
   try {
     const response = await fetch(
-      `${url}movie/${query}?&append_to_response=credits&api_key=${apikey}`,
+      `${url}movie/${query}?&append_to_response=credits,videos&api_key=${apikey}`,
       options
     );
     const json = await response.json();

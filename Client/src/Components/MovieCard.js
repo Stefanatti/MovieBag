@@ -1,6 +1,9 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
 import Popover from "@mui/material/Popover";
+import TrailerModal from "./Modal";
+import YouTube from "react-youtube";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 // import MouseOverPopover from "../Components/PopOver";
 import {
   Grid,
@@ -11,6 +14,7 @@ import {
   Paper,
   styled,
   Avatar,
+  Modal,
   useMediaQuery,
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
@@ -28,12 +32,16 @@ const MovieCard = ({
   AddToYourMovies,
   AddToYourWatchlist,
   setOpenHaveToSignupModal,
+  trailer,
 }) => {
   const [director, setDirector] = useState("");
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
   const [movieYear, setMovieYear] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
 
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
@@ -66,9 +74,11 @@ const MovieCard = ({
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
-
+  {
+    trailer && console.log(trailer);
+  }
   const open = Boolean(anchorEl);
-
+  // console.log(trailer[0].key);
   return (
     <Grid container>
       <Grid item xs={12} sm={4}>
@@ -162,7 +172,9 @@ const MovieCard = ({
                 {`${movie.overview}`}{" "}
               </StyledTypography>
 
-              <Box sx={{ display: "flex", gap: "20px" }}>
+              <Box
+                sx={{ display: "flex", gap: "20px", alignItems: "baseline" }}
+              >
                 {user ? (
                   <>
                     <Avatar
@@ -266,6 +278,23 @@ const MovieCard = ({
                     </Avatar>
                   </>
                 )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
+                  <StyledTypography
+                    variant={"h6"}
+                    fontFamily={"lato"}
+                    onClick={handleOpen}
+                  >
+                    Play Trailer
+                  </StyledTypography>
+                </Box>
               </Box>
             </Stack>
           </Container>
@@ -293,6 +322,41 @@ const MovieCard = ({
             {toggleForList ? "In your List" : "Add to list"}
           </Typography>
         </Popover>
+        <Modal
+          open={openModal}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box
+            sx={{
+              position: "absolute",
+              top: "50%",
+              left: "50%",
+              transform: "translate(-50%, -50%)",
+              width: 800,
+              height: 500,
+              bgcolor: "background.paper",
+              border: "2px solid #000",
+              boxShadow: 24,
+              p: 4,
+              backgroundColor: "rgba(0, 0, 0, 0.75)",
+            }}
+          >
+            <Box sx={{ width: "100%", height: "100%" }}>
+              {trailer[0] ? (
+                <YouTube
+                  videoId={trailer[0].key}
+                  opts={{ width: "100%", height: 450 }}
+                />
+              ) : (
+                <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                  Sorry, we can not find a trailer
+                </StyledTypography>
+              )}
+            </Box>
+          </Box>
+        </Modal>
       </Grid>
     </Grid>
   );

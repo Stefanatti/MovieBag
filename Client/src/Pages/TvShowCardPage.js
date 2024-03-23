@@ -66,6 +66,7 @@ const RenderTvShowCard = () => {
         const response = await axios.get(
           `http://localhost:3636/api/tv/id/${tvShowID}`
         );
+        console.log(response.data);
         setTvShow(response.data);
       } catch (err) {
         console.log(err);

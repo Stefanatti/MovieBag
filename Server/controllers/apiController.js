@@ -57,7 +57,7 @@ const searchForOneMovie = async (req, res) => {
 const searchForOneTvShow = (req, res) => {
   const query = req.params.id;
   fetch(
-    `${url}tv/${query}?&append_to_response=credits&api_key=${apikey}`,
+    `${url}tv/${query}?&append_to_response=credits,videos&api_key=${apikey}`,
     options
   )
     .then((res) => res.json())

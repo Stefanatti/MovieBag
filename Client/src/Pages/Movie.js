@@ -24,7 +24,7 @@ const RenderMovie = () => {
   const [movieRates, setMovieRates] = useState([]);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
-  const [trailer, setTrailer] = useState([""]);
+  // const [trailer, setTrailer] = useState([""]);
 
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -67,16 +67,8 @@ const RenderMovie = () => {
         const response = await axios.get(
           `http://localhost:3636/api/id/${movieID}`
         );
-        console.log(response.data);
-        const trailer = response.data.videos.results.filter(
-          (video) =>
-            video.type === "Trailer" &&
-            video.site === "YouTube" &&
-            video.name === "Official Trailer"
-        );
-        console.log(trailer);
+        // console.log(response.data);
         setMovie(response.data);
-        setTrailer(trailer);
       } catch (err) {
         console.log(err);
       } finally {
@@ -157,7 +149,7 @@ const RenderMovie = () => {
         ) : (
           <MovieCard
             movie={movie}
-            trailer={trailer}
+            //trailer={trailer}
             movieRates={movieRates}
             user={user}
             toggleForList={toggleForList}

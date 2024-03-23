@@ -3,29 +3,17 @@ import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
 import { useState } from "react";
 
-export default function MouseOverPopover(open, handlePopoverClose, anchorEl) {
-  //   const [anchorEl, setAnchorEl] = useState(null);
+export default function MouseOverPopover({
+  open,
+  popOverText,
 
-  //   const handlePopoverOpen = (event) => {
-  //     setAnchorEl(event.currentTarget);
-  //   };
-
-  //   const handlePopoverClose = () => {
-  //     setAnchorEl(null);
-  //   };
-
-  //   const open = Boolean(anchorEl);
-
+  toggleForList,
+  toggleForWatchlist,
+  handlePopoverClose,
+  anchorEl,
+}) {
   return (
     <div>
-      {/* <Typography
-        aria-owns={open ? "mouse-over-popover" : undefined}
-        aria-haspopup="true"
-        onMouseEnter={handlePopoverOpen}
-        onMouseLeave={handlePopoverClose}
-      >
-        Hover with a Popover.
-      </Typography> */}
       <Popover
         id="mouse-over-popover"
         sx={{
@@ -44,7 +32,7 @@ export default function MouseOverPopover(open, handlePopoverClose, anchorEl) {
         onClose={handlePopoverClose}
         disableRestoreFocus
       >
-        <Typography sx={{ p: 1 }}>I use Popover.</Typography>
+        <Typography sx={{ p: 1 }}>{popOverText}</Typography>
       </Popover>
     </div>
   );

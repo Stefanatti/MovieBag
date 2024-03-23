@@ -1,6 +1,9 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Popover from "@mui/material/Popover";
+import TrailerModal from "./Modal";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+
+import MouseOverPopover from "../Components/PopOver";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import {
@@ -33,7 +36,17 @@ const TvShowCard = ({
   const [actors, setActors] = useState("");
   const [tvShowYear, setTvShowYear] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
-
+  const [anchorEl2, setAnchorEl2] = useState(null);
+  const [trailer, setTrailer] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const handleOpen = () => setOpenModal(true);
+  const handleClose = () => setOpenModal(false);
+  const [popOverText, setPopOverText] = useState(
+    toggleForList ? "In your List" : "Add to list"
+  );
+  const [popOverText2, setPopOverText2] = useState(
+    toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
+  );
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -50,17 +63,33 @@ const TvShowCard = ({
         .join(", ")
     );
     setTvShowYear(tvShow.first_air_date.slice(0, 4));
+    setTrailer(
+      tvShow.videos.results.filter(
+        (video) =>
+          video.type === "Trailer" &&
+          video.site === "YouTube" &&
+          video.name === "Official Trailer"
+      )
+    );
   }, [tvShow]);
-
+  console.log(trailer);
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
+  };
+
+  const handlePopoverOpen2 = (event) => {
+    setAnchorEl2(event.currentTarget);
   };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
+  const handlePopoverClose2 = () => {
+    setAnchorEl2(null);
+  };
 
   const open = Boolean(anchorEl);
+  const open2 = Boolean(anchorEl2);
 
   return (
     <Grid container>
@@ -155,7 +184,9 @@ const TvShowCard = ({
                 {`${tvShow.overview}`}{" "}
               </StyledTypography>
 
-              <Box sx={{ display: "flex", gap: "20px" }}>
+              <Box
+                sx={{ display: "flex", gap: "20px", alignItems: "baseline" }}
+              >
                 {user ? (
                   <>
                     <Avatar
@@ -175,8 +206,6 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      aria-owns={open ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
@@ -206,10 +235,8 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      // aria-owns={open ? "mouse-over-popover" : undefined}
-                      // aria-haspopup="true"
-                      // onMouseEnter={handlePopoverOpen}
-                      // onMouseLeave={handlePopoverClose}
+                      onMouseEnter={handlePopoverOpen2}
+                      onMouseLeave={handlePopoverClose2}
                     >
                       {toggleForWatchlist ? (
                         <BookmarkAddedIcon sx={{ color: "white" }} />
@@ -231,8 +258,6 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      aria-owns={open ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
@@ -250,41 +275,53 @@ const TvShowCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      // aria-owns={open ? "mouse-over-popover" : undefined}
-                      // aria-haspopup="true"
-                      // onMouseEnter={handlePopoverOpen}
-                      // onMouseLeave={handlePopoverClose}
+                      onMouseEnter={handlePopoverOpen2}
+                      onMouseLeave={handlePopoverClose2}
                     >
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>
                   </>
                 )}
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "10px",
+                    alignItems: "center",
+                    cursor: "pointer",
+                  }}
+                >
+                  <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
+                  <StyledTypography
+                    variant={"h6"}
+                    fontFamily={"lato"}
+                    onClick={handleOpen}
+                  >
+                    Play Trailer
+                  </StyledTypography>
+                </Box>
               </Box>
             </Stack>
           </Container>
         </Paper>
-        <Popover
-          id="mouse-over-popover"
-          sx={{
-            pointerEvents: "none",
-          }}
+        <MouseOverPopover
           open={open}
           anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-        >
-          <Typography sx={{ p: 1 }}>
-            {toggleForList ? "In your List" : "Add to list"}
-          </Typography>
-        </Popover>
+          handlePopoverOpen={handlePopoverOpen}
+          handlePopoverClose={handlePopoverClose}
+          popOverText={popOverText}
+        />
+        <MouseOverPopover
+          open={open2}
+          anchorEl={anchorEl2}
+          handlePopoverOpen={handlePopoverOpen2}
+          handlePopoverClose={handlePopoverClose2}
+          popOverText={popOverText2}
+        />
+        <TrailerModal
+          open={openModal}
+          onClose={handleClose}
+          trailer={trailer}
+        />
       </Grid>
     </Grid>
   );

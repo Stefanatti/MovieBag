@@ -1,10 +1,8 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import Popover from "@mui/material/Popover";
 import TrailerModal from "./Modal";
-import YouTube from "react-youtube";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-// import MouseOverPopover from "../Components/PopOver";
+import MouseOverPopover from "../Components/PopOver";
 import {
   Grid,
   Typography,
@@ -14,14 +12,14 @@ import {
   Paper,
   styled,
   Avatar,
-  Modal,
-  useMediaQuery,
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import MovieRatings from "../Components/MovieRatings";
+import { boolean } from "yup";
+// import MouseOverPopover from "./PopOver";
 
 const MovieCard = ({
   movie,
@@ -32,17 +30,25 @@ const MovieCard = ({
   AddToYourMovies,
   AddToYourWatchlist,
   setOpenHaveToSignupModal,
-  trailer,
 }) => {
+  console.log(toggleForList);
   const [director, setDirector] = useState("");
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
   const [movieYear, setMovieYear] = useState("");
+  const [trailer, setTrailer] = useState("");
+  const [popOverText, setPopOverText] = useState(
+    toggleForList ? "In your List" : "Add to list"
+  );
+  const [popOverText2, setPopOverText2] = useState(
+    toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
+  );
   const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorEl2, setAnchorEl2] = useState(null);
+
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
-
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -65,20 +71,33 @@ const MovieCard = ({
         .join(", ")
     );
     setMovieYear(movie.release_date.slice(0, 4));
+    setTrailer(
+      movie.videos.results.filter(
+        (video) =>
+          video.type === "Trailer" &&
+          video.site === "YouTube" &&
+          video.name === "Official Trailer"
+      )
+    );
   }, [movie]);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
+  const handlePopoverOpen2 = (event) => {
+    setAnchorEl2(event.currentTarget);
+  };
 
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
-  {
-    trailer && console.log(trailer);
-  }
+  const handlePopoverClose2 = () => {
+    setAnchorEl2(null);
+  };
+
   const open = Boolean(anchorEl);
-  // console.log(trailer[0].key);
+  const open2 = Boolean(anchorEl2);
+
   return (
     <Grid container>
       <Grid item xs={12} sm={4}>
@@ -92,7 +111,6 @@ const MovieCard = ({
           }}
         ></Paper>
       </Grid>
-
       <Grid item xs={12} sm={8}>
         <Paper
           sx={{
@@ -194,8 +212,6 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      aria-owns={open ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
@@ -205,7 +221,6 @@ const MovieCard = ({
                         <ListIcon sx={{ color: "white" }} />
                       )}
                     </Avatar>
-
                     <Avatar
                       onClick={() => {
                         AddToYourWatchlist(
@@ -225,10 +240,8 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      // aria-owns={open ? "mouse-over-popover" : undefined}
-                      // aria-haspopup="true"
-                      // onMouseEnter={handlePopoverOpen}
-                      // onMouseLeave={handlePopoverClose}
+                      onMouseEnter={handlePopoverOpen2}
+                      onMouseLeave={handlePopoverClose2}
                     >
                       {toggleForWatchlist ? (
                         <BookmarkAddedIcon sx={{ color: "white" }} />
@@ -250,8 +263,6 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      aria-owns={open ? "mouse-over-popover" : undefined}
-                      aria-haspopup="true"
                       onMouseEnter={handlePopoverOpen}
                       onMouseLeave={handlePopoverClose}
                     >
@@ -269,10 +280,8 @@ const MovieCard = ({
                         height: 60,
                         marginTop: 5,
                       }}
-                      // aria-owns={open ? "mouse-over-popover" : undefined}
-                      // aria-haspopup="true"
-                      // onMouseEnter={handlePopoverOpen}
-                      // onMouseLeave={handlePopoverClose}
+                      onMouseEnter={handlePopoverOpen2}
+                      onMouseLeave={handlePopoverClose2}
                     >
                       <ListIcon style={{ color: "white" }} />
                     </Avatar>
@@ -299,64 +308,26 @@ const MovieCard = ({
             </Stack>
           </Container>
         </Paper>
-
-        <Popover
-          id="mouse-over-popover"
-          sx={{
-            pointerEvents: "none",
-          }}
+        <MouseOverPopover
           open={open}
           anchorEl={anchorEl}
-          anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left",
-          }}
-          transformOrigin={{
-            vertical: "top",
-            horizontal: "left",
-          }}
-          onClose={handlePopoverClose}
-          disableRestoreFocus
-        >
-          <Typography sx={{ p: 1 }}>
-            {toggleForList ? "In your List" : "Add to list"}
-          </Typography>
-        </Popover>
-        <Modal
+          handlePopoverOpen={handlePopoverOpen}
+          handlePopoverClose={handlePopoverClose}
+          popOverText={popOverText}
+        />
+        <MouseOverPopover
+          open={open2}
+          anchorEl={anchorEl2}
+          handlePopoverOpen={handlePopoverOpen2}
+          handlePopoverClose={handlePopoverClose2}
+          popOverText={popOverText2}
+        />
+
+        <TrailerModal
           open={openModal}
           onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box
-            sx={{
-              position: "absolute",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              width: 800,
-              height: 500,
-              bgcolor: "background.paper",
-              border: "2px solid #000",
-              boxShadow: 24,
-              p: 4,
-              backgroundColor: "rgba(0, 0, 0, 0.75)",
-            }}
-          >
-            <Box sx={{ width: "100%", height: "100%" }}>
-              {trailer[0] ? (
-                <YouTube
-                  videoId={trailer[0].key}
-                  opts={{ width: "100%", height: 450 }}
-                />
-              ) : (
-                <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                  Sorry, we can not find a trailer
-                </StyledTypography>
-              )}
-            </Box>
-          </Box>
-        </Modal>
+          trailer={trailer}
+        />
       </Grid>
     </Grid>
   );

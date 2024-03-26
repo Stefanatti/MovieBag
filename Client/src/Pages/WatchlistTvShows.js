@@ -43,21 +43,14 @@ const WatchlistTvShows = () => {
   const TvShowsPerPage = 10; // Number of movies per page
   const startIndex = (page - 1) * TvShowsPerPage;
   const endIndex = startIndex + TvShowsPerPage;
-  //   useEffect(() => {
-  //     if (!movieTitle) return null;
-  //     axios
-  //       .get(`http://localhost:3636/api/${movieTitle}`)
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //         setMovies(data.results);
-  //       })
-  //       .catch((err) => console.log(err))
-  //       .finally(() => {
-  //         setLoading(false);
-  //       });
-  //   }, [movieTitle]);
-
   let user = useSelector((state) => state.user.value);
+
+  const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
+    fontFamily: { fontFamily },
+    variant: { variant },
+    color: "rgb(234, 204, 231)",
+    textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
+  }));
 
   const { data } = useFetchData(
     `http://localhost:3636/watchlist/tvShow/`,
@@ -70,10 +63,6 @@ const WatchlistTvShows = () => {
       const allWatchlistTvShows = data;
       setWatchlistTvShows(allWatchlistTvShows);
     }
-    //   const moviesssIds = data.map((value) => +value.id);
-    //   setMoviesIds(moviesssIds);
-    //   if (moviesssIds.includes(+movieID)) setToggle(true);
-    // }
   }, [data]);
   const displayedTvShows = watchlistTvShows.slice(startIndex, endIndex);
 
@@ -118,7 +107,8 @@ const WatchlistTvShows = () => {
                 sx={{
                   maxWidth: 745,
                   display: "flex",
-                  backgroundColor: "#c2edda",
+                  backgroundColor: "rgb(46, 46, 42)",
+                  borderRadius: "30px",
                 }}
               >
                 <CardMedia
@@ -133,7 +123,7 @@ const WatchlistTvShows = () => {
                   }}
                 />
                 <CardContent>
-                  <Typography
+                  <StyledTypography
                     gutterBottom
                     variant="h5"
                     component="div"
@@ -141,23 +131,21 @@ const WatchlistTvShows = () => {
                     sx={{ cursor: "pointer" }}
                   >
                     {watchlistTvShow.name}
-                  </Typography>
-                  <Typography gutterBottom variant="h7" component="div">
+                  </StyledTypography>
+                  <StyledTypography gutterBottom variant="h7" component="div">
                     Director: {watchlistTvShow.director}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  </StyledTypography>
+                  <StyledTypography variant="body2" color="text.secondary">
                     {watchlistTvShow.plot}
-                  </Typography>
+                  </StyledTypography>
                 </CardContent>
                 <CardActions>
                   <DeleteIcon
                     onClick={() => {
                       removeWatchlistTvShow(watchlistTvShow._id);
                     }}
-                    sx={{ cursor: "pointer" }}
+                    sx={{ cursor: "pointer", color: "var(--basic-color)" }}
                   />
-                  {/* <Button size="small">Share</Button>
-                  <Button size="small">Learn More</Button> */}
                 </CardActions>
               </Card>
             </Grid>

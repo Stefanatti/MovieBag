@@ -4,27 +4,29 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import HaveToSignupModal from "../Components/HaveToSignupModal";
 import MovieCard from "../Components/MovieCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Container } from "@mui/material";
 import useFetchData from "../Hooks/useFetchData";
 import { getUserMovies, addMovie } from "../Features/movies";
+import HaveToSignupModal from "../Components/HaveToSignupModal";
+//import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
+  // const HaveToSignupModal = lazy(() =>
+  //   import("../Components/HaveToSignupModal")
+  // );
+
   const params = useQueryParams();
   const movieID = params.get("id");
   const navigate = useNavigate();
-  const [myMovies, setMyMovies] = useState([]);
   const [movie, setMovie] = useState("");
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
-
   const [movieRates, setMovieRates] = useState([]);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
-  // const [trailer, setTrailer] = useState([""]);
 
   const [error, setError] = useState("");
   const dispatch = useDispatch();
@@ -67,7 +69,7 @@ const RenderMovie = () => {
         const response = await axios.get(
           `http://localhost:3636/api/id/${movieID}`
         );
-        // console.log(response.data);
+        console.log(response.data);
         setMovie(response.data);
       } catch (err) {
         console.log(err);
@@ -93,7 +95,7 @@ const RenderMovie = () => {
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      // dispatch(addMovie({ id: id, title: title, director: director }));
+      dispatch(addMovie({ id: id, title: title, director: director }));
 
       setMoviesIds([...moviesIds, id]);
       setToggleForList(true);
@@ -149,7 +151,6 @@ const RenderMovie = () => {
         ) : (
           <MovieCard
             movie={movie}
-            //trailer={trailer}
             movieRates={movieRates}
             user={user}
             toggleForList={toggleForList}
@@ -160,12 +161,14 @@ const RenderMovie = () => {
           />
         )}
       </div>
+      {/* <Suspense> */}
       <HaveToSignupModal
         open={openHaveToSignupModal}
         onClose={() => {
           setOpenHaveToSignupModal(false);
         }}
       />
+      {/* </Suspense> */}
     </Container>
   );
 };

@@ -48,7 +48,7 @@ function Home() {
 
   return (
     <div>
-      <Suspense fallback={<div> Please Wait... </div>}>
+      <Suspense>
         <Main />
       </Suspense>
     </div>

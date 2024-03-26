@@ -147,7 +147,6 @@ const YourTvShowsList = () => {
                 filterMovies={filterTvShows}
                 path={`/tvShow?id=`}
                 currentMyMovies={currentMyTvShows}
-                //watchedMovie={watchedTvShow}
                 navigate={navigate}
                 removeMovie={removeTvShow}
                 watched={watched}

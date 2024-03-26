@@ -187,7 +187,7 @@ const TvShowCard = ({
               <Box
                 sx={{ display: "flex", gap: "20px", alignItems: "baseline" }}
               >
-                {user ? (
+                {user._id ? (
                   <>
                     <Avatar
                       onClick={() => {
@@ -278,7 +278,7 @@ const TvShowCard = ({
                       onMouseEnter={handlePopoverOpen2}
                       onMouseLeave={handlePopoverClose2}
                     >
-                      <ListIcon style={{ color: "white" }} />
+                      <BookmarkAddIcon sx={{ color: "white" }} />
                     </Avatar>
                   </>
                 )}

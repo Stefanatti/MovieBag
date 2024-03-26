@@ -13,7 +13,6 @@ export default function TrailerModal({ open, trailer, onClose }) {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const responsiveHeight = isSmallScreen ? "35vh" : "80vh";
-  console.log(trailer ? true : false);
   return (
     <div>
       <Dialog

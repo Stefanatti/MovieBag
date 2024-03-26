@@ -19,7 +19,6 @@ import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import MovieRatings from "../Components/MovieRatings";
 import { boolean } from "yup";
-// import MouseOverPopover from "./PopOver";
 
 const MovieCard = ({
   movie,
@@ -31,7 +30,6 @@ const MovieCard = ({
   AddToYourWatchlist,
   setOpenHaveToSignupModal,
 }) => {
-  console.log(toggleForList);
   const [director, setDirector] = useState("");
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
@@ -74,9 +72,10 @@ const MovieCard = ({
     setTrailer(
       movie.videos.results.filter(
         (video) =>
-          video.type === "Trailer" &&
-          video.site === "YouTube" &&
-          video.name === "Official Trailer"
+          (video.type === "Trailer" &&
+            video.site === "YouTube" &&
+            video.name === "Official Trailer") ||
+          video.name === "Official Red Band Trailer"
       )
     );
   }, [movie]);
@@ -193,7 +192,7 @@ const MovieCard = ({
               <Box
                 sx={{ display: "flex", gap: "20px", alignItems: "baseline" }}
               >
-                {user ? (
+                {user._id ? (
                   <>
                     <Avatar
                       onClick={() => {
@@ -283,7 +282,7 @@ const MovieCard = ({
                       onMouseEnter={handlePopoverOpen2}
                       onMouseLeave={handlePopoverClose2}
                     >
-                      <ListIcon style={{ color: "white" }} />
+                      <BookmarkAddIcon sx={{ color: "white" }} />
                     </Avatar>
                   </>
                 )}

@@ -42,8 +42,8 @@ const drawerWidth = 240;
 const navItems = [
   "Your Tv Shows",
   "Your Movies",
-  "Your Movie Watchlist",
-  "Your Tv Watchlist",
+  "Movies Watchlist",
+  "Tv Watchlist",
 ];
 
 const StyledNavbarButton = styled(Button)`
@@ -71,6 +71,8 @@ const StyledNavbarButton = styled(Button)`
 
 const Search = styled("form")(({ theme }) => ({
   position: "relative",
+  border: "1px solid var(--basic-color)",
+
   borderRadius: "30px",
   backgroundColor: alpha(theme.palette.common.white, 0.15),
   "&:hover": {
@@ -96,8 +98,6 @@ const SearchIconWrapper = styled("div")(({ theme }) => ({
 
 const StyledInputBase = styled(InputBase)(({ theme }) => ({
   color: "var(--basic-color)",
-  border: "1px solid var(--basic-color)",
-  borderRadius: "30px",
   height: "43px",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
@@ -108,7 +108,7 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
     [theme.breakpoints.up("sm")]: {
       width: "30ch",
       "&:focus": {
-        width: "40ch",
+        width: "32ch",
       },
     },
   },
@@ -136,38 +136,6 @@ const Navbar = (props) => {
     setMobileOpen((prevState) => !prevState);
   };
 
-  // const { data, loading, error } = useFetchData(
-  //   `http://localhost:3636/movie/`,
-  //   user._id
-  // );
-
-  // useEffect(() => {
-  //   if (data) setMyMovies(data);
-  //   dispatch(
-  //     getUserMovies({
-  //       id: myMovies.map((myMovie) => myMovie.id),
-  //       title: myMovies.map((myMovie) => myMovie.title),
-  //       director: myMovies.map((myMovie) => myMovie.director),
-  //     })
-  //   );
-  // }, [data]);
-  // console.log(myMovies);
-  // useEffect(() => {
-  //   if (localStorage.getItem("token")) {
-  //     axios
-  //       .post("http://localhost:3636/user/verify", {
-  //         token: localStorage.getItem("token"),
-  //       })
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //         dispatch(login({ _id: data._id, username: data.username }));
-  //       })
-  //       .catch((err) => console.log(err));
-  //   } else {
-  //     dispatch(logout());
-  //   }
-  // }, [localStorage.getItem("token")]);
-
   const getTitle = (e) => {
     e.preventDefault();
     if (title !== "") {
@@ -177,25 +145,12 @@ const Navbar = (props) => {
   };
 
   const handleItemClick = (item) => {
-    if (item === "Your Tv Watchlist") {
-      navigate("/watchlist/tvShows");
-    } else if (item === "Your Tv Shows") {
-      if (user._id) {
-        navigate(`/yourtvShows`);
-      }
-    } else if (item === "Your Movies") {
-      if (user._id) {
-        navigate(`/yourmovies`);
-      } else {
-        setOpenHaveToSignupModal(true);
-      }
-    } else if (item === "Your Movie Watchlist") {
-      if (user._id) {
-        navigate(`/watchlist/movies`);
-      } else {
-        setOpenHaveToSignupModal(true);
-      }
-    }
+    if (user._id) {
+      if (item === "Your Movies") navigate(`/yourmovies`);
+      else if (item === "Your Tv Shows") navigate(`/yourtvShows`);
+      else if (item === "Movies Watchlist") navigate(`/watchlist/movies`);
+      else navigate("/watchlist/tvShows");
+    } else setOpenHaveToSignupModal(true);
   };
 
   const drawer = (
@@ -284,34 +239,11 @@ const Navbar = (props) => {
                 onChange={(e) => {
                   setTitle(e.target.value);
                 }}
-                placeholder="Search for a movie…"
+                placeholder="Search for a movie or Tv show…"
                 inputProps={{ "aria-label": "search" }}
               />
             </Search>
           </Box>
-
-          {/* <Box
-            sx={{
-              flexGrow: 1,
-              display: "flex",
-              alignItems: "center",
-              border: "1px solid white",
-              marginRight: "50px",
-            }}
-          >
-            <Hidden smDown>
-              <InputBase
-                placeholder="Search..."
-                value={searchValue}
-                onChange={(e) => setSearchValue(e.target.value)}
-                sx={{
-                  ml: 2,
-                  flex: 1,
-                  color: "white",
-                }}
-              />
-            </Hidden>
-          </Box> */}
           <Box sx={{ display: "flex" }}>
             <Box
               sx={{
@@ -333,27 +265,6 @@ const Navbar = (props) => {
                 </StyledNavbarButton>
               ))}
             </Box>
-            {/* {location.pathname !== "/" &&
-          <Box >
-          <form onSubmit={getTitle}>
-          <Search>
-            <SearchIconWrapper>
-              <SearchIcon />
-            </SearchIconWrapper>
-            <StyledInputBase
-                type="text"
-                value={title}
-                onChange={(e) => {
-                  setTitle(e.target.value);
-                }}
-              placeholder="Search for a movie…"
-              inputProps={{ "aria-label": "search" }}
-            />
-          </Search>
-          </form>
-          </Box>
-          } */}
-
             <Box
               sx={{
                 marginLeft: "15px",
@@ -362,7 +273,7 @@ const Navbar = (props) => {
                 gap: "15px",
               }}
             >
-              <Hidden smDown>
+              <Hidden lgDown>
                 <ThemeSwitcher setTheme={setTheme} theme={theme} />
               </Hidden>
               <Avatar
@@ -425,10 +336,6 @@ const Navbar = (props) => {
 };
 
 Navbar.propTypes = {
-  /**
-   * Injected by the documentation to work in an iframe.
-   * You won't need it on your project.
-   */
   window: PropTypes.func,
 };
 

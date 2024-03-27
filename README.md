@@ -13,4 +13,4 @@ Sass
 
 You can visit my web-app here: https://your-movies.onrender.com
 
-![Screenshot 2024-02-27 140104](https://github.com/Stefanatti/MovieBag/assets/101453394/23976728-9ed6-4e5f-8880-ee570c1068d0)
+![Στιγμιότυπο οθόνης (4)](https://github.com/Stefanatti/MovieBag/assets/101453394/91d80626-9cde-49a1-8bf5-3171a1ad06e7)

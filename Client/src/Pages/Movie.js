@@ -9,13 +9,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container } from "@mui/material";
 import useFetchData from "../Hooks/useFetchData";
 import { getUserMovies, addMovie } from "../Features/movies";
-import HaveToSignupModal from "../Components/HaveToSignupModal";
-//import { lazy, Suspense } from "react";
+import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
-  // const HaveToSignupModal = lazy(() =>
-  //   import("../Components/HaveToSignupModal")
-  // );
+  const HaveToSignupModal = lazy(() =>
+    import("../Components/HaveToSignupModal")
+  );
 
   const params = useQueryParams();
   const movieID = params.get("id");
@@ -95,7 +94,7 @@ const RenderMovie = () => {
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      dispatch(addMovie({ id: id, title: title, director: director }));
+      // dispatch(addMovie({ id: id, title: title, director: director }));
 
       setMoviesIds([...moviesIds, id]);
       setToggleForList(true);
@@ -161,14 +160,14 @@ const RenderMovie = () => {
           />
         )}
       </div>
-      {/* <Suspense> */}
-      <HaveToSignupModal
-        open={openHaveToSignupModal}
-        onClose={() => {
-          setOpenHaveToSignupModal(false);
-        }}
-      />
-      {/* </Suspense> */}
+      <Suspense>
+        <HaveToSignupModal
+          open={openHaveToSignupModal}
+          onClose={() => {
+            setOpenHaveToSignupModal(false);
+          }}
+        />
+      </Suspense>
     </Container>
   );
 };

@@ -17,8 +17,6 @@ import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
-import MovieRatings from "../Components/MovieRatings";
-import { boolean } from "yup";
 
 const MovieCard = ({
   movie,

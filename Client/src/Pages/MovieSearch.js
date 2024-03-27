@@ -13,7 +13,6 @@ const MovieSearchResult = () => {
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  let user = useSelector((state) => state.user.value);
 
   useEffect(() => {
     if (!movieTitle) return null;

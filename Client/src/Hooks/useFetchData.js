@@ -22,7 +22,7 @@ const useFetchData = (url, userId) => {
     };
 
     fetchData();
-  }, [url, userId]); // Re-fetch if the userId changes
+  }, [url, userId]);
 
   return { data, loading, error };
 };

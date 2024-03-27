@@ -7,30 +7,11 @@ import { getUserMovies } from "../Features/movies";
 import useFetchData from "../Hooks/useFetchData";
 
 function Home() {
-  const [myMovies, setMyMovies] = useState([]);
-  const [user, setUser] = useState([]);
-  // let user = useSelector((state) => state.user.value);
-
   const Main = lazy(() => import("../Components/Main"));
+  let user = useSelector((state) => state.user.value);
+  const [myMovies, setMyMovies] = useState([]);
+
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    if (localStorage.getItem("token")) {
-      axios
-        .post("http://localhost:3636/user/verify", {
-          token: localStorage.getItem("token"),
-        })
-        .then(({ data }) => {
-          console.log(data);
-          dispatch(login({ _id: data._id, username: data.username }));
-          setUser(data);
-        })
-
-        .catch((err) => console.log(err));
-    } else {
-      dispatch(logout());
-    }
-  }, [localStorage.getItem("token")]);
 
   const { data } = useFetchData(`http://localhost:3636/movie/`, user._id);
 
@@ -49,7 +30,7 @@ function Home() {
   return (
     <div>
       <Suspense>
-        <Main />
+        <Main user={user} />
       </Suspense>
     </div>
   );

@@ -1,29 +1,18 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "./HaveToSignupModal";
-import SearchIcon from "@mui/icons-material/Search";
 import { Grid, Typography, Container, Box, useMediaQuery } from "@mui/material";
-import { useSelector } from "react-redux";
 import { useTheme } from "@mui/material/styles";
 import * as React from "react";
 import Poster from "./Poster";
 
-const Main = () => {
+const Main = ({ user }) => {
   const navigate = useNavigate();
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
-  let user = useSelector((state) => state.user.value);
-  const [title, setTitle] = useState("");
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const getTitle = (e) => {
-    e.preventDefault();
-    console.log(title);
-    // if (title !== "") {
-    //   navigate(`/MovieSearch?title=${title}`);
-    //   setTitle("");
-    // }
-  };
+  console.log(user);
 
   return (
     <div className="main-div">

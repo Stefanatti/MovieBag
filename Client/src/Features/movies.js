@@ -4,7 +4,7 @@ const initialStateValue = { id: "", title: "", director: "" };
 
 export const moviesSlice = createSlice({
   name: "movies",
-  initialState: { value: { initialStateValue } },
+  initialState: { value: initialStateValue },
   reducers: {
     getUserMovies: (state, action) => {
       state.value = action.payload;

@@ -66,9 +66,10 @@ const TvShowCard = ({
     setTrailer(
       tvShow.videos.results.filter(
         (video) =>
-          video.type === "Trailer" &&
-          video.site === "YouTube" &&
-          video.name === "Official Trailer"
+          (video.type === "Trailer" &&
+            video.site === "YouTube" &&
+            video.name.includes("Official")) ||
+          video.name.includes("Trailer")
       )
     );
   }, [tvShow]);

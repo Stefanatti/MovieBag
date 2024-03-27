@@ -10,20 +10,18 @@ import {
   Container,
   Box,
   TextField,
-  Stack,
   Link,
   InputAdornment,
   IconButton,
 } from "@mui/material";
 import { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login, logout } from "../Features/user";
-import { wait } from "@testing-library/user-event/dist/utils";
 
 const fields = [
   { label: "Username", name: "username" },
@@ -32,13 +30,12 @@ const fields = [
 
 const Login = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     username: "",
     password: "",
   });
-
-  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
 
   const handleClickShowPassword = () =>
@@ -47,8 +44,9 @@ const Login = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
   const {
-    reset,
+    // reset,
     register,
     handleSubmit,
     formState: { errors },
@@ -65,40 +63,40 @@ const Login = () => {
 
   const loginUser = async (e) => {
     try {
-      await axios
-        .post("http://localhost:3636/user/login", formData)
-        .then(({ data }) => {
-          if (data.token) {
-            localStorage.setItem("token", data.token);
-            navigate("/");
-          } else {
-            alert(data.message);
-          }
-        });
+      const response = await axios.post(
+        "http://localhost:3636/user/login",
+        formData
+      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        await verifyUser();
+      } else {
+        alert(response.data.message);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
     }
   };
 
-  // const verifyUser = async () => {
-  //   if (localStorage.getItem("token")) {
-  //  await  axios
-  //       .post("http://localhost:3636/user/verify", {
-  //         token: localStorage.getItem("token"),
-  //       })
-  //       .then(({ data }) => {
-  //         console.log(data);
-  //         localStorage.setItem("user", data.username);
-  //         localStorage.setItem("id", data._id);
+  const verifyUser = async () => {
+    if (localStorage.getItem("token")) {
+      await axios
+        .post("http://localhost:3636/user/verify", {
+          token: localStorage.getItem("token"),
+        })
+        .then(({ data }) => {
+          console.log(data);
+          localStorage.setItem("user", data.username);
+          localStorage.setItem("id", data._id);
 
-  //         dispatch(login({ _id: data._id, username: data.username }));
-  //         navigate("/");
-  //       })
-  //       .catch((err) => console.log(err));
-  //   } else {
-  //     dispatch(logout());
-  //   }
-  // };
+          dispatch(login({ _id: data._id, username: data.username }));
+          navigate("/");
+        })
+        .catch((err) => console.log(err));
+    } else {
+      dispatch(logout());
+    }
+  };
 
   return (
     <Container component="main" maxWidth="lg">

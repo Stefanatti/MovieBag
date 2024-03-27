@@ -25,7 +25,7 @@ import useFetchData from "./Hooks/useFetchData";
 
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
-  let user = useSelector((state) => state.user.value);
+  //let user = useSelector((state) => state.user.value);
   // console.log(user);
   // const dispatch = useDispatch();
   // const [myMovies, setMyMovies] = useState([]);

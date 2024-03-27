@@ -45,10 +45,7 @@ const YourTvShowsList = () => {
           director: response.data.director,
         })
       );
-
       setMyTvShows(response.data);
-
-      //   setMyUnwatchedMovies(response.data.filter((mov) => !mov.watched));
     } catch (err) {
       console.log(err);
     }
@@ -67,23 +64,6 @@ const YourTvShowsList = () => {
     );
   };
 
-  // const watchedTvShow = async (id) => {
-  //   const data = await fetch("http://localhost:3636/movie/watched/" + id, {
-  //     method: "PUT",
-  //   })
-  //     .then((res) => res.json())
-  //     .catch((err) => console.error("Error:", err));
-  //   setMyTvShows((myTvShows) =>
-  //     myTvShows.map((myTvShow) => {
-  //       if (myTvShow.id === data.id) {
-  //         myTvShow.watched = data.watched;
-  //       }
-  //       console.log(myTvShows);
-  //       return myTvShow;
-  //     })
-  //   );
-  // };
-
   useEffect(() => {
     if (!search) {
       setMyTvShows(myTvShows);
@@ -99,16 +79,6 @@ const YourTvShowsList = () => {
     firstTvShowIndex,
     lastTvShowIndex
   );
-
-  // const filterDirectors = () => {
-  //   setMyMovies(
-  //     myMovies.filter((myMovie) => {
-  //       return search.toLowerCase() === ""
-  //         ? myMovie
-  //         : myMovie.director.toLowerCase().includes(search);
-  //     })
-  //   );
-  // };
 
   return (
     <Container>
@@ -131,13 +101,6 @@ const YourTvShowsList = () => {
                 setSearch={setSearch}
                 search={search}
               />
-
-              {/* <MovieLibraryFilter 
-            filterFunction={filterDirectors}
-            setMyMovies={setMyMovies} 
-            myMovies={myMovies} 
-            setSearch={setSearch} 
-            search={search}/> */}
             </div>
 
             <TableContainer>

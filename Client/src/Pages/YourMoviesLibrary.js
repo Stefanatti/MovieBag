@@ -15,9 +15,7 @@ const YourMoviesLibrary = () => {
   let user = useSelector((state) => state.user.value);
 
   const [myMovies, setMyMovies] = useState([]);
-  //const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  // const [error, setError] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
   const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
@@ -50,22 +48,6 @@ const YourMoviesLibrary = () => {
       console.log(error.message);
     }
   };
-
-  // const watchedMovie = async (id) => {
-  //   const data = await fetch("http://localhost:3636/movie/watched/" + id, {
-  //     method: "PUT",
-  //   })
-  //     .then((res) => res.json())
-  //     .catch((err) => console.error("Error:", err));
-  //   setMyMovies((myMovies) =>
-  //     myMovies.map((myMovie) => {
-  //       if (myMovie.id === data.id) {
-  //         myMovie.watched = data.watched;
-  //       }
-  //       return myMovie;
-  //     })
-  //   );
-  // };
 
   useEffect(() => {
     if (!search) {

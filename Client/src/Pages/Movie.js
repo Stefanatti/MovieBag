@@ -15,7 +15,6 @@ const RenderMovie = () => {
   const HaveToSignupModal = lazy(() =>
     import("../Components/HaveToSignupModal")
   );
-
   const params = useQueryParams();
   const movieID = params.get("id");
   const navigate = useNavigate();
@@ -26,8 +25,6 @@ const RenderMovie = () => {
   const [movieRates, setMovieRates] = useState([]);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
-
-  const [error, setError] = useState("");
   const dispatch = useDispatch();
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
@@ -44,6 +41,7 @@ const RenderMovie = () => {
 
   useEffect(() => {
     if (moviesData) {
+      console.log(moviesData);
       const allMoviesIds = moviesData.map((value) => +value.id);
       setMoviesIds(allMoviesIds);
       if (allMoviesIds.includes(+movieID)) setToggleForList(true);
@@ -68,7 +66,6 @@ const RenderMovie = () => {
         const response = await axios.get(
           `http://localhost:3636/api/id/${movieID}`
         );
-        console.log(response.data);
         setMovie(response.data);
       } catch (err) {
         console.log(err);
@@ -94,7 +91,7 @@ const RenderMovie = () => {
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      // dispatch(addMovie({ id: id, title: title, director: director }));
+      dispatch(addMovie({ id: String(id), title: title, director: director }));
 
       setMoviesIds([...moviesIds, id]);
       setToggleForList(true);
@@ -102,7 +99,6 @@ const RenderMovie = () => {
       alert("This movie already has been added.");
     }
   };
-
   const AddToYourMoviesWatchlist = async (
     id,
     title,

@@ -1,19 +1,18 @@
-// import "../Styles/Movie.scss";
-import useQueryParams from "../Hooks/useQueryParams";
+import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MovieCard from "../Components/MovieCard";
+import MovieCard from "../../Components/MovieCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Container } from "@mui/material";
-import useFetchData from "../Hooks/useFetchData";
-import { getUserMovies, addMovie } from "../Features/movies";
+import useFetchData from "../../Hooks/useFetchData";
+import { addMovie } from "../../Features/movies";
 import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
   const HaveToSignupModal = lazy(() =>
-    import("../Components/HaveToSignupModal")
+    import("../../Components/HaveToSignupModal")
   );
   const params = useQueryParams();
   const movieID = params.get("id");

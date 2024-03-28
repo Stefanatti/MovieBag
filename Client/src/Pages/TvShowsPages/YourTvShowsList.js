@@ -1,14 +1,13 @@
-import "../Styles/YourMoviesLibrary.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../Components/Pagination";
-import MoviesTable from "../Components/MoviesTable";
+import Pagination from "../../Components/Pagination";
+import MoviesTable from "../../Components/MoviesTable";
 import { useSelector, useDispatch } from "react-redux";
 import { Container, Box, TableContainer } from "@mui/material";
-import MovieLibraryFilter from "../Components/MovieLibraryFilter";
-import { getUserMovies } from "../Features/movies";
+import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
+import { getUserMovies } from "../../Features/movies";
 
 const YourTvShowsList = () => {
   const navigate = useNavigate();

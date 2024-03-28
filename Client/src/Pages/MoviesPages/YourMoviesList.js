@@ -1,15 +1,15 @@
-import "../Styles/YourMoviesLibrary.scss";
+import "../../Styles/YourMoviesLibrary.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-import Pagination from "../Components/Pagination";
-import MoviesTable from "../Components/MoviesTable";
+import Pagination from "../../Components/Pagination";
+import MoviesTable from "../../Components/MoviesTable";
 import { useSelector, useDispatch } from "react-redux";
 import { Container, Box, TableContainer } from "@mui/material";
-import MovieLibraryFilter from "../Components/MovieLibraryFilter";
-import { getUserMovies } from "../Features/movies";
-import useFetchData from "../Hooks/useFetchData";
+import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
+import { getUserMovies } from "../../Features/movies";
+import useFetchData from "../../Hooks/useFetchData";
 const YourMoviesLibrary = () => {
   const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);

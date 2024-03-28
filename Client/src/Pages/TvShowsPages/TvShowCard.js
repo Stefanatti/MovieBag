@@ -1,34 +1,29 @@
-import useQueryParams from "../Hooks/useQueryParams";
+import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import HaveToSignupModal from "../Components/HaveToSignupModal";
-import TvShowCard from "../Components/TvShowCard";
+//import { useNavigate } from "react-router-dom";
+import HaveToSignupModal from "../../Components/HaveToSignupModal";
+import TvShowCard from "../../Components/TvShowCard";
 import { useSelector } from "react-redux";
 import { Container } from "@mui/material";
-import useFetchData from "../Hooks/useFetchData";
+import useFetchData from "../../Hooks/useFetchData";
 
 const RenderTvShowCard = () => {
   const params = useQueryParams();
   const tvShowID = params.get("id");
 
-  const navigate = useNavigate();
-  const [myTvShows, setMyTvShows] = useState([]);
-  const [movie, setMovie] = useState("");
+  //const navigate = useNavigate();
   const [tvShow, setTvShow] = useState("");
 
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
-
-  const [movieRates, setMovieRates] = useState([]);
   const [tvShowIds, setTvShowIds] = useState([]);
   const [watchlistTvShowsIds, setWatchlistTvShowsIds] = useState([]);
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
-  // let movies = useSelector((state) => state.movies.value);
 
   const { data: tvShowsData } = useFetchData(
     `http://localhost:3636/tvShow/`,

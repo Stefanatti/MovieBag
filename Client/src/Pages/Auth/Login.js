@@ -1,9 +1,6 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userSignInSchema } from "../Validations/UserValidation";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { userLogInSchema } from "../../Validations/UserValidation";
 import {
   Grid,
   Paper,
@@ -13,24 +10,30 @@ import {
   Container,
   Box,
   TextField,
+  Link,
   InputAdornment,
   IconButton,
-  Stack,
-  Link,
 } from "@mui/material";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { login, logout } from "../../Features/user";
 
 const fields = [
   { label: "Username", name: "username" },
-  { label: "Email", name: "email" },
   { label: "Password", name: "password" },
 ];
-const Signup = () => {
+
+const Login = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [formData, setFormData] = useState({
     username: "",
-    email: "",
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
@@ -41,6 +44,16 @@ const Signup = () => {
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
+
+  const {
+    // reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userLogInSchema),
+  });
+
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -48,32 +61,43 @@ const Signup = () => {
     });
   };
 
-  const {
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(userSignInSchema),
-  });
-
-  const createUser = async (e) => {
+  const loginUser = async (e) => {
     try {
-      await axios
-        .post("http://localhost:3636/user/signup", formData)
-        .then(({ data }) => {
-          console.log(data);
-          if (data.message === true) {
-            navigate("/login");
-          } else {
-            alert(data.message);
-          }
-        });
+      const response = await axios.post(
+        "http://localhost:3636/user/login",
+        formData
+      );
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        await verifyUser();
+      } else {
+        alert(response.data.message);
+      }
     } catch (error) {
       console.error("Error submitting form:", error);
-      reset();
     }
   };
+
+  const verifyUser = async () => {
+    if (localStorage.getItem("token")) {
+      await axios
+        .post("http://localhost:3636/user/verify", {
+          token: localStorage.getItem("token"),
+        })
+        .then(({ data }) => {
+          console.log(data);
+          localStorage.setItem("user", data.username);
+          localStorage.setItem("id", data._id);
+
+          dispatch(login({ _id: data._id, username: data.username }));
+          navigate("/");
+        })
+        .catch((err) => console.log(err));
+    } else {
+      dispatch(logout());
+    }
+  };
+
   return (
     <Container component="main" maxWidth="lg">
       <Box
@@ -91,7 +115,7 @@ const Signup = () => {
             md={7}
             sx={{
               backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
+                "url(https://alternativemovieposters.com/wp-content/uploads/2013/12/mementobg.jpg)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"
@@ -100,7 +124,6 @@ const Signup = () => {
               backgroundSize: "cover",
               backgroundPosition: "center",
               border: "2px solid var(--home-page-posters-color)",
-              borderRadius: "2%",
               marginBottom: 5,
             }}
           />
@@ -132,12 +155,12 @@ const Signup = () => {
                   marginBottom: 3,
                 }}
               >
-                Sign In
+                Log In
               </Typography>
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit(createUser)}
+                onSubmit={handleSubmit(loginUser)}
                 sx={{
                   mt: 1,
                   display: "flex",
@@ -212,13 +235,13 @@ const Signup = () => {
                     "&:hover": { bgcolor: "var(--basic-color)" },
                   }}
                 >
-                  Sign in
+                  Log in
                 </Button>
 
                 <Grid container>
                   <Grid item>
-                    <Link href={"/login"} variant="body2">
-                      {"Have you already an account? Login"}
+                    <Link href={"/signup"} variant="body2">
+                      {"Don't have an account? Sign Up"}
                     </Link>
                   </Grid>
                 </Grid>
@@ -231,4 +254,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default Login;

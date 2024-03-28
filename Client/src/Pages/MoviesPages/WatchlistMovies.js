@@ -1,10 +1,7 @@
-import "../Styles/MovieSearch.scss";
-import useQueryParams from "../Hooks/useQueryParams";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import ClipLoader from "react-spinners/ClipLoader";
-import useFetchData from "../Hooks/useFetchData";
+import useFetchData from "../../Hooks/useFetchData";
 import { useSelector } from "react-redux";
 import DeleteIcon from "@mui/icons-material/Delete";
 import {
@@ -18,21 +15,14 @@ import {
   Card,
   CardMedia,
   CardActions,
-  Button,
   CardContent,
-  Paper,
   styled,
-  Avatar,
-  useMediaQuery,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const WatchlistMovies = () => {
   const navigate = useNavigate();
 
-  //   const params = useQueryParams();
-  //   const movieTitle = params.get("title");
-  //   const navigate = useNavigate();
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   //   const [loading, setLoading] = useState(true);
   //   let user = useSelector((state) => state.user.value);
@@ -63,10 +53,6 @@ const WatchlistMovies = () => {
       const allWatchlistMovies = data;
       setWatchlistMovies(allWatchlistMovies);
     }
-    //   const moviesssIds = data.map((value) => +value.id);
-    //   setMoviesIds(moviesssIds);
-    //   if (moviesssIds.includes(+movieID)) setToggle(true);
-    // }
   }, [data]);
   const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
 

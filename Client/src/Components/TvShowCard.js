@@ -299,7 +299,7 @@ const TvShowCard = ({
           anchorEl={anchorEl}
           handlePopoverOpen={handlePopoverOpen}
           handlePopoverClose={handlePopoverClose}
-          popOverText={toggleForList ? "In your List" : "Add to list"}
+          popOverText={toggleForList ? "In your List!" : "Add to list"}
         />
         <MouseOverPopover
           open={open2}
@@ -307,7 +307,7 @@ const TvShowCard = ({
           handlePopoverOpen={handlePopoverOpen2}
           handlePopoverClose={handlePopoverClose2}
           popOverText={
-            toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
+            toggleForWatchlist ? "In your Watchlist!" : "Add to Watchlist"
           }
         />
         <TrailerModal

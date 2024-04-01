@@ -1,5 +1,11 @@
 import "./MovieApp.scss";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
 import Home from "./Pages/Home";
 import Signup from "./Pages/Auth/Signup";
 import Login from "./Pages/Auth/Login";
@@ -18,6 +24,12 @@ import { useSelector } from "react-redux";
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
 
+  const PrivateRoute = ({ element, ...rest }) => {
+    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
+
+    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
+  };
+
   return (
     <div className={`App ${theme.theme}`}>
       <Router>
@@ -27,13 +39,27 @@ function MovieApp() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/yourmovies" element={<YourMoviesLibrary />} />
-            <Route path="/yourTvShows" element={<YourTvShowsList />} />
-            <Route path="/watchlist/movies" element={<WatchlistMovies />} />
-            <Route path="/watchlist/TvShows" element={<WatchlistTvShows />} />
-            <Route path="/movieSearch" element={<MovieSearchResult />} />
-            <Route path="/movie" element={<RenderMovie />} />
-            <Route path="/tvShow" element={<RenderTvShowCard />} />
+            <Route path="/yourmovies" element={<PrivateRoute />}>
+              <Route index element={<YourMoviesLibrary />} />
+            </Route>
+            <Route path="/yourTvShows" element={<PrivateRoute />}>
+              <Route index element={<YourTvShowsList />} />
+            </Route>
+            <Route path="/watchlist/movies" element={<PrivateRoute />}>
+              <Route index element={<WatchlistMovies />} />
+            </Route>
+            <Route path="/watchlist/TvShows" element={<PrivateRoute />}>
+              <Route index element={<WatchlistTvShows />} />
+            </Route>
+            <Route path="/movieSearch" element={<PrivateRoute />}>
+              <Route index element={<MovieSearchResult />} />
+            </Route>
+            <Route path="/movie" element={<PrivateRoute />}>
+              <Route index element={<RenderMovie />} />
+            </Route>
+            <Route path="/tvShow" element={<PrivateRoute />}>
+              <Route index element={<RenderTvShowCard />} />
+            </Route>
             <Route path="/*" element={<WrongPage404 />} />
           </Routes>
         </div>

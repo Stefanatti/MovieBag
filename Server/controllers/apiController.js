@@ -10,9 +10,12 @@ const options = {
   method: "GET",
 };
 
-const searchForMovies = (req, res) => {
+const searchForMoviesAndTvShows = (req, res) => {
   const query = req.params.search;
-  fetch(`${url}search/multi?query=${query}&api_key=${apikey}`, options)
+  fetch(
+    `${url}search/multi?query=${query}&sort_by=popularity.desc&api_key=${apikey}`,
+    options
+  )
     .then((res) => res.json())
     .then((json) => res.send(json))
     .catch((err) => console.error("error:" + err));
@@ -66,7 +69,7 @@ const searchForOneTvShow = (req, res) => {
 };
 
 module.exports = {
-  searchForMovies,
+  searchForMoviesAndTvShows,
   searchForOneMovie,
   searchForOneTvShow,
 };

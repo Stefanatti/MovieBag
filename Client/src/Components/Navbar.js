@@ -1,20 +1,15 @@
 import "../Styles/Navbar.scss";
 import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
-import axios from "axios";
+import { useState } from "react";
 import { useLocation } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
-import { login, logout } from "../Features/user";
-import { getUserMovies } from "../Features/movies";
 import { styled, alpha } from "@mui/material/styles";
 import ThemeSwitcher from "./ThemeSwitcher";
-//-------------------
 import * as React from "react";
 import { lazy, Suspense } from "react";
 import PropTypes from "prop-types";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
-import useFetchData from "../Hooks/useFetchData";
 
 import {
   AppBar,
@@ -120,15 +115,10 @@ const Navbar = (props) => {
 
   const navigate = useNavigate();
   const location = useLocation();
-  const [myMovies, setMyMovies] = useState([]);
-  const [searchValue, setSearchValue] = useState("");
-
   const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
-  const dispatch = useDispatch();
   const path = location.pathname;
-  const pageName = path.substring(1);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState("other-theme");
 

@@ -98,6 +98,7 @@ const MovieCard = ({
             backgroundSize: "cover",
             backgroundPosition: "center",
             border: "2px solid grey",
+            overflow: "auto",
           }}
         ></Paper>
       </Grid>
@@ -108,12 +109,13 @@ const MovieCard = ({
             background: "var(--main-card-color)",
             display: "flex",
             flexDirection: "column",
+            overflow: "auto",
           }}
         >
           <Container>
-            <Stack spacing={1} direction={"column"}>
+            <Stack spacing={2} direction={"column"}>
               <Typography
-                variant="h2"
+                variant="h3"
                 sx={{
                   color: "rgb(234, 204, 231)",
                   fontFamily: "'Rubik', Sans-serif",
@@ -181,7 +183,13 @@ const MovieCard = ({
               </StyledTypography>
 
               <Box
-                sx={{ display: "flex", gap: "20px", alignItems: "baseline" }}
+                sx={{
+                  display: "flex",
+                  gap: "20px",
+
+                  alignItems: "baseline",
+                  marginBottom: 5,
+                }}
               >
                 {user._id ? (
                   <>

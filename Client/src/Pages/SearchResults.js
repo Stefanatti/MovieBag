@@ -19,8 +19,7 @@ const MovieSearchResult = () => {
     axios
       .get(`http://localhost:3636/api/${movieTitle}`)
       .then(({ data }) => {
-        console.log(data);
-        setMovies(data.results);
+        setMovies(data);
       })
       .catch((err) => console.log(err))
       .finally(() => {

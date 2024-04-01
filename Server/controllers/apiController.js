@@ -10,15 +10,24 @@ const options = {
   method: "GET",
 };
 
-const searchForMoviesAndTvShows = (req, res) => {
-  const query = req.params.search;
-  fetch(
-    `${url}search/multi?query=${query}&sort_by=popularity.desc&api_key=${apikey}`,
-    options
-  )
-    .then((res) => res.json())
-    .then((json) => res.send(json))
-    .catch((err) => console.error("error:" + err));
+const searchForMoviesAndTvShows = async (req, res) => {
+  try {
+    const query = req.params.search;
+    const response = await fetch(
+      `${url}search/multi?query=${query}&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const sortedResults = json.results.sort(
+      (a, b) => b.vote_count - a.vote_count
+    );
+    res.send(sortedResults);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movies data." });
+  }
 };
 
 const searchForOneMovie = async (req, res) => {

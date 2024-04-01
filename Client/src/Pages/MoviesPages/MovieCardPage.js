@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import MovieCard from "../../Components/MovieCard";
 import { useSelector, useDispatch } from "react-redux";
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 // import { addMovie } from "../../Features/movies";
 import { lazy, Suspense } from "react";
@@ -91,6 +91,7 @@ const RenderMovie = () => {
         .then((response) => {
           setMoviesIds([...moviesIds, id]);
           setToggleForList(true);
+          //dispatch(addMovie({ id: String(id), title: title, director: director }));
         });
     } catch (err) {
       console.log(err);
@@ -98,29 +99,6 @@ const RenderMovie = () => {
     }
   };
 
-  // const AddToYourMovies = async (id, title, year, type, director) => {
-  //   try{
-  //   // if (!moviesIds.includes(id)) {
-  //     await axios
-  //       .post("http://localhost:3636/movie/", {
-  //         id: id,
-  //         title: title,
-  //         year: year,
-  //         type: type,
-  //         director: director,
-
-  //         owner: user._id,
-  //       })
-  //       .catch((err) => console.log(err));
-  //     //dispatch(addMovie({ id: String(id), title: title, director: director }));
-
-  //     setMoviesIds([...moviesIds, id]);
-  //     setToggleForList(true);
-  //   }catch(err) =>{ console.log(err)}
-  //   // } else {
-  //   //   alert("This movie already has been added.");
-
-  // };
   const AddToYourMoviesWatchlist = async (
     id,
     title,
@@ -154,13 +132,18 @@ const RenderMovie = () => {
 
   return (
     <Container maxWidth="lg">
-      <div className="movie-card-container">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
         {loading ? (
           <ClipLoader
             color={"  var(--basic-color)"}
             className="loading"
             loading={loading}
-            cssOverride={{ marginBottom: " 10vw" }}
+            //cssOverride={{ marginBottom: " 10vw" }}
             size={50}
             aria-label="Loading Spinner"
             data-testid="loader"
@@ -177,7 +160,7 @@ const RenderMovie = () => {
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />
         )}
-      </div>
+      </Box>
       <Suspense>
         <HaveToSignupModal
           open={openHaveToSignupModal}

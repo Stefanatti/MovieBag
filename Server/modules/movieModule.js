@@ -14,6 +14,16 @@ const MovieSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  ratings: {
+    stars: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: null,
+      //required: true,
+    },
+  },
+
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 

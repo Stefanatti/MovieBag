@@ -20,7 +20,6 @@ import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 
 const MovieCard = ({
   movie,
-  movieRates,
   user,
   toggleForList,
   toggleForWatchlist,
@@ -33,18 +32,12 @@ const MovieCard = ({
   const [actors, setActors] = useState("");
   const [movieYear, setMovieYear] = useState("");
   const [trailer, setTrailer] = useState("");
-  const [popOverText, setPopOverText] = useState(
-    toggleForList ? "In your List" : "Add to list"
-  );
-  const [popOverText2, setPopOverText2] = useState(
-    toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
-  );
+  const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
-
-  const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
+
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -310,16 +303,17 @@ const MovieCard = ({
           anchorEl={anchorEl}
           handlePopoverOpen={handlePopoverOpen}
           handlePopoverClose={handlePopoverClose}
-          popOverText={popOverText}
+          popOverText={toggleForList ? "In your List!" : "Add to list"}
         />
         <MouseOverPopover
           open={open2}
           anchorEl={anchorEl2}
           handlePopoverOpen={handlePopoverOpen2}
           handlePopoverClose={handlePopoverClose2}
-          popOverText={popOverText2}
+          popOverText={
+            toggleForWatchlist ? "In your Watchlist!" : "Add to Watchlist"
+          }
         />
-
         <TrailerModal
           open={openModal}
           onClose={handleClose}

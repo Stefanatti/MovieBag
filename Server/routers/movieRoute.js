@@ -5,6 +5,7 @@ router.get("/:id", movieController.getMovie);
 router.post("/", movieController.addMovie);
 router.delete("/:id", movieController.deleteMovie);
 router.put("/watched/:id", movieController.watchMovie);
-router.post("/watchlist/", movieController.addWatchlist);
+router.put("/rate/:id", movieController.rateMovie);
+//router.post("/:id/rate", movieController.rateMovie);
 
 module.exports = router;

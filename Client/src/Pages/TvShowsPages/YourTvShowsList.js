@@ -79,6 +79,30 @@ const YourTvShowsList = () => {
     lastTvShowIndex
   );
 
+  const handleRatingChange = (id, stars) => {
+    setMyTvShows((prevTvShows) =>
+      prevTvShows.map((tvShow) =>
+        tvShow._id === id ? { ...tvShow, ratings: { stars: stars } } : tvShow
+      )
+    );
+  };
+
+  const rateTheTvShow = async (id, stars) => {
+    handleRatingChange(id, stars);
+    try {
+      const data = {
+        stars: stars,
+      };
+      await axios
+        .put(`http://localhost:3636/tvShow/rate/${id}`, data)
+        .then((response) => {
+          console.log("Success:", response.data);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <Container>
       <Box sx={{ zIndex: "auto" }}>
@@ -108,6 +132,7 @@ const YourTvShowsList = () => {
                 myMovies={myTvShows}
                 filterMovies={filterTvShows}
                 path={`/tvShow?id=`}
+                rateTheMovie={rateTheTvShow}
                 currentMyMovies={currentMyTvShows}
                 navigate={navigate}
                 removeMovie={removeTvShow}

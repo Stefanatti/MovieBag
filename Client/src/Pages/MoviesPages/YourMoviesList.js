@@ -18,7 +18,6 @@ const YourMoviesLibrary = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
-  const [myUnwatchedMovies, setMyUnwatchedMovies] = useState([]);
   const [watched, setWatched] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
@@ -39,11 +38,34 @@ const YourMoviesLibrary = () => {
       })
     );
   }, [data]);
-
   const removeMovie = async (id) => {
     try {
       await axios.delete(`http://localhost:3636/movie/${id}`);
       setMyMovies((MyMovies) => MyMovies.filter((movie) => movie._id !== id));
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleRatingChange = (id, stars) => {
+    setMyMovies((prevMovies) =>
+      prevMovies.map((movie) =>
+        movie._id === id ? { ...movie, ratings: { stars: stars } } : movie
+      )
+    );
+  };
+
+  const rateTheMovie = async (id, stars) => {
+    handleRatingChange(id, stars);
+    try {
+      const data = {
+        stars: stars,
+      };
+      await axios
+        .put(`http://localhost:3636/movie/rate/${id}`, data)
+        .then((response) => {
+          console.log("Success:", response.data);
+        });
     } catch (error) {
       console.log(error.message);
     }
@@ -109,7 +131,7 @@ const YourMoviesLibrary = () => {
                 filterMovies={filterMovies}
                 path={`/movie?id=`}
                 currentMyMovies={currentMyMovies}
-                // watchedMovie={watchedMovie}
+                rateTheMovie={rateTheMovie}
                 navigate={navigate}
                 removeMovie={removeMovie}
                 watched={watched}

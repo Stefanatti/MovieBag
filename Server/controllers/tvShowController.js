@@ -11,10 +11,20 @@ const getTvShow = async (req, res) => {
   }
 };
 
-const addTvShow = (req, res) => {
-  let newTvShow = new TvShow(req.body);
-  newTvShow.save();
-  res.send({ message: "inserted " });
+const addTvShow = async (req, res) => {
+  try {
+    const tvShowExists = await TvShow.exists({ title: req.body.name });
+    if (tvShowExists) {
+      res.status(400).send({ message: "TvShow already exists in your list." });
+    } else {
+      let newTvShow = new TvShow(req.body);
+      await newTvShow.save();
+      res.send({ message: "TvShow added to list" });
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Something went wrong");
+  }
 };
 
 const deleteTvShow = async (req, res) => {
@@ -29,10 +39,29 @@ const watchTvShow = async (req, res) => {
   res.send(tvShow);
 };
 
+const rateTvShow = async (req, res) => {
+  try {
+    const { stars } = req.body;
+    const tvShow = await TvShow.findOne({ _id: req.params.id });
+    tvShow.ratings.stars = stars;
+    if (stars < 0 || stars > 5) {
+      return res
+        .status(400)
+        .send({ message: "Invalid stars value. Must be between 1 and 5." });
+    } else {
+      await tvShow.save();
+      res.send(tvShow);
+    }
+  } catch (err) {
+    console.log(err);
+    res.status(500).send({ message: "Something went wrong" });
+  }
+};
+
 module.exports = {
   getTvShow,
   addTvShow,
   deleteTvShow,
   watchTvShow,
-  //fetchTvShows,
+  rateTvShow,
 };

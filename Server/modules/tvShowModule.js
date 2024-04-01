@@ -14,6 +14,14 @@ const TvShowSchema = new mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  ratings: {
+    stars: {
+      type: Number,
+      min: 0,
+      max: 5,
+      default: null,
+    },
+  },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
 });
 

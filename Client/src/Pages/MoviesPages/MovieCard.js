@@ -7,7 +7,7 @@ import MovieCard from "../../Components/MovieCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Container } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
-import { addMovie } from "../../Features/movies";
+// import { addMovie } from "../../Features/movies";
 import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
@@ -24,6 +24,7 @@ const RenderMovie = () => {
   const [movieRates, setMovieRates] = useState([]);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
+
   const dispatch = useDispatch();
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
@@ -40,22 +41,21 @@ const RenderMovie = () => {
 
   useEffect(() => {
     if (moviesData) {
-      console.log(moviesData);
-      const allMoviesIds = moviesData.map((value) => +value.id);
+      const allMoviesIds = moviesData.map((value) => value.id);
+      if (allMoviesIds.includes(movieID)) setToggleForList(true);
       setMoviesIds(allMoviesIds);
-      if (allMoviesIds.includes(+movieID)) setToggleForList(true);
     }
   }, [moviesData]);
 
   useEffect(() => {
     if (watchlistMoviesData) {
       const allWatchlistMoviesIds = watchlistMoviesData.map(
-        (value) => +value.id
+        (value) => value.id
       );
+      if (allWatchlistMoviesIds.includes(movieID)) setToggleForWatchlist(true);
       setWatchlistMoviesIds(allWatchlistMoviesIds);
-      if (watchlistMoviesIds.includes(+movieID)) setToggleForWatchlist(true);
     }
-  }, [watchlistMoviesData]);
+  }, [watchlistMoviesData, movieID]);
 
   useEffect(() => {
     if (!movieID) return;
@@ -78,7 +78,7 @@ const RenderMovie = () => {
   }, [movieID]);
 
   const AddToYourMovies = async (id, title, year, type, director) => {
-    if (!moviesIds.includes(id)) {
+    try {
       await axios
         .post("http://localhost:3636/movie/", {
           id: id,
@@ -86,18 +86,41 @@ const RenderMovie = () => {
           year: year,
           type: type,
           director: director,
-
           owner: user._id,
         })
-        .catch((err) => console.log(err));
-      dispatch(addMovie({ id: String(id), title: title, director: director }));
-
-      setMoviesIds([...moviesIds, id]);
-      setToggleForList(true);
-    } else {
-      alert("This movie already has been added.");
+        .then((response) => {
+          setMoviesIds([...moviesIds, id]);
+          setToggleForList(true);
+        });
+    } catch (err) {
+      console.log(err);
+      alert(err.response.data.message);
     }
   };
+
+  // const AddToYourMovies = async (id, title, year, type, director) => {
+  //   try{
+  //   // if (!moviesIds.includes(id)) {
+  //     await axios
+  //       .post("http://localhost:3636/movie/", {
+  //         id: id,
+  //         title: title,
+  //         year: year,
+  //         type: type,
+  //         director: director,
+
+  //         owner: user._id,
+  //       })
+  //       .catch((err) => console.log(err));
+  //     //dispatch(addMovie({ id: String(id), title: title, director: director }));
+
+  //     setMoviesIds([...moviesIds, id]);
+  //     setToggleForList(true);
+  //   }catch(err) =>{ console.log(err)}
+  //   // } else {
+  //   //   alert("This movie already has been added.");
+
+  // };
   const AddToYourMoviesWatchlist = async (
     id,
     title,

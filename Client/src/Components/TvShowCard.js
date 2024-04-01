@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import TrailerModal from "./Modal";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-
 import MouseOverPopover from "../Components/PopOver";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
@@ -15,15 +14,12 @@ import {
   Paper,
   styled,
   Avatar,
-  useMediaQuery,
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
-import MovieRatings from "../Components/MovieRatings";
 
 const TvShowCard = ({
   tvShow,
-  movieRates,
   user,
   toggleForList,
   toggleForWatchlist,
@@ -32,7 +28,6 @@ const TvShowCard = ({
   setOpenHaveToSignupModal,
 }) => {
   const [creator, setCreator] = useState("");
-  const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
   const [tvShowYear, setTvShowYear] = useState("");
   const [anchorEl, setAnchorEl] = useState(null);
@@ -41,12 +36,7 @@ const TvShowCard = ({
   const [openModal, setOpenModal] = useState(false);
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
-  const [popOverText, setPopOverText] = useState(
-    toggleForList ? "In your List" : "Add to list"
-  );
-  const [popOverText2, setPopOverText2] = useState(
-    toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
-  );
+
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
     variant: { variant },
@@ -73,7 +63,7 @@ const TvShowCard = ({
       )
     );
   }, [tvShow]);
-  console.log(trailer);
+
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -309,14 +299,16 @@ const TvShowCard = ({
           anchorEl={anchorEl}
           handlePopoverOpen={handlePopoverOpen}
           handlePopoverClose={handlePopoverClose}
-          popOverText={popOverText}
+          popOverText={toggleForList ? "In your List" : "Add to list"}
         />
         <MouseOverPopover
           open={open2}
           anchorEl={anchorEl2}
           handlePopoverOpen={handlePopoverOpen2}
           handlePopoverClose={handlePopoverClose2}
-          popOverText={popOverText2}
+          popOverText={
+            toggleForWatchlist ? "In your Watchlist" : "Add to Watchlist"
+          }
         />
         <TrailerModal
           open={openModal}

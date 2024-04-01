@@ -1,14 +1,10 @@
 import * as React from "react";
 import Popover from "@mui/material/Popover";
 import Typography from "@mui/material/Typography";
-import { useState } from "react";
 
 export default function MouseOverPopover({
   open,
   popOverText,
-
-  toggleForList,
-  toggleForWatchlist,
   handlePopoverClose,
   anchorEl,
 }) {

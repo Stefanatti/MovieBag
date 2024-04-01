@@ -37,19 +37,20 @@ const RenderTvShowCard = () => {
 
   useEffect(() => {
     if (tvShowsData) {
-      const allTvShowIds = tvShowsData.map((value) => +value.id);
+      const allTvShowIds = tvShowsData.map((value) => value.id);
       setTvShowIds(allTvShowIds);
-      if (allTvShowIds.includes(+tvShowID)) setToggleForList(true);
+      if (allTvShowIds.includes(tvShowID)) setToggleForList(true);
     }
   }, [tvShowsData]);
 
   useEffect(() => {
     if (watchlistTvShowsData) {
       const allWatchlistTvShowsIds = watchlistTvShowsData.map(
-        (value) => +value.id
+        (value) => value.id
       );
+      if (allWatchlistTvShowsIds.includes(tvShowID))
+        setToggleForWatchlist(true);
       setWatchlistTvShowsIds(allWatchlistTvShowsIds);
-      if (watchlistTvShowsIds.includes(+tvShowID)) setToggleForWatchlist(true);
     }
   }, [watchlistTvShowsData]);
 
@@ -75,7 +76,7 @@ const RenderTvShowCard = () => {
   }, [tvShowID]);
 
   const AddToYourTvShows = async (id, name, year, type, creator) => {
-    if (!tvShowIds.includes(id)) {
+    try {
       await axios
         .post("http://localhost:3636/tvShow/", {
           id: id,
@@ -85,14 +86,15 @@ const RenderTvShowCard = () => {
           creator: creator,
           owner: user._id,
         })
-        .catch((err) => console.log(err));
-      setTvShowIds([...tvShowIds, id]);
-      setToggleForList(true);
-    } else {
-      alert("This TV Show already has been added.");
+        .then((response) => {
+          setTvShowIds([...tvShowIds, id]);
+          setToggleForList(true);
+        });
+    } catch (err) {
+      console.log(err);
+      alert(err.response.data.message);
     }
   };
-
   const AddToYouTvShowsWatchlist = async (
     id,
     name,

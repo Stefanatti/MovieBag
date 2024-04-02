@@ -64,7 +64,7 @@ const Login = () => {
   const loginUser = async (e) => {
     try {
       const response = await axios.post(
-        "http://localhost:3636/user/login",
+        "https://moviebag-1bhe.onrender.com/user/login",
         formData
       );
       if (response.data.token) {
@@ -81,7 +81,7 @@ const Login = () => {
   const verifyUser = async () => {
     if (localStorage.getItem("token")) {
       await axios
-        .post("http://localhost:3636/user/verify", {
+        .post("https://moviebag-1bhe.onrender.com/verify", {
           token: localStorage.getItem("token"),
         })
         .then(({ data }) => {

@@ -60,7 +60,7 @@ const Signup = () => {
   const createUser = async (e) => {
     try {
       await axios
-        .post("http://localhost:3636/user/signup", formData)
+        .post("https://moviebag-1bhe.onrender.com/user/signup", formData)
         .then(({ data }) => {
           console.log(data);
           if (data.message === true) {

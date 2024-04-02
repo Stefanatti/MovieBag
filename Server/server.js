@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const path = require("path");
 const userRooter = require("./routers/userRoute.js");
 const movieRooter = require("./routers/movieRoute");
 const watchlistMovieRooter = require("./routers/watchlistMovieRoute");
@@ -10,6 +11,7 @@ var bodyParser = require("body-parser");
 const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
+app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/user", userRooter);
 app.use("/movie", movieRooter);

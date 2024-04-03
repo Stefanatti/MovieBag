@@ -35,8 +35,8 @@ const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
 const navItems = [
-  "Your Tv Shows",
   "Your Movies",
+  "Your Tv Shows",
   "Movies Watchlist",
   "Tv Watchlist",
 ];

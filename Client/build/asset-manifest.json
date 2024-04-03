@@ -1,0 +1,19 @@
+{
+  "files": {
+    "main.css": "./static/css/main.2c39fe47.css",
+    "main.js": "./static/js/main.ae74ec6e.js",
+    "static/js/482.a095c67b.chunk.js": "./static/js/482.a095c67b.chunk.js",
+    "static/js/362.6fe4e70a.chunk.js": "./static/js/362.6fe4e70a.chunk.js",
+    "static/media/strain_lighthouse.jpg": "./static/media/strain_lighthouse.29ac64a8484ce41a5bb7.jpg",
+    "static/media/maxresdefault.jpg": "./static/media/maxresdefault.b5c8125e1f85f5738615.jpg",
+    "index.html": "./index.html",
+    "main.2c39fe47.css.map": "./static/css/main.2c39fe47.css.map",
+    "main.ae74ec6e.js.map": "./static/js/main.ae74ec6e.js.map",
+    "482.a095c67b.chunk.js.map": "./static/js/482.a095c67b.chunk.js.map",
+    "362.6fe4e70a.chunk.js.map": "./static/js/362.6fe4e70a.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.2c39fe47.css",
+    "static/js/main.ae74ec6e.js"
+  ]
+}

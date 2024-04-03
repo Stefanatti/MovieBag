@@ -12,6 +12,7 @@ import { getUserMovies } from "../../Features/movies";
 const YourTvShowsList = () => {
   const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
+  const url = process.env.REACT_APP_URL;
 
   const [myTvShows, setMyTvShows] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,9 +35,7 @@ const YourTvShowsList = () => {
 
   const getTvShows = async () => {
     try {
-      const response = await axios.get(
-        "http://localhost:3636/tvShow/" + user._id
-      );
+      const response = await axios.get(url + `/tvShow/` + user._id);
       dispatch(
         getUserMovies({
           id: response.data.id,
@@ -51,12 +50,10 @@ const YourTvShowsList = () => {
   };
 
   const removeTvShow = async (id) => {
-    const data = await axios
-      .delete("http://localhost:3636/tvShow/" + id)
-      .then((res) => {
-        getTvShows();
-        return res;
-      });
+    const data = await axios.delete(url + `/tvShow/` + id).then((res) => {
+      getTvShows();
+      return res;
+    });
     getTvShows();
     setMyTvShows((myTvShows) =>
       myTvShows.filter((myTvShow) => myTvShow.id !== data.id)
@@ -93,11 +90,9 @@ const YourTvShowsList = () => {
       const data = {
         stars: stars,
       };
-      await axios
-        .put(`http://localhost:3636/tvShow/rate/${id}`, data)
-        .then((response) => {
-          console.log("Success:", response.data);
-        });
+      await axios.put(url + `/tvShow/rate/${id}`, data).then((response) => {
+        console.log("Success:", response.data);
+      });
     } catch (error) {
       console.log(error.message);
     }

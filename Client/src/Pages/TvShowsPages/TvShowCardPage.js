@@ -6,12 +6,13 @@ import { useEffect, useState } from "react";
 import HaveToSignupModal from "../../Components/HaveToSignupModal";
 import TvShowCard from "../../Components/TvShowCard";
 import { useSelector } from "react-redux";
-import { Container } from "@mui/material";
+import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 
 const RenderTvShowCard = () => {
   const params = useQueryParams();
   const tvShowID = params.get("id");
+  const url = process.env.REACT_APP_URL;
 
   //const navigate = useNavigate();
   const [tvShow, setTvShow] = useState("");
@@ -25,13 +26,10 @@ const RenderTvShowCard = () => {
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
 
-  const { data: tvShowsData } = useFetchData(
-    `http://localhost:3636/tvShow/`,
-    user._id
-  );
+  const { data: tvShowsData } = useFetchData(url + `/tvShow/`, user._id);
 
   const { data: watchlistTvShowsData } = useFetchData(
-    `http://localhost:3636/watchlist/tvShow/`,
+    url + `/watchlist/tvShow/`,
     user._id
   );
 
@@ -59,9 +57,7 @@ const RenderTvShowCard = () => {
 
     const getTvShowDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3636/api/tv/id/${tvShowID}`
-        );
+        const response = await axios.get(url + `/api/tv/id/${tvShowID}`);
         console.log(response.data);
         setTvShow(response.data);
       } catch (err) {
@@ -78,7 +74,7 @@ const RenderTvShowCard = () => {
   const AddToYourTvShows = async (id, name, year, type, creator) => {
     try {
       await axios
-        .post("http://localhost:3636/tvShow/", {
+        .post(url + `/tvShow/`, {
           id: id,
           name: name,
           year: year,
@@ -106,7 +102,7 @@ const RenderTvShowCard = () => {
   ) => {
     if (!watchlistTvShowsIds.includes(id)) {
       await axios
-        .post("http://localhost:3636/watchlist/tvShow/", {
+        .post(url + `/watchlist/tvShow/`, {
           id: id,
           name: name,
           year: year,
@@ -128,7 +124,13 @@ const RenderTvShowCard = () => {
 
   return (
     <Container maxWidth="lg">
-      <div className="movie-card-container">
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+        }}
+      >
+        {" "}
         {loading ? (
           <ClipLoader
             color={"  var(--basic-color)"}
@@ -151,7 +153,7 @@ const RenderTvShowCard = () => {
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />
         )}
-      </div>
+      </Box>
       <HaveToSignupModal
         open={openHaveToSignupModal}
         onClose={() => {

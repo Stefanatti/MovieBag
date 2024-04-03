@@ -134,18 +134,6 @@ const TvShowCard = ({
                 <StyledTypography variant={"h5"} fontFamily={"lato"}>
                   {`Seasons: ${tvShow.number_of_seasons}`}{" "}
                 </StyledTypography>
-                {/* <a
-                  href={`https://www.imdb.com/title/${movie.imdb_id}/?ref_=fn_al_tt_1`}
-                >
-                  <StyledTypography
-                    sx={{ color: "gold", underLine: "none" }}
-                    variant={"body1"}
-                    fontFamily={"lato"}
-                    component="span"
-                  >
-                    IMDB
-                  </StyledTypography>
-                </a> */}
               </Box>
               <Box sx={{ display: "flex", gap: "8px" }}>
                 {tvShow.genres.map((genre, index) => (

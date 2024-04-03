@@ -20,9 +20,10 @@ import {
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
-const WatchlistMovies = () => {
-  const navigate = useNavigate();
 
+const WatchlistMovies = () => {
+  const url = process.env.REACT_APP_URL;
+  const navigate = useNavigate();
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   //   const [loading, setLoading] = useState(true);
   //   let user = useSelector((state) => state.user.value);
@@ -42,10 +43,7 @@ const WatchlistMovies = () => {
     textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
   }));
 
-  const { data } = useFetchData(
-    `http://localhost:3636/watchlist/movie/`,
-    user._id
-  );
+  const { data } = useFetchData(url + `/watchlist/movie/`, user._id);
 
   useEffect(() => {
     if (data) {
@@ -60,7 +58,7 @@ const WatchlistMovies = () => {
 
   const removeWatchlistMovie = async (id) => {
     try {
-      await axios.delete(`http://localhost:3636/watchlist/movie/${id}`);
+      await axios.delete(url + `/watchlist/movie/${id}`);
       setWatchlistMovies((WatchlistMovies) =>
         WatchlistMovies.filter((movie) => movie._id !== id)
       );

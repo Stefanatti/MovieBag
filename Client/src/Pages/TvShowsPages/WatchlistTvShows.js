@@ -22,6 +22,8 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const WatchlistTvShows = () => {
   const navigate = useNavigate();
+  const url = process.env.REACT_APP_URL;
+
   const [watchlistTvShows, setWatchlistTvShows] = useState([]);
   const [page, setPage] = useState(1);
   const handleChange = (event, value) => {
@@ -39,10 +41,7 @@ const WatchlistTvShows = () => {
     textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
   }));
 
-  const { data } = useFetchData(
-    `http://localhost:3636/watchlist/tvShow/`,
-    user._id
-  );
+  const { data } = useFetchData(url + `/watchlist/tvShow/`, user._id);
 
   useEffect(() => {
     if (data) {
@@ -57,7 +56,7 @@ const WatchlistTvShows = () => {
 
   const removeWatchlistTvShow = async (id) => {
     try {
-      await axios.delete(`http://localhost:3636/watchlist/TvShow/${id}`);
+      await axios.delete(url + `/watchlist/TvShow/${id}`);
       setWatchlistTvShows((WatchlistTvShows) =>
         WatchlistTvShows.filter((TvShow) => TvShow._id !== id)
       );

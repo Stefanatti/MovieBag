@@ -15,7 +15,6 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Stack,
   Link,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
@@ -27,6 +26,8 @@ const fields = [
   { label: "Password", name: "password" },
 ];
 const Signup = () => {
+  const url = process.env.REACT_APP_URL;
+
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     username: "",
@@ -59,16 +60,14 @@ const Signup = () => {
 
   const createUser = async (e) => {
     try {
-      await axios
-        .post("https://moviebag-1bhe.onrender.com/user/signup", formData)
-        .then(({ data }) => {
-          console.log(data);
-          if (data.message === true) {
-            navigate("/login");
-          } else {
-            alert(data.message);
-          }
-        });
+      await axios.post(url + `/user/signup`, formData).then(({ data }) => {
+        console.log(data);
+        if (data.message === true) {
+          navigate("/login");
+        } else {
+          alert(data.message);
+        }
+      });
     } catch (error) {
       console.error("Error submitting form:", error);
       reset();

@@ -10,9 +10,11 @@ import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
 import { getUserMovies } from "../../Features/movies";
 import useFetchData from "../../Hooks/useFetchData";
+
 const YourMoviesLibrary = () => {
   const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
+  const url = process.env.REACT_APP_URL;
 
   const [myMovies, setMyMovies] = useState([]);
   const [search, setSearch] = useState("");
@@ -23,10 +25,7 @@ const YourMoviesLibrary = () => {
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
   const dispatch = useDispatch();
 
-  const { data, loading, error } = useFetchData(
-    `http://localhost:3636/movie/`,
-    user._id
-  );
+  const { data, loading, error } = useFetchData(url + `/movie/`, user._id);
 
   useEffect(() => {
     if (data) setMyMovies(data);
@@ -40,7 +39,7 @@ const YourMoviesLibrary = () => {
   }, [data]);
   const removeMovie = async (id) => {
     try {
-      await axios.delete(`http://localhost:3636/movie/${id}`);
+      await axios.delete(url + `/movie/${id}`);
       setMyMovies((MyMovies) => MyMovies.filter((movie) => movie._id !== id));
     } catch (error) {
       console.log(error.message);
@@ -61,11 +60,9 @@ const YourMoviesLibrary = () => {
       const data = {
         stars: stars,
       };
-      await axios
-        .put(`http://localhost:3636/movie/rate/${id}`, data)
-        .then((response) => {
-          console.log("Success:", response.data);
-        });
+      await axios.put(url + `/movie/rate/${id}`, data).then((response) => {
+        console.log("Success:", response.data);
+      });
     } catch (error) {
       console.log(error.message);
     }

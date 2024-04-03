@@ -8,6 +8,7 @@ import MoviesResultCards from "../Components/MoviesResultCards";
 import { useSelector } from "react-redux";
 
 const MovieSearchResult = () => {
+  const url = process.env.REACT_APP_URL;
   const params = useQueryParams();
   const movieTitle = params.get("title");
   const navigate = useNavigate();
@@ -17,7 +18,7 @@ const MovieSearchResult = () => {
   useEffect(() => {
     if (!movieTitle) return null;
     axios
-      .get(`http://localhost:3636/api/${movieTitle}`)
+      .get(url + `/api/${movieTitle}`)
       .then(({ data }) => {
         setMovies(data);
       })

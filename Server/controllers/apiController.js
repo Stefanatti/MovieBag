@@ -4,8 +4,8 @@ const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
 // const url = `${process.env.API_URL}/?apikey=${process.env.API_KEY}`;
-const url = "https://api.themoviedb.org/3/";
-const apikey = "59f83dbb2b6e7e5393bfbfd3ca454401";
+const url = process.env.API_URL;
+const apikey = process.env.API_KEY;
 const options = {
   method: "GET",
 };

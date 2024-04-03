@@ -11,6 +11,7 @@ import useFetchData from "../../Hooks/useFetchData";
 import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
+  const url = process.env.REACT_APP_URL;
   const HaveToSignupModal = lazy(() =>
     import("../../Components/HaveToSignupModal")
   );
@@ -30,12 +31,9 @@ const RenderMovie = () => {
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
 
-  const { data: moviesData } = useFetchData(
-    `http://localhost:3636/movie/`,
-    user._id
-  );
+  const { data: moviesData } = useFetchData(url + `/movie/`, user._id);
   const { data: watchlistMoviesData } = useFetchData(
-    `http://localhost:3636/watchlist/movie/`,
+    url + `/watchlist/movie/`,
     user._id
   );
 
@@ -62,9 +60,7 @@ const RenderMovie = () => {
 
     const getMovieDetails = async () => {
       try {
-        const response = await axios.get(
-          `http://localhost:3636/api/id/${movieID}`
-        );
+        const response = await axios.get(url + `/api/id/${movieID}`);
         setMovie(response.data);
       } catch (err) {
         console.log(err);
@@ -80,7 +76,7 @@ const RenderMovie = () => {
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
       await axios
-        .post("http://localhost:3636/movie/", {
+        .post(url + `/movie/`, {
           id: id,
           title: title,
           year: year,
@@ -110,7 +106,7 @@ const RenderMovie = () => {
   ) => {
     if (!watchlistMoviesIds.includes(id)) {
       await axios
-        .post("http://localhost:3636/watchlist/movie/", {
+        .post(url + `/watchlist/movie/`, {
           id: id,
           title: title,
           year: year,

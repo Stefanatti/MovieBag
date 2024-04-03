@@ -26,7 +26,6 @@ function MovieApp() {
 
   const PrivateRoute = ({ element, ...rest }) => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
   };
 
@@ -51,15 +50,9 @@ function MovieApp() {
             <Route path="/watchlist/TvShows" element={<PrivateRoute />}>
               <Route index element={<WatchlistTvShows />} />
             </Route>
-            <Route path="/movieSearch" element={<PrivateRoute />}>
-              <Route index element={<MovieSearchResult />} />
-            </Route>
-            <Route path="/movie" element={<PrivateRoute />}>
-              <Route index element={<RenderMovie />} />
-            </Route>
-            <Route path="/tvShow" element={<PrivateRoute />}>
-              <Route index element={<RenderTvShowCard />} />
-            </Route>
+            <Route path="/movieSearch" element={<MovieSearchResult />} />
+            <Route path="/movie" element={<RenderMovie />} />
+            <Route path="/tvShow" element={<RenderTvShowCard />} />
             <Route path="/*" element={<WrongPage404 />} />
           </Routes>
         </div>

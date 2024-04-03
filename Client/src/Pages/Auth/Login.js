@@ -31,6 +31,7 @@ const fields = [
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const url = process.env.REACT_APP_URL;
 
   const [formData, setFormData] = useState({
     username: "",
@@ -63,10 +64,7 @@ const Login = () => {
 
   const loginUser = async (e) => {
     try {
-      const response = await axios.post(
-        "https://moviebag-1bhe.onrender.com/user/login",
-        formData
-      );
+      const response = await axios.post(url + `/user/login`, formData);
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         await verifyUser();
@@ -81,7 +79,7 @@ const Login = () => {
   const verifyUser = async () => {
     if (localStorage.getItem("token")) {
       await axios
-        .post("https://moviebag-1bhe.onrender.com/verify", {
+        .post(url + `/user/verify`, {
           token: localStorage.getItem("token"),
         })
         .then(({ data }) => {
@@ -97,7 +95,6 @@ const Login = () => {
       dispatch(logout());
     }
   };
-
   return (
     <Container component="main" maxWidth="lg">
       <Box

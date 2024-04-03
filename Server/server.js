@@ -8,6 +8,8 @@ const tvShowRooter = require("./routers/tvShowRoute");
 const watchlistTvShowRooter = require("./routers/watchlistTvShowRoute");
 const apiRooter = require("./routers/apiRoute");
 var bodyParser = require("body-parser");
+require("dotenv").config({ path: ".env" });
+
 const cors = require("cors");
 app.use(bodyParser.json());
 app.use(cors({ origin: "*" }));
@@ -21,6 +23,7 @@ app.use("/watchlist/tvShow", watchlistTvShowRooter);
 
 app.use("/api", apiRooter);
 
-app.listen(3636, () => {
-  console.log("App is running on the port", 3636);
+const PORT = process.env.PORT || 3636;
+app.listen(PORT, () => {
+  console.log("App is running on port", PORT);
 });

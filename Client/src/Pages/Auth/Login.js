@@ -64,7 +64,7 @@ const Login = () => {
 
   const loginUser = async (e) => {
     try {
-      const response = await axios.post(url + `/user/login`, formData);
+      const response = await axios.post(`${url}/user/login`, formData);
       if (response.data.token) {
         localStorage.setItem("token", response.data.token);
         await verifyUser();
@@ -79,7 +79,7 @@ const Login = () => {
   const verifyUser = async () => {
     if (localStorage.getItem("token")) {
       await axios
-        .post(url + `/user/verify`, {
+        .post(`${url}/user/verify`, {
           token: localStorage.getItem("token"),
         })
         .then(({ data }) => {

@@ -60,7 +60,7 @@ const Signup = () => {
 
   const createUser = async (e) => {
     try {
-      await axios.post(url + `/user/signup`, formData).then(({ data }) => {
+      await axios.post(`${url}/user/signup`, formData).then(({ data }) => {
         console.log(data);
         if (data.message === true) {
           navigate("/login");

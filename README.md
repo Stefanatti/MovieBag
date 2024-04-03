@@ -11,6 +11,6 @@ Bootstrap,
 Sass
 
 
-You can visit my web-app here: [https://your-movies.onrender.com](https://moviebag-1bhe.onrender.com/)
+You can visit my web-app here:https://moviebag-1bhe.onrender.com
 
 ![Στιγμιότυπο οθόνης (4)](https://github.com/Stefanatti/MovieBag/assets/101453394/91d80626-9cde-49a1-8bf5-3171a1ad06e7)

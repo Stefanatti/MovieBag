@@ -27,7 +27,9 @@ import {
   Avatar,
   Hidden,
   Box,
-  TableContainer,
+  Tooltip,
+  Menu,
+  MenuItem,
   InputBase,
 } from "@mui/material";
 const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
@@ -35,8 +37,8 @@ const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
 const navItems = [
-  "Your Tv Shows",
   "Your Movies",
+  "Your Tv Shows",
   "Movies Watchlist",
   "Tv Watchlist",
 ];
@@ -121,10 +123,21 @@ const Navbar = (props) => {
   const path = location.pathname;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState("other-theme");
+  const settings = [`${user.username}`, "Logout"];
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
   };
+
+  const [anchorElUser, setAnchorElUser] = React.useState(null);
+  const handleOpenUserMenu = (event) => {
+    setAnchorElUser(event.currentTarget);
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
+
+  const handleUserMenu = () => {};
 
   const getTitle = (e) => {
     e.preventDefault();
@@ -266,7 +279,7 @@ const Navbar = (props) => {
               <Hidden lgDown>
                 <ThemeSwitcher setTheme={setTheme} theme={theme} />
               </Hidden>
-              <Avatar
+              {/* <Avatar
                 alt={user.username}
                 src="/broken-image.jpg"
                 sx={{ bgcolor: "var(--basic-color)", cursor: "pointer" }}
@@ -277,8 +290,53 @@ const Navbar = (props) => {
                         navigate(`/login`);
                       }
                 }
-              />
+              /> */}
             </Box>
+          </Box>
+
+          <Box sx={{ flexGrow: 0 }}>
+            <IconButton onClick={handleOpenUserMenu} sx={{ p: 1 }}>
+              <Avatar
+                alt={user.username}
+                src="/broken-image.jpg"
+                sx={{ bgcolor: "var(--basic-color)" }}
+              />
+            </IconButton>
+            <Menu
+              sx={{
+                mt: "45px",
+                "& .css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper": {
+                  backgroundColor: "rgb(80 70 70 / 75%)",
+                },
+              }}
+              id="menu-appbar"
+              anchorEl={anchorElUser}
+              anchorOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              keepMounted
+              transformOrigin={{
+                vertical: "top",
+                horizontal: "right",
+              }}
+              open={Boolean(anchorElUser)}
+              onClose={handleCloseUserMenu}
+            >
+              {user._id ? (
+                <MenuItem onClick={() => setOpenLogoutModal(true)}>
+                  <Typography color="var(--basic-color)" textAlign="center">
+                    Logout
+                  </Typography>
+                </MenuItem>
+              ) : (
+                <MenuItem onClick={() => navigate(`/login`)}>
+                  <Typography color="var(--basic-color)" textAlign="center">
+                    Login
+                  </Typography>
+                </MenuItem>
+              )}
+            </Menu>
           </Box>
         </Toolbar>
       </AppBar>

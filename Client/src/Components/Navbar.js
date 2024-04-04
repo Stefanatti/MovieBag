@@ -123,7 +123,6 @@ const Navbar = (props) => {
   const path = location.pathname;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState("other-theme");
-  const settings = [`${user.username}`, "Logout"];
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -136,8 +135,6 @@ const Navbar = (props) => {
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
-
-  const handleUserMenu = () => {};
 
   const getTitle = (e) => {
     e.preventDefault();
@@ -279,18 +276,6 @@ const Navbar = (props) => {
               <Hidden lgDown>
                 <ThemeSwitcher setTheme={setTheme} theme={theme} />
               </Hidden>
-              {/* <Avatar
-                alt={user.username}
-                src="/broken-image.jpg"
-                sx={{ bgcolor: "var(--basic-color)", cursor: "pointer" }}
-                onClick={
-                  user._id
-                    ? () => setOpenLogoutModal(true)
-                    : () => {
-                        navigate(`/login`);
-                      }
-                }
-              /> */}
             </Box>
           </Box>
 

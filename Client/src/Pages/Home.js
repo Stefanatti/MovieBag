@@ -25,6 +25,7 @@ function Home() {
       })
     );
   }, [data]);
+
   return (
     <div>
       <Suspense>

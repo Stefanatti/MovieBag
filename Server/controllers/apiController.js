@@ -30,6 +30,27 @@ const searchForMoviesAndTvShows = async (req, res) => {
   }
 };
 
+const getPopularMovies = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}movie/popular?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const movies = json.results.map((movie) => ({
+      title: movie.title,
+      id: movie.id,
+      poster_path: movie.poster_path,
+    }));
+    res.send(movies);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movies data." });
+  }
+};
+
 const searchForOneMovie = async (req, res) => {
   const query = req.params.id;
   try {
@@ -47,25 +68,6 @@ const searchForOneMovie = async (req, res) => {
   }
 };
 
-// const searchForMovies = (req, res) => {
-//   const query = req.params.search;
-//   fetch(`${url}&s=${query}`, options)
-//     .then((res) => res.json())
-//     .then((json) => res.send(json))
-//     .catch((err) => console.error("error:" + err));
-// };
-
-// const searchForOneMovie = (req, res) => {
-//   const query = req.params.id;
-//   fetch(
-//     `${url}movie/${query}?&append_to_response=credits&api_key=${apikey}`,
-//     options
-//   )
-//     .then((res) => res.json())
-//     .then((json) => res.send(json))
-//     .catch((err) => console.error("error:" + err));
-// };
-
 const searchForOneTvShow = (req, res) => {
   const query = req.params.id;
   fetch(
@@ -81,4 +83,5 @@ module.exports = {
   searchForMoviesAndTvShows,
   searchForOneMovie,
   searchForOneTvShow,
+  getPopularMovies,
 };

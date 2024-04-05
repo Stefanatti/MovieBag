@@ -43,15 +43,15 @@ const WatchlistMovies = () => {
     textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
   }));
 
-  const { data } = useFetchData(url + `/watchlist/movie/`, user._id);
+  const { data } = useFetchData(`${url}/watchlist/movie/`, user._id);
 
   useEffect(() => {
     if (data) {
-      console.log(data);
       const allWatchlistMovies = data;
       setWatchlistMovies(allWatchlistMovies);
     }
   }, [data]);
+
   const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
 
   console.log(watchlistMovies);

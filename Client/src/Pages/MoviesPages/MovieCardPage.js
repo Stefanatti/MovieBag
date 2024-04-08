@@ -139,7 +139,6 @@ const RenderMovie = () => {
             color={"  var(--basic-color)"}
             className="loading"
             loading={loading}
-            //cssOverride={{ marginBottom: " 10vw" }}
             size={50}
             aria-label="Loading Spinner"
             data-testid="loader"

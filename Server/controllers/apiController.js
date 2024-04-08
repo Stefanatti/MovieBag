@@ -51,6 +51,69 @@ const getPopularMovies = async (req, res) => {
   }
 };
 
+const getTopRatedMovies = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}movie/top_rated?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const movies = json.results.map((movie) => ({
+      title: movie.title,
+      id: movie.id,
+      poster_path: movie.poster_path,
+    }));
+    res.send(movies);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movies data." });
+  }
+};
+
+const getPopularTvShows = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=US&with_genres=10759%7C80%7C18%7C9648%7C10765&with_origin_country=US&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const tvShows = json.results.map((tvShow) => ({
+      title: tvShow.name,
+      id: tvShow.id,
+      poster_path: tvShow.poster_path,
+    }));
+    res.send(tvShows);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching tv shows data." });
+  }
+};
+
+const getTopRatedTvShows = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}tv/top_rated?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const tvShows = json.results.map((tvShow) => ({
+      title: tvShow.name,
+      id: tvShow.id,
+      poster_path: tvShow.poster_path,
+    }));
+    res.send(tvShows);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching tv shows data." });
+  }
+};
+
 const searchForOneMovie = async (req, res) => {
   const query = req.params.id;
   try {
@@ -84,4 +147,7 @@ module.exports = {
   searchForOneMovie,
   searchForOneTvShow,
   getPopularMovies,
+  getPopularTvShows,
+  getTopRatedMovies,
+  getTopRatedTvShows,
 };

@@ -11,7 +11,7 @@ const Carusel = ({ data, path }) => {
   const StyledImage = styled("img")({
     width: "90%",
     height: "auto",
-    border: "1px solid grey ",
+    border: "1px solid ",
     borderRadius: "10px",
     cursor: "pointer",
     transition: "transform 0.3s ease-in-out",
@@ -53,7 +53,6 @@ const Carusel = ({ data, path }) => {
       },
     ],
   };
-  console.log(path);
   return (
     <Slider {...settings}>
       {data.map((data, index) => (

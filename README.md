@@ -1,5 +1,6 @@
 # MovieBag
-A Full-Stuck Web Application providing users details and informations about movies from an open API. Users can sign up and login (with authentication and authorization), search for any movie and series they like and store them to their own personal library. In addition a user can separate the movies that he already watched from the unwatched ones. It also contains a triple colour theme switch which can make the user's expierience more colorful and smoother.
+My web application is designed to provide users with comprehensive information about movies and series, sourced from an open API. Users have the ability to sign up and log in securely, thanks to our robust authentication and authorization systems. The application allows users to search for their favorite movies and series, and store them in their personal library. Here, they can not only save their favorite shows but also rate them, providing valuable feedback.
+In addition to personal libraries, users can create watchlists for movies and series they intend to watch. This feature helps users keep track of their viewing plans and discover new content. To enhance user experience, the application includes a feature that allows users to switch between three distinct color themes. This color theme switcher adds a personalized touch, making the application more visually appealing and user-friendly.
 
 Technologies:
 React,

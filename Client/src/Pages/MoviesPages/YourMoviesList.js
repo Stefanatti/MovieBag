@@ -17,6 +17,7 @@ const YourMoviesLibrary = () => {
   const url = process.env.REACT_APP_URL;
 
   const [myMovies, setMyMovies] = useState([]);
+  const [pageloaded, setPageLoaded] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
@@ -28,15 +29,19 @@ const YourMoviesLibrary = () => {
   const { data, loading, error } = useFetchData(url + `/movie/`, user._id);
 
   useEffect(() => {
-    if (data) setMyMovies(data);
-    dispatch(
-      getUserMovies({
-        id: myMovies.map((myMovie) => myMovie.id),
-        title: myMovies.map((myMovie) => myMovie.title),
-        director: myMovies.map((myMovie) => myMovie.director),
-      })
-    );
-  }, [data]);
+    if (data) {
+      const fetchedMovies = data;
+      setMyMovies(fetchedMovies);
+      dispatch(
+        getUserMovies({
+          id: fetchedMovies.map((myMovie) => myMovie.id),
+          title: fetchedMovies.map((myMovie) => myMovie.title),
+          director: fetchedMovies.map((myMovie) => myMovie.director),
+        })
+      );
+      setPageLoaded(loading);
+    }
+  }, [data, dispatch]);
 
   const removeMovie = async (id) => {
     try {
@@ -69,11 +74,11 @@ const YourMoviesLibrary = () => {
     }
   };
 
-  useEffect(() => {
-    if (!search) {
-      setMyMovies(myMovies);
-    }
-  }, [search]);
+  // useEffect(() => {
+  //   if (!search) {
+  //     setMyMovies(myMovies);
+  //   }
+  // }, [search]);
 
   const filterMovies = myMovies.filter((myMovie) => {
     return search.toLowerCase() === ""
@@ -96,15 +101,19 @@ const YourMoviesLibrary = () => {
     <Container>
       <Box sx={{ zIndex: "auto" }}>
         <h1 className="library-header">Your Movies:</h1>
-        {loading ? (
+        {pageloaded ? (
           <ClipLoader
             color={"  var(--basic-color)"}
             className="loading"
-            loading={loading}
+            loading={pageloaded}
             cssOverride={{ marginLeft: " 50vw", marginTop: " 10vw" }}
             size={50}
             aria-label="Loading Spinner"
           />
+        ) : currentMyMovies.length === 0 ? (
+          <h2 className="library-header">
+            Search for a movie and added it to your list !
+          </h2>
         ) : (
           <div className="movies-table-div">
             <div className="input-div">

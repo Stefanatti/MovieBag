@@ -1,5 +1,4 @@
 const TvShow = require("../modules/tvShowModule");
-//const fetch = import("node-fetch");
 
 const getTvShow = async (req, res) => {
   try {
@@ -7,13 +6,16 @@ const getTvShow = async (req, res) => {
     res.send(tvShows);
   } catch (err) {
     console.log(err);
-    res.send("Something went wrong");
+    res.status(500).send("Something went wrong");
   }
 };
 
 const addTvShow = async (req, res) => {
   try {
-    const tvShowExists = await TvShow.exists({ title: req.body.name });
+    const tvShowExists = await TvShow.exists({
+      id: req.body.id,
+      owner: req.body.owner,
+    });
     if (tvShowExists) {
       res.status(400).send({ message: "TvShow already exists in your list." });
     } else {
@@ -28,15 +30,16 @@ const addTvShow = async (req, res) => {
 };
 
 const deleteTvShow = async (req, res) => {
-  await TvShow.deleteOne({ _id: req.params.id });
-  res.send({ message: "TvShow deleted" });
-};
-
-const watchTvShow = async (req, res) => {
-  const tvShow = await TvShow.findOne({ _id: req.params.id });
-  tvShow.watched = !tvShow.watched;
-  tvShow.save();
-  res.send(tvShow);
+  try {
+    const result = await TvShow.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
+      return res.status(404).send({ message: "Tv Show not found" });
+    }
+    res.send({ message: "Tv Show deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Something went wrong" });
+  }
 };
 
 const rateTvShow = async (req, res) => {
@@ -58,10 +61,17 @@ const rateTvShow = async (req, res) => {
   }
 };
 
+// const watchTvShow = async (req, res) => {
+//   const tvShow = await TvShow.findOne({ _id: req.params.id });
+//   tvShow.watched = !tvShow.watched;
+//   tvShow.save();
+//   res.send(tvShow);
+// };
+
 module.exports = {
   getTvShow,
   addTvShow,
   deleteTvShow,
-  watchTvShow,
+  //watchTvShow,
   rateTvShow,
 };

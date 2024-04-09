@@ -50,7 +50,7 @@ const RenderTvShowCard = () => {
         setToggleForWatchlist(true);
       setWatchlistTvShowsIds(allWatchlistTvShowsIds);
     }
-  }, [watchlistTvShowsData]);
+  }, [watchlistTvShowsData, tvShowID]);
 
   useEffect(() => {
     if (!tvShowID) return;
@@ -121,7 +121,7 @@ const RenderTvShowCard = () => {
       alert("This TV Show already has been added.");
     }
   };
-
+  console.log(watchlistTvShowsIds);
   return (
     <Container maxWidth="lg">
       <Box
@@ -144,7 +144,6 @@ const RenderTvShowCard = () => {
         ) : (
           <TvShowCard
             tvShow={tvShow}
-            //   movieRates={movieRates}
             user={user}
             toggleForList={toggleForList}
             toggleForWatchlist={toggleForWatchlist}

@@ -75,20 +75,17 @@ const RenderMovie = () => {
 
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
-      await axios
-        .post(url + `/movie/`, {
-          id: id,
-          title: title,
-          year: year,
-          type: type,
-          director: director,
-          owner: user._id,
-        })
-        .then((response) => {
-          setMoviesIds([...moviesIds, id]);
-          setToggleForList(true);
-          //dispatch(addMovie({ id: String(id), title: title, director: director }));
-        });
+      const response = await axios.post(url + `/movie/`, {
+        id: id,
+        title: title,
+        year: year,
+        type: type,
+        director: director,
+        owner: user._id,
+      });
+      setMoviesIds((prevMoviesIds) => [...prevMoviesIds, id]);
+      setToggleForList(true);
+      // dispatch(addMovie({ id: String(id), title: title, director: director }));
     } catch (err) {
       console.log(err);
       alert(err.response.data.message);

@@ -1,6 +1,4 @@
 const Movie = require("../modules/movieModule");
-//const WatchlistMovie = require("../modules/watchlistMovieModule");
-//const fetch = import("node-fetch");
 
 const getMovie = async (req, res) => {
   try {
@@ -8,15 +6,16 @@ const getMovie = async (req, res) => {
     res.send(movies);
   } catch (err) {
     console.log(err);
-    res.send("Something went wrong");
+    res.status(500).res.send("Something went wrong");
   }
 };
 
 const addMovie = async (req, res) => {
   try {
-    const movieExists = await Movie.exists({ title: req.body.title });
-    //const movieExistsInWatchlist = await WatchlistMovie.exists({ title: req.body.title });
-
+    const movieExists = await Movie.exists({
+      id: req.body.id,
+      owner: req.body.owner,
+    });
     if (movieExists) {
       res.status(400).send({ message: "Movie already exists in your list." });
     } else {
@@ -31,47 +30,17 @@ const addMovie = async (req, res) => {
 };
 
 const deleteMovie = async (req, res) => {
-  await Movie.deleteOne({ _id: req.params.id });
-  res.send({ message: "Movie deleted" });
+  try {
+    const result = await Movie.deleteOne({ _id: req.params.id });
+    if (result.deletedCount === 0) {
+      return res.status(404).send({ message: "Movie not found" });
+    }
+    res.send({ message: "Movie deleted" });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ message: "Something went wrong" });
+  }
 };
-
-const watchMovie = async (req, res) => {
-  const movie = await Movie.findOne({ _id: req.params.id });
-  movie.watched = !movie.watched;
-  movie.save();
-  res.send(movie);
-};
-
-// const rateMovie = async (req, res) => {
-//   try {
-//     const { userId, stars } = req.body;
-
-//     // Find the movie and update its ratings array
-//     const movie = await Movie.findById(req.params.id);
-//     if (!movie) {
-//       return res.status(404).send({ message: "Movie not found" });
-//     } else console.log(req.body, movie.title, movie.owner);
-//     // Check if the user has already rated this movie
-//     // const existingRating = movie.ratings.find(
-//     //   (rating) => rating._id.toString() === userId
-//     // );
-//     // console.log(existingRating);
-//     // if (existingRating) {
-//     //   return res
-//     //     .status(400)
-//     //     .send({ message: "You have already rated this movie" });
-//     // }
-
-//     // Add the new rating
-//     movie.ratings.push({ stars: stars });
-//     await movie.save();
-
-//     res.send({ message: "Movie rated successfully" });
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).send({ message: "Something went wrong" });
-//   }
-// };
 
 const rateMovie = async (req, res) => {
   try {
@@ -92,31 +61,17 @@ const rateMovie = async (req, res) => {
   }
 };
 
-// app.post('/api/products/:id/review', async (req, res) => {
-//   const { user, rating, comment } = req.body;
-
-//   try {
-//       const product =
-//           await Product.findById(req.params.id);
-//       product.reviews
-//           .push(
-//               {
-//                   user, rating,
-//                   comment
-//               }
-//           );
-//       await product.save();
-//       res.status(201).json(product);
-//   } catch (error) {
-//       res.status(400).json({ message: error.message });
-//   }
-// });
+// const watchMovie = async (req, res) => {
+//   const movie = await Movie.findOne({ _id: req.params.id });
+//   movie.watched = !movie.watched;
+//   movie.save();
+//   res.send(movie);
+// };
 
 module.exports = {
   getMovie,
   addMovie,
   deleteMovie,
-  watchMovie,
+  //watchMovie,
   rateMovie,
-  //fetchMovies,
 };

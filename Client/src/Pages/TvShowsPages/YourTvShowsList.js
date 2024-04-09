@@ -8,6 +8,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
 import { getUserMovies } from "../../Features/movies";
+import useFetchData from "../../Hooks/useFetchData";
 
 const YourTvShowsList = () => {
   const navigate = useNavigate();
@@ -15,66 +16,48 @@ const YourTvShowsList = () => {
   const url = process.env.REACT_APP_URL;
 
   const [myTvShows, setMyTvShows] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [pageloaded, setPageLoaded] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [tvShowsPerPage] = useState(10);
-  const [myUnwatchedTvShows, setMyUnwatchedTvShows] = useState([]);
   const [watched, setWatched] = useState(false);
   const lastTvShowIndex = currentPage * tvShowsPerPage;
   const firstTvShowIndex = lastTvShowIndex - tvShowsPerPage;
   const dispatch = useDispatch();
+
+  const { data, loading, error } = useFetchData(`${url}/tvShow/`, user._id);
+
   useEffect(() => {
-    if (!user._id) {
-      return;
-    }
-    setLoading(false);
-
-    getTvShows();
-  }, [user._id]);
-
-  const getTvShows = async () => {
-    try {
-      const response = await axios.get(url + `/tvShow/` + user._id);
+    if (data) {
+      const fetchedTvShows = data;
+      setMyTvShows(fetchedTvShows);
       dispatch(
         getUserMovies({
-          id: response.data.id,
-          title: response.data.title,
-          director: response.data.director,
+          id: fetchedTvShows.map((myTvShow) => myTvShow.id),
+          title: fetchedTvShows.map((myTvShow) => myTvShow.title),
+          director: fetchedTvShows.map((myTvShow) => myTvShow.director),
         })
       );
-      setMyTvShows(response.data);
-    } catch (err) {
-      console.log(err);
+      setPageLoaded(loading);
     }
-  };
+  }, [data, dispatch]);
 
   const removeTvShow = async (id) => {
-    const data = await axios.delete(url + `/tvShow/` + id).then((res) => {
-      getTvShows();
-      return res;
-    });
-    getTvShows();
-    setMyTvShows((myTvShows) =>
-      myTvShows.filter((myTvShow) => myTvShow.id !== data.id)
-    );
+    try {
+      await axios.delete(url + `/tvShow/${id}`);
+      setMyTvShows((MyTvShows) =>
+        MyTvShows.filter((TvShow) => TvShow._id !== id)
+      );
+    } catch (error) {
+      console.log(error.message);
+    }
   };
 
-  useEffect(() => {
-    if (!search) {
-      setMyTvShows(myTvShows);
-    }
-  }, [search]);
-
-  const filterTvShows = myTvShows.filter((myTvShow) => {
-    return search.toLowerCase() === ""
-      ? myTvShow
-      : myTvShow.name.toLowerCase().includes(search);
-  });
-  const currentMyTvShows = filterTvShows.slice(
-    firstTvShowIndex,
-    lastTvShowIndex
-  );
+  // useEffect(() => {
+  //   if (!search) {
+  //     setMyTvShows(myTvShows);
+  //   }
+  // }, [search]);
 
   const handleRatingChange = (id, stars) => {
     setMyTvShows((prevTvShows) =>
@@ -98,19 +81,33 @@ const YourTvShowsList = () => {
     }
   };
 
+  const filterTvShows = myTvShows.filter((myTvShow) => {
+    return search.toLowerCase() === ""
+      ? myTvShow
+      : myTvShow.name.toLowerCase().includes(search);
+  });
+  const currentMyTvShows = filterTvShows.slice(
+    firstTvShowIndex,
+    lastTvShowIndex
+  );
+
   return (
     <Container>
       <Box sx={{ zIndex: "auto" }}>
         <h1 className="library-header">Your Tv Shows:</h1>
-        {loading ? (
+        {pageloaded ? (
           <ClipLoader
             color={"  var(--basic-color)"}
             className="loading"
-            loading={loading}
+            loading={pageloaded}
             cssOverride={{ marginLeft: " 50vw", marginTop: " 10vw" }}
             size={50}
             aria-label="Loading Spinner"
           />
+        ) : currentMyTvShows.length === 0 ? (
+          <h2 className="library-header">
+            Search for a tv show and added it to your list !
+          </h2>
         ) : (
           <div className="movies-table-div">
             <div className="input-div">

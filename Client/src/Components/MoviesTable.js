@@ -12,7 +12,7 @@ const MoviesTable = ({
   path,
 }) => {
   const [value, setValue] = useState();
-
+  console.log(currentMyMovies);
   return (
     <div className="table-container">
       <table>
@@ -31,12 +31,6 @@ const MoviesTable = ({
             return (
               <tr key={myMovie._id} className="trows">
                 <td className="watched-td">
-                  {/* <PushpinFilled
-                    onClick={() => {
-                      watchedMovie(myMovie._id);
-                    }}
-                    className={myMovie.watched ? "watched" : "not-watched "}
-                  /> */}
                   <Box
                     sx={{
                       "& > legend": { mt: 1 },

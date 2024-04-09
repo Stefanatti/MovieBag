@@ -10,10 +10,9 @@ const useFetchData = (url, userId) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        if (userId) {
-          const response = await axios.get(`${url}${userId}`);
-          setData(response.data);
-        }
+        const requestUrl = userId ? `${url}${userId}` : url;
+        const response = await axios.get(requestUrl);
+        setData(response.data);
       } catch (error) {
         setError(error.message);
       } finally {

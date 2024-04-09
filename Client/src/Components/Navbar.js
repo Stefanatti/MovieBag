@@ -27,7 +27,6 @@ import {
   Avatar,
   Hidden,
   Box,
-  Tooltip,
   Menu,
   MenuItem,
   InputBase,
@@ -119,10 +118,14 @@ const Navbar = (props) => {
   const location = useLocation();
   const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
-  const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  //const [openLogoutModal, setOpenLogoutModal] = useState(false);
   const path = location.pathname;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState("other-theme");
+
+  const [open, setOpen] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -309,7 +312,7 @@ const Navbar = (props) => {
               onClose={handleCloseUserMenu}
             >
               {user._id ? (
-                <MenuItem onClick={() => setOpenLogoutModal(true)}>
+                <MenuItem onClick={handleOpen}>
                   <Typography color="var(--basic-color)" textAlign="center">
                     Logout
                   </Typography>
@@ -348,12 +351,7 @@ const Navbar = (props) => {
         </Drawer>
       </nav>
       <Suspense>
-        <LogoutModal
-          open={openLogoutModal}
-          onClose={() => {
-            setOpenLogoutModal(false);
-          }}
-        />
+        <LogoutModal open={open} onClose={handleClose} />
         <HaveToSignupModal
           open={openHaveToSignupModal}
           onClose={() => {

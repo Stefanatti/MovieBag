@@ -30,6 +30,90 @@ const searchForMoviesAndTvShows = async (req, res) => {
   }
 };
 
+const getPopularMovies = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}movie/popular?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const movies = json.results.map((movie) => ({
+      title: movie.title,
+      id: movie.id,
+      poster_path: movie.poster_path,
+    }));
+    res.send(movies);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movies data." });
+  }
+};
+
+const getTopRatedMovies = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}movie/top_rated?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const movies = json.results.map((movie) => ({
+      title: movie.title,
+      id: movie.id,
+      poster_path: movie.poster_path,
+    }));
+    res.send(movies);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching movies data." });
+  }
+};
+
+const getPopularTvShows = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}discover/tv?include_adult=false&include_null_first_air_dates=false&language=en-US&page=1&sort_by=popularity.desc&watch_region=US&with_genres=10759%7C80%7C18%7C9648%7C10765&with_origin_country=US&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const tvShows = json.results.map((tvShow) => ({
+      title: tvShow.name,
+      id: tvShow.id,
+      poster_path: tvShow.poster_path,
+    }));
+    res.send(tvShows);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching tv shows data." });
+  }
+};
+
+const getTopRatedTvShows = async (req, res) => {
+  try {
+    const response = await fetch(
+      `${url}tv/top_rated?language=en-US&page=1&api_key=${apikey}`,
+      options
+    );
+    const json = await response.json();
+    const tvShows = json.results.map((tvShow) => ({
+      title: tvShow.name,
+      id: tvShow.id,
+      poster_path: tvShow.poster_path,
+    }));
+    res.send(tvShows);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching tv shows data." });
+  }
+};
+
 const searchForOneMovie = async (req, res) => {
   const query = req.params.id;
   try {
@@ -47,25 +131,6 @@ const searchForOneMovie = async (req, res) => {
   }
 };
 
-// const searchForMovies = (req, res) => {
-//   const query = req.params.search;
-//   fetch(`${url}&s=${query}`, options)
-//     .then((res) => res.json())
-//     .then((json) => res.send(json))
-//     .catch((err) => console.error("error:" + err));
-// };
-
-// const searchForOneMovie = (req, res) => {
-//   const query = req.params.id;
-//   fetch(
-//     `${url}movie/${query}?&append_to_response=credits&api_key=${apikey}`,
-//     options
-//   )
-//     .then((res) => res.json())
-//     .then((json) => res.send(json))
-//     .catch((err) => console.error("error:" + err));
-// };
-
 const searchForOneTvShow = (req, res) => {
   const query = req.params.id;
   fetch(
@@ -81,4 +146,8 @@ module.exports = {
   searchForMoviesAndTvShows,
   searchForOneMovie,
   searchForOneTvShow,
+  getPopularMovies,
+  getPopularTvShows,
+  getTopRatedMovies,
+  getTopRatedTvShows,
 };

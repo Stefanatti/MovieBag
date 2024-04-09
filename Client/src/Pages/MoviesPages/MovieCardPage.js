@@ -31,9 +31,9 @@ const RenderMovie = () => {
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
 
-  const { data: moviesData } = useFetchData(url + `/movie/`, user._id);
+  const { data: moviesData } = useFetchData(`${url}/movie/`, user._id);
   const { data: watchlistMoviesData } = useFetchData(
-    url + `/watchlist/movie/`,
+    `${url}/watchlist/movie/`,
     user._id
   );
 
@@ -139,7 +139,6 @@ const RenderMovie = () => {
             color={"  var(--basic-color)"}
             className="loading"
             loading={loading}
-            //cssOverride={{ marginBottom: " 10vw" }}
             size={50}
             aria-label="Loading Spinner"
             data-testid="loader"

@@ -37,6 +37,7 @@ const YourMoviesLibrary = () => {
       })
     );
   }, [data]);
+
   const removeMovie = async (id) => {
     try {
       await axios.delete(url + `/movie/${id}`);

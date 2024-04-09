@@ -1,6 +1,31 @@
 import { logout } from "../Features/user";
 import { useDispatch } from "react-redux";
 
+import * as React from "react";
+import {
+  Box,
+  Card,
+  Button,
+  CardHeader,
+  Modal,
+  CardMedia,
+  CardActions,
+} from "@mui/material";
+
+const style = {
+  position: "absolute",
+  backgroundColor: "red",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: "40%",
+  bgcolor: "rgb(39 39 38)",
+  border: "2px solid #000",
+  borderRadius: "10px",
+  boxShadow: 24,
+  p: 4,
+};
+
 const LogoutModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
 
@@ -11,32 +36,44 @@ const LogoutModal = ({ open, onClose }) => {
     }
   };
 
-  if (!open) return null;
   return (
-    <div className="modalOverlay" onClick={onClose}>
-      <div className="logout-modalContainer">
-        <div className="logout-modal-poster-div">
-          <img
-            className="matrix-modal-poster"
-            src={require("../images/maxresdefault.jpg")}
+    <div>
+      <Modal
+        open={open}
+        onClose={onClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Card sx={style}>
+          <CardHeader
+            sx={{ textAlign: "center", color: "var(--basic-color)" }}
+            title="Are you sure you want to log out?"
           />
-        </div>
-
-        <h3 class="title">Are you sure you want to log out? </h3>
-        <div className="logout-buttons">
-          <button
-            className="logout-button yes"
-            onClick={() => {
-              logOut();
-            }}
+          <CardMedia
+            component="img"
+            height="254"
+            image={require("../images/maxresdefault.jpg")}
+            alt="Paella dish"
+          />
+          <CardActions
+            sx={{ display: "flex", justifyContent: "space-between" }}
           >
-            Yes
-          </button>
-          <button className="logout-button no" onClick={onClose}>
-            No
-          </button>
-        </div>
-      </div>
+            <Button variant="contained" size="small" onClick={onClose}>
+              Stay
+            </Button>
+            <Button
+              variant="contained"
+              color="error"
+              size="small"
+              onClick={() => {
+                logOut();
+              }}
+            >
+              Leave
+            </Button>
+          </CardActions>
+        </Card>
+      </Modal>
     </div>
   );
 };

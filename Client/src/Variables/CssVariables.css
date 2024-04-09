@@ -2,7 +2,7 @@
   --switcher: rgba(154, 145, 135, 0.693);
 
   --background-app-color: radial-gradient(
-    circle at -8.9% 53%,
+    circle at -18% 53%,
     rgb(255, 124, 0) 0%,
     rgb(255, 124, 0) 15.9%,
     rgb(255, 163, 77) 15.9%,
@@ -10,10 +10,6 @@
     rgb(19, 30, 37) 24.5%,
     rgb(19, 30, 37) 66%
   );
-
-  --neonText-color: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #f09,
-    0 0 82px rgb(255, 124, 0), 0 0 92px rgb(255, 124, 0),
-    0 0 102px rgb(0, 255, 64), 0 0 151px rgb(255, 124, 0);
 
   --basic-color: rgb(255, 124, 0);
   --hover-color: rgb(249, 237, 3);
@@ -49,9 +45,6 @@
   --switcher: rgb(19, 30, 37);
 
   --background-app-color: linear-gradient(to right, #434343 0%, black 100%);
-  /* --background-app-color: linear-gradient(0.25turn, #3f87a6, #ebf8e1, #f69d3c); */
-  --neonText-color: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #f09,
-    0 0 82px #f09, 0 0 92px #f09, 0 0 102px #f09, 0 0 151px #f09;
 
   --basic-color: rgb(204, 32, 226);
   --hover-color: rgb(177, 15, 137);
@@ -90,10 +83,6 @@
   );
 
   --switcher: rgb(61, 72, 99);
-
-  --neonText-color: 0 0 7px #fff, 0 0 10px #fff, 0 0 21px #fff, 0 0 42px #f09,
-    0 0 82px rgb(185, 8, 8), 0 0 92px rgb(191, 43, 50), 0 0 102px rgb(255, 0, 0),
-    0 0 151px rgb(255, 4, 4);
 
   --basic-color: rgb(180, 15, 3);
   --hover-color: rgb(214, 72, 72);

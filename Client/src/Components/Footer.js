@@ -3,7 +3,7 @@ import { Grid, Paper, Typography, Container, Box } from "@mui/material";
 
 function Footer(props) {
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
+    <Box sx={{ display: "flex", flexDirection: "column", mt: 10 }}>
       <Box
         sx={{
           width: "100%   ",

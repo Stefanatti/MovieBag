@@ -68,100 +68,113 @@ const WatchlistTvShows = () => {
   return (
     <Container>
       <Typography
-        variant="h1"
+        variant="h4"
         sx={{
           color: "var(--basic-color)",
           fontFamily: "Limelight",
-          fontSize: "32px",
-          marginBottom: "50px",
+          mb: 3,
         }}
       >
         Your Tv Shows Watchlist:
       </Typography>
-      <Box>
-        <Grid
-          container
-          direction={"column"}
-          spacing={2}
-          justifyContent="center"
-          alignItems="center"
-          style={{ minHeight: "100vh" }}
+      {displayedTvShows.length === 0 ? (
+        <Typography
+          variant="h5"
+          sx={{
+            color: "var(--basic-color)",
+            fontFamily: "Limelight",
+          }}
         >
-          {displayedTvShows.map((watchlistTvShow) => (
-            <Grid key={watchlistTvShow._id} item xs={12} sm={6} md={4}>
-              <Card
-                sx={{
-                  maxWidth: 745,
-                  display: "flex",
-                  backgroundColor: "rgb(46, 46, 42)",
-                  borderRadius: "30px",
-                }}
-              >
-                <CardMedia
-                  component="img"
-                  image={`https://image.tmdb.org/t/p/w500${watchlistTvShow.poster}`}
-                  title={watchlistTvShow.title}
+          No Tv Shows in your watchlist yet!
+        </Typography>
+      ) : (
+        <Box>
+          <Grid
+            container
+            direction={"column"}
+            spacing={2}
+            justifyContent="center"
+            alignItems="center"
+            style={{ minHeight: "100vh" }}
+          >
+            {displayedTvShows.map((watchlistTvShow) => (
+              <Grid key={watchlistTvShow._id} item xs={12} sm={6} md={4}>
+                <Card
                   sx={{
-                    height: 250,
-                    objectFit: "contain",
-                    backgroundSize: "cover",
-                    backgroundPosition: "center",
+                    maxWidth: 745,
+                    display: "flex",
+                    backgroundColor: "rgb(46, 46, 42)",
+                    borderRadius: "30px",
                   }}
-                />
-                <CardContent>
-                  <StyledTypography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    onClick={() => navigate(`/TvShow?id=${watchlistTvShow.id}`)}
-                    sx={{ cursor: "pointer" }}
-                  >
-                    {watchlistTvShow.name}
-                  </StyledTypography>
-                  <StyledTypography gutterBottom variant="h7" component="div">
-                    Director: {watchlistTvShow.director}
-                  </StyledTypography>
-                  <StyledTypography variant="body2" color="text.secondary">
-                    {watchlistTvShow.plot}
-                  </StyledTypography>
-                </CardContent>
-                <CardActions>
-                  <DeleteIcon
-                    onClick={() => {
-                      removeWatchlistTvShow(watchlistTvShow._id);
+                >
+                  <CardMedia
+                    component="img"
+                    image={`https://image.tmdb.org/t/p/w500${watchlistTvShow.poster}`}
+                    title={watchlistTvShow.title}
+                    sx={{
+                      height: 250,
+                      objectFit: "contain",
+                      backgroundSize: "cover",
+                      backgroundPosition: "center",
                     }}
-                    sx={{ cursor: "pointer", color: "var(--basic-color)" }}
                   />
-                </CardActions>
-              </Card>
-            </Grid>
-          ))}
-          <Stack spacing={2}>
-            <Pagination
-              count={Math.ceil(watchlistTvShows.length / TvShowsPerPage)} // Calculate number of pages
-              page={page}
-              onChange={handleChange}
-              size="large"
-              shape="rounded"
-              color="primary"
-              boundaryCount={2}
-              renderItem={(item) => (
-                <PaginationItem
-                  {...item}
-                  icon={
-                    item.type === "previous" ? (
-                      <ArrowBackIcon />
-                    ) : (
-                      <ArrowForwardIcon />
-                    )
-                  }
-                />
-              )}
-              sx={{ marginTop: 5 }}
-            />
-          </Stack>
-        </Grid>
-      </Box>
+                  <CardContent>
+                    <StyledTypography
+                      gutterBottom
+                      variant="h5"
+                      component="div"
+                      onClick={() =>
+                        navigate(`/TvShow?id=${watchlistTvShow.id}`)
+                      }
+                      sx={{ cursor: "pointer" }}
+                    >
+                      {watchlistTvShow.name}
+                    </StyledTypography>
+                    <StyledTypography gutterBottom variant="h7" component="div">
+                      Director: {watchlistTvShow.director}
+                    </StyledTypography>
+                    <StyledTypography variant="body2" color="text.secondary">
+                      {watchlistTvShow.plot}
+                    </StyledTypography>
+                  </CardContent>
+                  <CardActions>
+                    <DeleteIcon
+                      onClick={() => {
+                        removeWatchlistTvShow(watchlistTvShow._id);
+                      }}
+                      sx={{ cursor: "pointer", color: "var(--basic-color)" }}
+                    />
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+            <Stack spacing={2}>
+              <Pagination
+                count={Math.ceil(watchlistTvShows.length / TvShowsPerPage)} // Calculate number of pages
+                page={page}
+                onChange={handleChange}
+                size="large"
+                shape="rounded"
+                color="primary"
+                boundaryCount={2}
+                renderItem={(item) => (
+                  <PaginationItem
+                    {...item}
+                    icon={
+                      item.type === "previous" ? (
+                        <ArrowBackIcon />
+                      ) : (
+                        <ArrowForwardIcon />
+                      )
+                    }
+                  />
+                )}
+                sx={{ marginTop: 5 }}
+              />
+            </Stack>
+          </Grid>
+        </Box>
+      )}
     </Container>
   );
 };

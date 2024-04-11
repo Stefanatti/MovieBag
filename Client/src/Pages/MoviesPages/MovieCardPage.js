@@ -75,7 +75,7 @@ const RenderMovie = () => {
 
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
-      const response = await axios.post(url + `/movie/`, {
+      await axios.post(url + `/movie/`, {
         id: id,
         title: title,
         year: year,

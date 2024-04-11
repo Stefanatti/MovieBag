@@ -238,8 +238,10 @@ const Login = () => {
                 <Grid container>
                   <Grid item>
                     <Typography
+                      variant="body2"
                       color={"var(--basic-color)"}
                       onClick={() => navigate("/signup")}
+                      sx={{ cursor: "pointer" }}
                     >
                       Don't have an account? Sign Up
                     </Typography>

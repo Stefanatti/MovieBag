@@ -236,9 +236,17 @@ const Signup = () => {
 
                 <Grid container>
                   <Grid item>
-                    <Link href={"/login"} variant="body2">
+                    <Typography
+                      variant="body2"
+                      color={"var(--basic-color)"}
+                      onClick={() => navigate("/login")}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      Have you already an account? Login
+                    </Typography>
+                    {/* <Link href={"/login"} variant="body2">
                       {"Have you already an account? Login"}
-                    </Link>
+                    </Link> */}
                   </Grid>
                 </Grid>
               </Box>

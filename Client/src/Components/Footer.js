@@ -3,30 +3,31 @@ import { Grid, Paper, Typography, Container, Box } from "@mui/material";
 
 function Footer(props) {
   return (
-    <Box
-      sx={{
-        width: "100%   ",
-        height: "40px",
-        backgroundColor: "#1c1b1b",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        alignContent: "flex-end",
-        bottom: "0",
-        position: "absolute",
-        // marginTop: "20px"
-      }}
-    >
-      <Typography
-        variant="subtitle1"
-        color="text.primary"
+    <Box sx={{ display: "flex", flexDirection: "column", mt: 5 }}>
+      <Box
         sx={{
-          color: "var(--basic-color)",
-          alignSelf: "center",
+          width: "100%   ",
+          height: "40px",
+          backgroundColor: "#1c1b1b",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          alignContent: "flex-end",
+          bottom: "0",
+          position: "absolute",
         }}
       >
-        Created By Stefanos Kotsios 2023
-      </Typography>
+        <Typography
+          variant="subtitle1"
+          color="text.primary"
+          sx={{
+            color: "var(--basic-color)",
+            alignSelf: "center",
+          }}
+        >
+          Created By Stefanos Kotsios 2023
+        </Typography>
+      </Box>
     </Box>
   );
 }

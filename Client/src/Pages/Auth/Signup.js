@@ -75,11 +75,7 @@ const Signup = () => {
 
   const createUser = async (e) => {
     try {
-      const response = await axios.post(`${url}/user/signup`, formData, {
-        headers: {
-          "Content-Type": `multipart/form-data; ${formData.getBoundary()}`,
-        },
-      });
+      const response = await axios.post(`${url}/user/signup`, formData, {});
       console.log(response.data);
       if (response.data.message === true) {
         navigate("/login");

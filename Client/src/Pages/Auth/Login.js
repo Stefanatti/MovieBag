@@ -10,7 +10,6 @@ import {
   Container,
   Box,
   TextField,
-  // Link,
   InputAdornment,
   IconButton,
 } from "@mui/material";
@@ -245,9 +244,6 @@ const Login = () => {
                     >
                       Don't have an account? Sign Up
                     </Typography>
-                    {/* <Link href={"/signup"} variant="body2">
-                      {"Don't have an account? Sign Up"}
-                    </Link> */}
                   </Grid>
                 </Grid>
               </Box>

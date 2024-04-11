@@ -15,7 +15,6 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  Link,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -244,9 +243,6 @@ const Signup = () => {
                     >
                       Have you already an account? Login
                     </Typography>
-                    {/* <Link href={"/login"} variant="body2">
-                      {"Have you already an account? Login"}
-                    </Link> */}
                   </Grid>
                 </Grid>
               </Box>

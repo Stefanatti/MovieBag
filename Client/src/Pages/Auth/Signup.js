@@ -76,7 +76,7 @@ const Signup = () => {
 
   const createUser = async (e) => {
     try {
-      const response = await axios.post(`${url}/signup`, formData, {
+      const response = await axios.post(`${url}/user/signup`, formData, {
         headers: {
           "Content-Type": `multipart/form-data; ${formData.getBoundary()}`,
         },

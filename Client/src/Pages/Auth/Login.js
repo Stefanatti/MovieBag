@@ -10,7 +10,7 @@ import {
   Container,
   Box,
   TextField,
-  Link,
+  // Link,
   InputAdornment,
   IconButton,
 } from "@mui/material";
@@ -237,9 +237,15 @@ const Login = () => {
 
                 <Grid container>
                   <Grid item>
-                    <Link href={"/signup"} variant="body2">
+                    <Typography
+                      color={"var(--basic-color)"}
+                      onClick={() => navigate("/signup")}
+                    >
+                      Don't have an account? Sign Up
+                    </Typography>
+                    {/* <Link href={"/signup"} variant="body2">
                       {"Don't have an account? Sign Up"}
-                    </Link>
+                    </Link> */}
                   </Grid>
                 </Grid>
               </Box>

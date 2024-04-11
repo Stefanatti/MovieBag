@@ -5,9 +5,13 @@ import ClipLoader from "react-spinners/ClipLoader";
 import { Typography, Container, Stack, Box, styled } from "@mui/material";
 import * as React from "react";
 import axios from "axios";
-import Carusel from "./Carusel";
+import { lazy, Suspense } from "react";
+
+//import Carusel from "./Carusel";
 
 const Main = ({ user }) => {
+  const Carusel = lazy(() => import("./Carusel"));
+
   const navigate = useNavigate();
   const url = process.env.REACT_APP_URL;
   const [popularMovies, setPopularMovies] = useState([]);
@@ -91,7 +95,9 @@ const Main = ({ user }) => {
                 Popular Movies:
               </StyledTitleTypography>
               <Box>
-                <Carusel data={popularMovies} path={`/movie?id=`} />
+                <Suspense>
+                  <Carusel data={popularMovies} path={`/movie?id=`} />
+                </Suspense>
               </Box>
             </Stack>
           </Box>
@@ -106,7 +112,9 @@ const Main = ({ user }) => {
                 Popular Tv Shows:
               </StyledTitleTypography>
               <Box>
-                <Carusel data={popularTvShows} path={`/tvShow?id=`} />
+                <Suspense>
+                  <Carusel data={popularTvShows} path={`/tvShow?id=`} />
+                </Suspense>
               </Box>
             </Stack>
           </Box>
@@ -165,7 +173,9 @@ const Main = ({ user }) => {
                 Top Rated Movies:
               </StyledTitleTypography>
               <Box>
-                <Carusel data={topRatedMovies} path={`/movie?id=`} />
+                <Suspense>
+                  <Carusel data={topRatedMovies} path={`/movie?id=`} />
+                </Suspense>
               </Box>
             </Stack>
           </Box>
@@ -182,7 +192,9 @@ const Main = ({ user }) => {
                 Top Rated Tv Shows:
               </StyledTitleTypography>
               <Box>
-                <Carusel data={topRatedTvShows} path={`/tvShow?id=`} />
+                <Suspense>
+                  <Carusel data={topRatedTvShows} path={`/tvShow?id=`} />
+                </Suspense>
               </Box>
             </Stack>
           </Box>

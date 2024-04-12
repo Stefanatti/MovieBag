@@ -1,8 +1,7 @@
 import "../Styles/Navbar.scss";
-import { useNavigate } from "react-router-dom";
 import { useState } from "react";
-import { useLocation } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
 import ThemeSwitcher from "./ThemeSwitcher";
 import * as React from "react";
@@ -97,7 +96,6 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   height: "43px",
   "& .MuiInputBase-input": {
     padding: theme.spacing(1, 1, 1, 0),
-    // vertical padding + font size from searchIcon
     paddingLeft: `calc(1em + ${theme.spacing(4)})`,
     transition: theme.transitions.create("width"),
     width: "100%",
@@ -115,11 +113,8 @@ const Navbar = (props) => {
   let user = useSelector((state) => state.user.value);
 
   const navigate = useNavigate();
-  const location = useLocation();
   const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
-  //const [openLogoutModal, setOpenLogoutModal] = useState(false);
-  const path = location.pathname;
   const [mobileOpen, setMobileOpen] = useState(false);
   const [theme, setTheme] = useState("other-theme");
 

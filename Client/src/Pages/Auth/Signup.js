@@ -57,22 +57,6 @@ const Signup = () => {
     resolver: yupResolver(userSignInSchema),
   });
 
-  // const createUser = async (e) => {
-  //   try {
-  //     await axios.post(`${url}/user/signup`, formData).then(({ data }) => {
-  //       console.log(data);
-  //       if (data.message === true) {
-  //         navigate("/login");
-  //       } else {
-  //         alert(data.message);
-  //       }
-  //     });
-  //   } catch (error) {
-  //     console.error("Error submitting form:", error);
-  //     reset();
-  //   }
-  // };
-
   const createUser = async (e) => {
     try {
       const response = await axios.post(`${url}/user/signup`, formData, {});

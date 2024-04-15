@@ -5,11 +5,13 @@ import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import MouseOverPopover from "../Components/PopOver";
 import {
   Grid,
+  Card,
+  useMediaQuery,
   Typography,
-  Container,
+  CardMedia,
+  CardContent,
   Stack,
   Box,
-  Paper,
   styled,
   Avatar,
 } from "@mui/material";
@@ -17,13 +19,14 @@ import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
 import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
+import { useTheme } from "@mui/material/styles";
 
 const MovieCard = ({
-  movie,
+  show,
   user,
   toggleForList,
   toggleForWatchlist,
-  AddToYourMovies,
+  AddToYourShows,
   AddToYourWatchlist,
   setOpenHaveToSignupModal,
 }) => {
@@ -37,6 +40,9 @@ const MovieCard = ({
   const [anchorEl2, setAnchorEl2] = useState(null);
   const handleOpen = () => setOpenModal(true);
   const handleClose = () => setOpenModal(false);
+
+  const theme = useTheme();
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
     fontFamily: { fontFamily },
@@ -65,8 +71,8 @@ const MovieCard = ({
         (video) =>
           (video.type === "Trailer" &&
             video.site === "YouTube" &&
-            video.name === "Official Trailer") ||
-          video.name === "Official Red Band Trailer"
+            video.name.includes("Official")) ||
+          video.name.includes("Trailer")
       )
     );
   }, [movie]);
@@ -89,246 +95,244 @@ const MovieCard = ({
   const open2 = Boolean(anchorEl2);
 
   return (
-    <Grid container>
-      <Grid item xs={12} sm={4}>
-        <Paper
-          sx={{
-            height: { xs: 400, sm: 650, md: 650, lg: 650 },
-            backgroundImage: `url(${`https://image.tmdb.org/t/p/w500/${movie.poster_path}`})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            border: "2px solid grey",
-            overflow: "auto",
-          }}
-        ></Paper>
-      </Grid>
-      <Grid item xs={12} sm={8}>
-        <Paper
-          sx={{
-            minHeight: 650,
-            background: "var(--main-card-color)",
-            display: "flex",
-            flexDirection: "column",
-            overflow: "auto",
-          }}
-        >
-          <Container>
-            <Stack spacing={2} direction={"column"}>
-              <Typography
-                variant="h3"
-                sx={{
-                  color: "rgb(234, 204, 231)",
-                  fontFamily: "'Rubik', Sans-serif",
-                  margin: "0",
-                  textTransform: "uppercase",
-                  fontWeight: "700",
-                  textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
-                }}
-              >
-                {movie.title}
-              </Typography>
-              <Box
-                sx={{
-                  display: "flex",
-                  alignItems: "baseline",
-                  alignContent: "flex-end",
-                  gap: "10px",
-                }}
-              >
-                <StyledTypography variant={"h4"} fontFamily={"lato"}>
-                  {movieYear}{" "}
-                </StyledTypography>
-                <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                  {`${movie.runtime} min`}{" "}
-                </StyledTypography>
-                <a
-                  href={`https://www.imdb.com/title/${movie.imdb_id}/?ref_=fn_al_tt_1`}
+    <>
+      <Card
+        sx={{
+          background: "var(--main-card-color)",
+          borderRadius: "12px",
+          boxShadow:
+            "0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19)",
+        }}
+      >
+        <Grid container direction={isSmallScreen ? "column" : "row"}>
+          <Grid item xs={4} sm={6} md={4}>
+            <CardMedia
+              component="img"
+              max-height="444"
+              image={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+              alt="Show Image"
+            />
+          </Grid>
+          <Grid item xs={8} sm={6} md={8}>
+            <CardContent>
+              <Stack spacing={1}>
+                <Typography
+                  variant="h2"
+                  component="div"
+                  sx={{
+                    color: "rgb(234, 204, 231)",
+                    fontFamily: "'Rubik', Sans-serif",
+                    textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
+                  }}
                 >
-                  <StyledTypography
-                    sx={{ color: "gold", underLine: "none" }}
-                    variant={"body1"}
-                    fontFamily={"lato"}
-                    component="span"
-                  >
-                    IMDB
-                  </StyledTypography>
-                </a>
-              </Box>
-              <Box sx={{ display: "flex", gap: "8px" }}>
-                {movie.genres.map((genre, index) => (
-                  <StyledTypography
-                    key={index}
-                    variant={"h6"}
-                    fontFamily={"lato"}
-                    sx={{
-                      listStyleType: "none",
-                      "::before": { content: '"\\2022"', marginRight: "0.5em" },
-                    }}
-                  >
-                    {genre.name}
-                  </StyledTypography>
-                ))}
-              </Box>
-              <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                {` Director: ${director.name}`}{" "}
-              </StyledTypography>
-              <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                {` Writer: ${writer}`}{" "}
-              </StyledTypography>
-              <StyledTypography variant={"h6"} fontFamily={"lato"}>
-                {` Actors: ${actors}`}{" "}
-              </StyledTypography>
-              <StyledTypography variant={"h7"} fontFamily={"lato"}>
-                {`${movie.overview}`}{" "}
-              </StyledTypography>
+                  {movie.title}
+                </Typography>
 
-              <Box
-                sx={{
-                  display: "flex",
-                  gap: "20px",
-
-                  alignItems: "baseline",
-                  marginBottom: 5,
-                }}
-              >
-                {user._id ? (
-                  <>
-                    <Avatar
-                      onClick={() => {
-                        AddToYourMovies(
-                          movie.id,
-                          movie.title,
-                          movieYear,
-                          `movie`,
-                          director == "N/A" ? "-" : `${director.name}`
-                        );
-                      }}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: "var(--basic-color)",
-                        width: 60,
-                        height: 60,
-                        marginTop: 5,
-                      }}
-                      onMouseEnter={handlePopoverOpen}
-                      onMouseLeave={handlePopoverClose}
-                    >
-                      {toggleForList ? (
-                        <PlaylistAddCheckIcon sx={{ color: "white" }} />
-                      ) : (
-                        <ListIcon sx={{ color: "white" }} />
-                      )}
-                    </Avatar>
-                    <Avatar
-                      onClick={() => {
-                        AddToYourWatchlist(
-                          movie.id,
-                          movie.title,
-                          movieYear,
-                          `movie`,
-                          director == "N/A" ? "-" : `${director.name}`,
-                          movie.poster_path,
-                          movie.overview
-                        );
-                      }}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: "var(--basic-color)",
-                        width: 60,
-                        height: 60,
-                        marginTop: 5,
-                      }}
-                      onMouseEnter={handlePopoverOpen2}
-                      onMouseLeave={handlePopoverClose2}
-                    >
-                      {toggleForWatchlist ? (
-                        <BookmarkAddedIcon sx={{ color: "white" }} />
-                      ) : (
-                        <BookmarkAddIcon sx={{ color: "white" }} />
-                      )}
-                    </Avatar>
-                  </>
-                ) : (
-                  <>
-                    <Avatar
-                      onClick={() => {
-                        setOpenHaveToSignupModal(true);
-                      }}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: "var(--basic-color)",
-                        width: 60,
-                        height: 60,
-                        marginTop: 5,
-                      }}
-                      onMouseEnter={handlePopoverOpen}
-                      onMouseLeave={handlePopoverClose}
-                    >
-                      <ListIcon style={{ color: "white" }} />
-                    </Avatar>
-
-                    <Avatar
-                      onClick={() => {
-                        setOpenHaveToSignupModal(true);
-                      }}
-                      sx={{
-                        cursor: "pointer",
-                        backgroundColor: "var(--basic-color)",
-                        width: 60,
-                        height: 60,
-                        marginTop: 5,
-                      }}
-                      onMouseEnter={handlePopoverOpen2}
-                      onMouseLeave={handlePopoverClose2}
-                    >
-                      <BookmarkAddIcon sx={{ color: "white" }} />
-                    </Avatar>
-                  </>
-                )}
                 <Box
                   sx={{
                     display: "flex",
+                    alignItems: "baseline",
+                    alignContent: "flex-end",
                     gap: "10px",
-                    alignItems: "center",
-                    cursor: "pointer",
                   }}
                 >
-                  <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
-                  <StyledTypography
-                    variant={"h6"}
-                    fontFamily={"lato"}
-                    onClick={handleOpen}
-                  >
-                    Play Trailer
+                  <StyledTypography variant={"h4"} fontFamily={"lato"}>
+                    {movieYear}{" "}
                   </StyledTypography>
+                  <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                    {`${movie.runtime} min`}{" "}
+                  </StyledTypography>
+                  <a
+                    href={`https://www.imdb.com/title/${movie.imdb_id}/?ref_=fn_al_tt_1`}
+                  >
+                    <StyledTypography
+                      sx={{ color: "gold", underLine: "none" }}
+                      variant={"body1"}
+                      fontFamily={"lato"}
+                      component="span"
+                    >
+                      IMDB
+                    </StyledTypography>
+                  </a>
                 </Box>
-              </Box>
-            </Stack>
-          </Container>
-        </Paper>
-        <MouseOverPopover
-          open={open}
-          anchorEl={anchorEl}
-          handlePopoverOpen={handlePopoverOpen}
-          handlePopoverClose={handlePopoverClose}
-          popOverText={toggleForList ? "In your List!" : "Add to list"}
-        />
-        <MouseOverPopover
-          open={open2}
-          anchorEl={anchorEl2}
-          handlePopoverOpen={handlePopoverOpen2}
-          handlePopoverClose={handlePopoverClose2}
-          popOverText={
-            toggleForWatchlist ? "In your Watchlist!" : "Add to Watchlist"
-          }
-        />
-        <TrailerModal
-          open={openModal}
-          onClose={handleClose}
-          trailer={trailer}
-        />
-      </Grid>
-    </Grid>
+                <Box sx={{ display: "flex", gap: "8px" }}>
+                  {movie.genres.map((genre, index) => (
+                    <StyledTypography
+                      key={index}
+                      variant={"h6"}
+                      fontFamily={"lato"}
+                      sx={{
+                        listStyleType: "none",
+                        "::before": {
+                          content: '"\\2022"',
+                          marginRight: "0.5em",
+                        },
+                      }}
+                    >
+                      {genre.name}
+                    </StyledTypography>
+                  ))}
+                </Box>
+                <Box>
+                  <Stack spacing={1}>
+                    <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                      {` Director: ${director.name}`}{" "}
+                    </StyledTypography>
+                    <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                      {` Writer: ${writer}`}{" "}
+                    </StyledTypography>
+                    <StyledTypography variant={"h6"} fontFamily={"lato"}>
+                      {` Actors: ${actors}`}{" "}
+                    </StyledTypography>
+                    <StyledTypography variant={"h7"} fontFamily={"lato"}>
+                      {`${movie.overview}`}{" "}
+                    </StyledTypography>
+                  </Stack>
+                </Box>
+                <Box
+                  sx={{
+                    display: "flex",
+                    gap: "20px",
+
+                    alignItems: "baseline",
+                    marginBottom: 5,
+                  }}
+                >
+                  {user._id ? (
+                    <>
+                      <Avatar
+                        onClick={() => {
+                          AddToYourMovies(
+                            movie.id,
+                            movie.title,
+                            movieYear,
+                            `movie`,
+                            director == "N/A" ? "-" : `${director.name}`
+                          );
+                        }}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: "var(--basic-color)",
+                          width: 60,
+                          height: 60,
+                          marginTop: 5,
+                        }}
+                        onMouseEnter={handlePopoverOpen}
+                        onMouseLeave={handlePopoverClose}
+                      >
+                        {toggleForList ? (
+                          <PlaylistAddCheckIcon sx={{ color: "white" }} />
+                        ) : (
+                          <ListIcon sx={{ color: "white" }} />
+                        )}
+                      </Avatar>
+                      <Avatar
+                        onClick={() => {
+                          AddToYourWatchlist(
+                            movie.id,
+                            movie.title,
+                            movieYear,
+                            `movie`,
+                            director == "N/A" ? "-" : `${director.name}`,
+                            movie.poster_path,
+                            movie.overview
+                          );
+                        }}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: "var(--basic-color)",
+                          width: 60,
+                          height: 60,
+                          marginTop: 5,
+                        }}
+                        onMouseEnter={handlePopoverOpen2}
+                        onMouseLeave={handlePopoverClose2}
+                      >
+                        {toggleForWatchlist ? (
+                          <BookmarkAddedIcon sx={{ color: "white" }} />
+                        ) : (
+                          <BookmarkAddIcon sx={{ color: "white" }} />
+                        )}
+                      </Avatar>
+                    </>
+                  ) : (
+                    <>
+                      <Avatar
+                        onClick={() => {
+                          setOpenHaveToSignupModal(true);
+                        }}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: "var(--basic-color)",
+                          width: 60,
+                          height: 60,
+                          marginTop: 5,
+                        }}
+                        onMouseEnter={handlePopoverOpen}
+                        onMouseLeave={handlePopoverClose}
+                      >
+                        <ListIcon style={{ color: "white" }} />
+                      </Avatar>
+
+                      <Avatar
+                        onClick={() => {
+                          setOpenHaveToSignupModal(true);
+                        }}
+                        sx={{
+                          cursor: "pointer",
+                          backgroundColor: "var(--basic-color)",
+                          width: 60,
+                          height: 60,
+                          marginTop: 5,
+                        }}
+                        onMouseEnter={handlePopoverOpen2}
+                        onMouseLeave={handlePopoverClose2}
+                      >
+                        <BookmarkAddIcon sx={{ color: "white" }} />
+                      </Avatar>
+                    </>
+                  )}
+                  <Box
+                    sx={{
+                      display: "flex",
+                      gap: "10px",
+                      alignItems: "center",
+                      cursor: "pointer",
+                    }}
+                  >
+                    <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
+                    <StyledTypography
+                      variant={"h6"}
+                      fontFamily={"lato"}
+                      onClick={handleOpen}
+                    >
+                      Play Trailer
+                    </StyledTypography>
+                  </Box>
+                </Box>
+              </Stack>
+            </CardContent>
+          </Grid>
+        </Grid>
+      </Card>
+      <MouseOverPopover
+        open={open}
+        anchorEl={anchorEl}
+        handlePopoverOpen={handlePopoverOpen}
+        handlePopoverClose={handlePopoverClose}
+        popOverText={toggleForList ? "In your List!" : "Add to list"}
+      />
+      <MouseOverPopover
+        open={open2}
+        anchorEl={anchorEl2}
+        handlePopoverOpen={handlePopoverOpen2}
+        handlePopoverClose={handlePopoverClose2}
+        popOverText={
+          toggleForWatchlist ? "In your Watchlist!" : "Add to Watchlist"
+        }
+      />
+      <TrailerModal open={openModal} onClose={handleClose} trailer={trailer} />
+    </>
   );
 };
 

@@ -22,7 +22,6 @@ const RenderMovie = () => {
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
-  const [movieRates, setMovieRates] = useState([]);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
 
@@ -142,12 +141,11 @@ const RenderMovie = () => {
           />
         ) : (
           <MovieCard
-            movie={movie}
-            movieRates={movieRates}
+            show={movie}
             user={user}
             toggleForList={toggleForList}
             toggleForWatchlist={toggleForWatchlist}
-            AddToYourMovies={AddToYourMovies}
+            AddToYourShows={AddToYourMovies}
             AddToYourWatchlist={AddToYourMoviesWatchlist}
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />

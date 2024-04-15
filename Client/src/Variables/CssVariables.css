@@ -14,10 +14,10 @@
   --basic-color: rgb(255, 124, 0);
   --hover-color: rgb(249, 237, 3);
   --main-card-color: linear-gradient(
-    45deg,
-    rgb(58, 56, 56),
-    rgb(33, 63, 36),
-    rgba(9, 7, 7, 0.693)
+    to right,
+    rgba(89, 225, 87, 0.2) 0%,
+    rgb(31, 51, 37) 60%,
+    rgba(33, 33, 32, 1) 100%
   );
 
   --cards-color: linear-gradient(

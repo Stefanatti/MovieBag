@@ -2,9 +2,8 @@ import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
-//import { useNavigate } from "react-router-dom";
 import HaveToSignupModal from "../../Components/HaveToSignupModal";
-import TvShowCard from "../../Components/TvShowCard";
+import ShowCard from "../../Components/ShowCard";
 import { useSelector } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
@@ -14,15 +13,12 @@ const RenderTvShowCard = () => {
   const tvShowID = params.get("id");
   const url = process.env.REACT_APP_URL;
 
-  //const navigate = useNavigate();
   const [tvShow, setTvShow] = useState("");
-
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
   const [tvShowIds, setTvShowIds] = useState([]);
   const [watchlistTvShowsIds, setWatchlistTvShowsIds] = useState([]);
-
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
 
@@ -91,7 +87,7 @@ const RenderTvShowCard = () => {
       alert(err.response.data.message);
     }
   };
-  const AddToYouTvShowsWatchlist = async (
+  const AddToTvShowsWatchlist = async (
     id,
     name,
     year,
@@ -142,13 +138,13 @@ const RenderTvShowCard = () => {
             data-testid="loader"
           />
         ) : (
-          <TvShowCard
-            tvShow={tvShow}
+          <ShowCard
+            show={tvShow}
             user={user}
             toggleForList={toggleForList}
             toggleForWatchlist={toggleForWatchlist}
-            AddToYourTvShows={AddToYourTvShows}
-            AddToYouTvShowsWatchlist={AddToYouTvShowsWatchlist}
+            AddToYourShows={AddToYourTvShows}
+            AddToYourWatchlist={AddToTvShowsWatchlist}
             setOpenHaveToSignupModal={setOpenHaveToSignupModal}
           />
         )}

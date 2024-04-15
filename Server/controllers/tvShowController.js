@@ -61,17 +61,9 @@ const rateTvShow = async (req, res) => {
   }
 };
 
-// const watchTvShow = async (req, res) => {
-//   const tvShow = await TvShow.findOne({ _id: req.params.id });
-//   tvShow.watched = !tvShow.watched;
-//   tvShow.save();
-//   res.send(tvShow);
-// };
-
 module.exports = {
   getTvShow,
   addTvShow,
   deleteTvShow,
-  //watchTvShow,
   rateTvShow,
 };

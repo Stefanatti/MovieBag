@@ -3,11 +3,10 @@ import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import MovieCard from "../../Components/MovieCard";
+import ShowCard from "../../Components/ShowCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
-// import { addMovie } from "../../Features/movies";
 import { lazy, Suspense } from "react";
 
 const RenderMovie = () => {
@@ -17,7 +16,6 @@ const RenderMovie = () => {
   );
   const params = useQueryParams();
   const movieID = params.get("id");
-  const navigate = useNavigate();
   const [movie, setMovie] = useState("");
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
@@ -140,7 +138,7 @@ const RenderMovie = () => {
             data-testid="loader"
           />
         ) : (
-          <MovieCard
+          <ShowCard
             show={movie}
             user={user}
             toggleForList={toggleForList}

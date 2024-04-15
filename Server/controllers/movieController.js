@@ -61,17 +61,9 @@ const rateMovie = async (req, res) => {
   }
 };
 
-// const watchMovie = async (req, res) => {
-//   const movie = await Movie.findOne({ _id: req.params.id });
-//   movie.watched = !movie.watched;
-//   movie.save();
-//   res.send(movie);
-// };
-
 module.exports = {
   getMovie,
   addMovie,
   deleteMovie,
-  //watchMovie,
   rateMovie,
 };

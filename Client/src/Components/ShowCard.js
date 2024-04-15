@@ -2,7 +2,8 @@ import * as React from "react";
 import { useState, useEffect } from "react";
 import TrailerModal from "./Modal";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import MouseOverPopover from "../Components/PopOver";
+import MouseOverPopover from "./PopOver";
+
 import {
   Grid,
   Card,
@@ -21,7 +22,7 @@ import BookmarkAddIcon from "@mui/icons-material/BookmarkAdd";
 import BookmarkAddedIcon from "@mui/icons-material/BookmarkAdded";
 import { useTheme } from "@mui/material/styles";
 
-const MovieCard = ({
+const ShowCard = ({
   show,
   user,
   toggleForList,
@@ -31,9 +32,10 @@ const MovieCard = ({
   setOpenHaveToSignupModal,
 }) => {
   const [director, setDirector] = useState("");
+  const [creator, setCreator] = useState("");
   const [writer, setWriter] = useState("");
   const [actors, setActors] = useState("");
-  const [movieYear, setMovieYear] = useState("");
+  const [showYear, setShowYear] = useState("");
   const [trailer, setTrailer] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -52,22 +54,27 @@ const MovieCard = ({
   }));
 
   useEffect(() => {
-    setDirector(movie.credits.crew.find((obj) => obj.job === "Director"));
+    setDirector(show.credits.crew.find((obj) => obj.job === "Director"));
+    setCreator(show.created_by?.map((obj) => obj.name).join(", "));
     setWriter(
-      movie.credits.crew
+      show.credits.crew
         .filter((obj) => obj.job === "Writer" || obj.job === "Screenplay")
         .map((writer) => writer.name)
         .join(", ")
     );
     setActors(
-      movie.credits.cast
+      show.credits.cast
         .map((obj) => obj.name)
         .slice(0, 4)
         .join(", ")
     );
-    setMovieYear(movie.release_date.slice(0, 4));
+    setShowYear(
+      show.release_date
+        ? show.release_date.slice(0, 4)
+        : show.first_air_date.slice(0, 4)
+    );
     setTrailer(
-      movie.videos.results.filter(
+      show.videos.results.filter(
         (video) =>
           (video.type === "Trailer" &&
             video.site === "YouTube" &&
@@ -75,7 +82,7 @@ const MovieCard = ({
           video.name.includes("Trailer")
       )
     );
-  }, [movie]);
+  }, [show]);
 
   const handlePopoverOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -83,7 +90,6 @@ const MovieCard = ({
   const handlePopoverOpen2 = (event) => {
     setAnchorEl2(event.currentTarget);
   };
-
   const handlePopoverClose = () => {
     setAnchorEl(null);
   };
@@ -109,7 +115,7 @@ const MovieCard = ({
             <CardMedia
               component="img"
               max-height="444"
-              image={`https://image.tmdb.org/t/p/w500/${movie.poster_path}`}
+              image={`https://image.tmdb.org/t/p/w500/${show.poster_path}`}
               alt="Show Image"
             />
           </Grid>
@@ -125,7 +131,7 @@ const MovieCard = ({
                     textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
                   }}
                 >
-                  {movie.title}
+                  {show.title ? show.title : show.name}
                 </Typography>
 
                 <Box
@@ -137,26 +143,30 @@ const MovieCard = ({
                   }}
                 >
                   <StyledTypography variant={"h4"} fontFamily={"lato"}>
-                    {movieYear}{" "}
+                    {showYear}{" "}
                   </StyledTypography>
                   <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                    {`${movie.runtime} min`}{" "}
+                    {show.runtime
+                      ? `${show.runtime} min`
+                      : `Seasons: ${show.number_of_seasons}`}
                   </StyledTypography>
-                  <a
-                    href={`https://www.imdb.com/title/${movie.imdb_id}/?ref_=fn_al_tt_1`}
-                  >
-                    <StyledTypography
-                      sx={{ color: "gold", underLine: "none" }}
-                      variant={"body1"}
-                      fontFamily={"lato"}
-                      component="span"
+                  {show.imdb_id && (
+                    <a
+                      href={`https://www.imdb.com/title/${show.imdb_id}/?ref_=fn_al_tt_1`}
                     >
-                      IMDB
-                    </StyledTypography>
-                  </a>
+                      <StyledTypography
+                        sx={{ color: "gold", underLine: "none" }}
+                        variant={"body1"}
+                        fontFamily={"lato"}
+                        component="span"
+                      >
+                        IMDB
+                      </StyledTypography>
+                    </a>
+                  )}
                 </Box>
                 <Box sx={{ display: "flex", gap: "8px" }}>
-                  {movie.genres.map((genre, index) => (
+                  {show.genres.map((genre, index) => (
                     <StyledTypography
                       key={index}
                       variant={"h6"}
@@ -176,16 +186,20 @@ const MovieCard = ({
                 <Box>
                   <Stack spacing={1}>
                     <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                      {` Director: ${director.name}`}{" "}
+                      {director
+                        ? ` Director: ${director.name}`
+                        : ` Creator: ${creator}`}
                     </StyledTypography>
-                    <StyledTypography variant={"h5"} fontFamily={"lato"}>
-                      {` Writer: ${writer}`}{" "}
-                    </StyledTypography>
+                    {writer && (
+                      <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                        {` Writer: ${writer}`}{" "}
+                      </StyledTypography>
+                    )}
                     <StyledTypography variant={"h6"} fontFamily={"lato"}>
                       {` Actors: ${actors}`}{" "}
                     </StyledTypography>
                     <StyledTypography variant={"h7"} fontFamily={"lato"}>
-                      {`${movie.overview}`}{" "}
+                      {`${show.overview}`}{" "}
                     </StyledTypography>
                   </Stack>
                 </Box>
@@ -202,13 +216,21 @@ const MovieCard = ({
                     <>
                       <Avatar
                         onClick={() => {
-                          AddToYourMovies(
-                            movie.id,
-                            movie.title,
-                            movieYear,
-                            `movie`,
-                            director == "N/A" ? "-" : `${director.name}`
-                          );
+                          show.title
+                            ? AddToYourShows(
+                                show.id,
+                                show.title,
+                                showYear,
+                                `movie`,
+                                director == "N/A" ? "-" : `${director.name}`
+                              )
+                            : AddToYourShows(
+                                show.id,
+                                show.name,
+                                showYear,
+                                `Tv Show`,
+                                creator == "N/A" ? "-" : `${creator}`
+                              );
                         }}
                         sx={{
                           cursor: "pointer",
@@ -228,15 +250,23 @@ const MovieCard = ({
                       </Avatar>
                       <Avatar
                         onClick={() => {
-                          AddToYourWatchlist(
-                            movie.id,
-                            movie.title,
-                            movieYear,
-                            `movie`,
-                            director == "N/A" ? "-" : `${director.name}`,
-                            movie.poster_path,
-                            movie.overview
-                          );
+                          show.title
+                            ? AddToYourWatchlist(
+                                show.id,
+                                show.title,
+                                showYear,
+                                `movie`,
+                                director == "N/A" ? "-" : `${director.name}`
+                              )
+                            : AddToYourWatchlist(
+                                show.id,
+                                show.name,
+                                showYear,
+                                `Tv Show`,
+                                creator == "N/A" ? "-" : `${creator}`,
+                                show.poster_path,
+                                show.overview
+                              );
                         }}
                         sx={{
                           cursor: "pointer",
@@ -331,9 +361,10 @@ const MovieCard = ({
           toggleForWatchlist ? "In your Watchlist!" : "Add to Watchlist"
         }
       />
+
       <TrailerModal open={openModal} onClose={handleClose} trailer={trailer} />
     </>
   );
 };
 
-export default MovieCard;
+export default ShowCard;

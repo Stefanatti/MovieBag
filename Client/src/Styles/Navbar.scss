@@ -1,38 +1,5 @@
 @import "../Variables/CssVariables.css";
 
-
-// .search-area{
-// border: none;
-// padding-top: 0;
-// margin: 0;
-
-//   }
-//   .form-control {
-//     height: 40px;
-
-//   }
-//   .btn {
-//     display: flex;
-//     padding: 8px;
-//     margin: auto 0;
-//     bottom: 3px;
-
-
-//     .search-icon {
-//       margin: 0;
-//       width: 20px;
-//       height: 20px;
-//       color: var(--basic-color);
-//       background-color: none;
-//       padding: 0;
-//       bottom: 5px;
-//     }
-//   }
-
-
-
-//////////////////////////////////
-
 .switch {
   height: 20px;
   width: 70px;
@@ -52,11 +19,10 @@
 }
 
 .switch-radios {
-   height: 56px;
-   width: 56px;
+  height: 56px;
+  width: 56px;
   display: flex;
   justify-content: space-between;
-
 }
 
 input[type="radio"]:first-of-type {
@@ -84,5 +50,5 @@ input[type="radio"]:last-of-type {
 
 input[type="radio"] {
   cursor: pointer;
-   opacity: 0;
+  opacity: 0;
 }

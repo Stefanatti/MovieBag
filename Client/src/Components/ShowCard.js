@@ -47,14 +47,14 @@ const ShowCard = ({
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
   const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
-    fontFamily: { fontFamily },
+    fontFamily: "Montserrat, Sans-serif",
     variant: { variant },
     color: "rgb(234, 204, 231)",
     textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
   }));
 
   useEffect(() => {
-    setDirector(show.credits.crew.find((obj) => obj.job === "Director"));
+    setDirector(show.credits?.crew.find((obj) => obj.job === "Director"));
     setCreator(show.created_by?.map((obj) => obj.name).join(", "));
     setWriter(
       show.credits.crew
@@ -123,11 +123,13 @@ const ShowCard = ({
             <CardContent>
               <Stack spacing={1}>
                 <Typography
-                  variant="h2"
+                  variant="h3"
                   component="div"
                   sx={{
                     color: "rgb(234, 204, 231)",
-                    fontFamily: "'Rubik', Sans-serif",
+                    fontFamily: "Montserrat, Sans-serif",
+
+                    fontWeight: 500,
                     textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
                   }}
                 >
@@ -142,10 +144,10 @@ const ShowCard = ({
                     gap: "10px",
                   }}
                 >
-                  <StyledTypography variant={"h4"} fontFamily={"lato"}>
+                  <StyledTypography variant={"h4"}>
                     {showYear}{" "}
                   </StyledTypography>
-                  <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                  <StyledTypography variant={"h5"}>
                     {show.runtime
                       ? `${show.runtime} min`
                       : `Seasons: ${show.number_of_seasons}`}
@@ -157,7 +159,6 @@ const ShowCard = ({
                       <StyledTypography
                         sx={{ color: "gold", underLine: "none" }}
                         variant={"body1"}
-                        fontFamily={"lato"}
                         component="span"
                       >
                         IMDB
@@ -170,7 +171,6 @@ const ShowCard = ({
                     <StyledTypography
                       key={index}
                       variant={"h6"}
-                      fontFamily={"lato"}
                       sx={{
                         listStyleType: "none",
                         "::before": {
@@ -185,20 +185,20 @@ const ShowCard = ({
                 </Box>
                 <Box>
                   <Stack spacing={1}>
-                    <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                    <StyledTypography variant={"h5"}>
                       {director
                         ? ` Director: ${director.name}`
                         : ` Creator: ${creator}`}
                     </StyledTypography>
                     {writer && (
-                      <StyledTypography variant={"h5"} fontFamily={"lato"}>
+                      <StyledTypography variant={"h5"}>
                         {` Writer: ${writer}`}{" "}
                       </StyledTypography>
                     )}
-                    <StyledTypography variant={"h6"} fontFamily={"lato"}>
+                    <StyledTypography variant={"h6"}>
                       {` Actors: ${actors}`}{" "}
                     </StyledTypography>
-                    <StyledTypography variant={"h7"} fontFamily={"lato"}>
+                    <StyledTypography variant={"h7"}>
                       {`${show.overview}`}{" "}
                     </StyledTypography>
                   </Stack>
@@ -331,11 +331,7 @@ const ShowCard = ({
                     }}
                   >
                     <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
-                    <StyledTypography
-                      variant={"h6"}
-                      fontFamily={"lato"}
-                      onClick={handleOpen}
-                    >
+                    <StyledTypography variant={"h6"} onClick={handleOpen}>
                       Play Trailer
                     </StyledTypography>
                   </Box>

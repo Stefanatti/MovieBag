@@ -4,12 +4,15 @@ In addition to personal libraries, users can create watchlists for movies and se
 
 Technologies:
 React,
+MUI,
+Bootstrap,
+Sass,
 Node.js,
 MongoDB,
 Express,
-MUI,
-Bootstrap,
-Sass
+bcrypt,
+dotenv
+
 
 
 You can visit my web-app here:https://moviebag-1bhe.onrender.com  

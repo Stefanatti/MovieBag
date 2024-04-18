@@ -11,13 +11,14 @@ import {
   Pagination,
   PaginationItem,
   Box,
-  styled,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const WatchlistMovies = () => {
   const url = process.env.REACT_APP_URL;
+  let user = useSelector((state) => state.user.value);
+
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [pageloaded, setPageLoaded] = useState(true);
   const [page, setPage] = useState(1);
@@ -27,14 +28,6 @@ const WatchlistMovies = () => {
   const moviesPerPage = 20;
   const startIndex = (page - 1) * moviesPerPage;
   const endIndex = startIndex + moviesPerPage;
-  let user = useSelector((state) => state.user.value);
-
-  const StyledTypography = styled(Typography)(({ variant, fontFamily }) => ({
-    fontFamily: { fontFamily },
-    variant: { variant },
-    color: "rgb(234, 204, 231)",
-    textShadow: `0 3 10 rgba(0, 0, 0, 0.7)`,
-  }));
 
   const { data, loading } = useFetchData(`${url}/watchlist/movie/`, user._id);
 
@@ -44,7 +37,7 @@ const WatchlistMovies = () => {
       setWatchlistMovies(allWatchlistMovies);
       setPageLoaded(loading);
     }
-  }, [data]);
+  }, [data, loading]);
 
   const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
 

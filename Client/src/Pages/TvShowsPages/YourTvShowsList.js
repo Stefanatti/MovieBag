@@ -53,12 +53,6 @@ const YourTvShowsList = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!search) {
-  //     setMyTvShows(myTvShows);
-  //   }
-  // }, [search]);
-
   const handleRatingChange = (id, stars) => {
     setMyTvShows((prevTvShows) =>
       prevTvShows.map((tvShow) =>
@@ -104,7 +98,7 @@ const YourTvShowsList = () => {
             size={50}
             aria-label="Loading Spinner"
           />
-        ) : currentMyTvShows.length === 0 ? (
+        ) : myTvShows.length === 0 ? (
           <h2 className="library-header">
             Search for a tv show and added it to your list !
           </h2>

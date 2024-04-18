@@ -27,45 +27,43 @@ const MoviesTable = ({
           </tr>
         </thead>
         <tbody>
-          {currentMyMovies.map((myMovie, index) => {
-            return (
-              <tr key={myMovie._id} className="trows">
-                <td className="watched-td">
-                  <Box
-                    sx={{
-                      "& > legend": { mt: 1 },
-                    }}
-                  >
-                    <Rating
-                      name={`movie-rating-${myMovie._id}`}
-                      size="small"
-                      value={myMovie.ratings.stars}
-                      onChange={(event, newValue) => {
-                        setValue(newValue);
-                        rateTheMovie(myMovie._id, newValue);
-                      }}
-                    />
-                  </Box>
-                </td>
-                <td
-                  onClick={() => navigate(path + `${myMovie.id}`)}
-                  className="movie-title-td"
+          {currentMyMovies.map((myMovie) => (
+            <tr key={myMovie._id} className="trows">
+              <td className="watched-td">
+                <Box
+                  sx={{
+                    "& > legend": { mt: 1 },
+                  }}
                 >
-                  {myMovie.title || myMovie.name}
-                </td>
-                <td>{myMovie.year}</td>
-                <td>{myMovie.type}</td>
-                <td>{myMovie.director || myMovie.creator}</td>
-                <td>
-                  <DeleteOutlined
-                    onClick={() => {
-                      removeMovie(myMovie._id);
+                  <Rating
+                    name={`movie-rating-${myMovie._id}`}
+                    size="small"
+                    value={myMovie.ratings.stars}
+                    onChange={(event, newValue) => {
+                      setValue(newValue);
+                      rateTheMovie(myMovie._id, newValue);
                     }}
                   />
-                </td>
-              </tr>
-            );
-          })}
+                </Box>
+              </td>
+              <td
+                onClick={() => navigate(path + `${myMovie.id}`)}
+                className="movie-title-td"
+              >
+                {myMovie.title || myMovie.name}
+              </td>
+              <td>{myMovie.year}</td>
+              <td>{myMovie.type}</td>
+              <td>{myMovie.director || myMovie.creator}</td>
+              <td>
+                <DeleteOutlined
+                  onClick={() => {
+                    removeMovie(myMovie._id);
+                  }}
+                />
+              </td>
+            </tr>
+          ))}
         </tbody>
       </table>
     </div>

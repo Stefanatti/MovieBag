@@ -68,6 +68,7 @@ const WatchlistCard = ({ show, removeShow }) => {
                   sx={{ color: "var(--basic-color)", cursor: "pointer" }}
                   variant="h4"
                   component="div"
+                  fontWeight={500}
                   fontFamily={"Montserrat"}
                   onClick={() =>
                     navigate(
@@ -97,7 +98,10 @@ const WatchlistCard = ({ show, removeShow }) => {
                     {show.year}
                   </StyledTypography>
                   <StyledTypography variant="body1" color="text.secondary">
-                    Director: {show.director}
+                    {/* Director: {show.director} */}
+                    {show.type === "movie"
+                      ? `Director: ${show.director}`
+                      : `Creator: ${show.creator}`}
                   </StyledTypography>
 
                   <StyledTypography variant="caption" color="text.secondary">

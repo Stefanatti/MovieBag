@@ -74,12 +74,6 @@ const YourMoviesLibrary = () => {
     }
   };
 
-  // useEffect(() => {
-  //   if (!search) {
-  //     setMyMovies(myMovies);
-  //   }
-  // }, [search]);
-
   const filterMovies = myMovies.filter((myMovie) => {
     return search.toLowerCase() === ""
       ? myMovie
@@ -110,7 +104,7 @@ const YourMoviesLibrary = () => {
             size={50}
             aria-label="Loading Spinner"
           />
-        ) : currentMyMovies.length === 0 ? (
+        ) : myMovies.length === 0 ? (
           <h2 className="library-header">
             Search for a movie and added it to your list !
           </h2>

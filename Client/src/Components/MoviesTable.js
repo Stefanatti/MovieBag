@@ -1,16 +1,12 @@
-import { DeleteOutlined, PushpinFilled } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-import Typography from "@mui/material/Typography";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const MoviesTable = ({
-  currentMyMovies,
-  rateTheMovie,
-  navigate,
-  removeMovie,
-  path,
-}) => {
+const MoviesTable = ({ currentMyMovies, rateTheMovie, removeMovie, path }) => {
+  const navigate = useNavigate();
+
   const [value, setValue] = useState();
   console.log(currentMyMovies);
   return (

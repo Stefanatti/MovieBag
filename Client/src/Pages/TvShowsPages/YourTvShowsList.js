@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useNavigate } from "react-router-dom";
 import Pagination from "../../Components/Pagination";
 import MoviesTable from "../../Components/MoviesTable";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,7 +10,6 @@ import { getUserMovies } from "../../Features/movies";
 import useFetchData from "../../Hooks/useFetchData";
 
 const YourTvShowsList = () => {
-  const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
   const url = process.env.REACT_APP_URL;
 
@@ -20,7 +18,6 @@ const YourTvShowsList = () => {
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [tvShowsPerPage] = useState(10);
-  const [watched, setWatched] = useState(false);
   const lastTvShowIndex = currentPage * tvShowsPerPage;
   const firstTvShowIndex = lastTvShowIndex - tvShowsPerPage;
   const dispatch = useDispatch();
@@ -114,16 +111,10 @@ const YourTvShowsList = () => {
 
             <TableContainer>
               <MoviesTable
-                search={search}
-                myMovies={myTvShows}
-                filterMovies={filterTvShows}
                 path={`/tvShow?id=`}
                 rateTheMovie={rateTheTvShow}
                 currentMyMovies={currentMyTvShows}
-                navigate={navigate}
                 removeMovie={removeTvShow}
-                watched={watched}
-                setWatched={setWatched}
               />
             </TableContainer>
             <Pagination

@@ -2,7 +2,6 @@ import "../../Styles/YourMoviesLibrary.scss";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
-import { useNavigate } from "react-router-dom";
 import Pagination from "../../Components/Pagination";
 import MoviesTable from "../../Components/MoviesTable";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,7 +11,6 @@ import { getUserMovies } from "../../Features/movies";
 import useFetchData from "../../Hooks/useFetchData";
 
 const YourMoviesLibrary = () => {
-  const navigate = useNavigate();
   let user = useSelector((state) => state.user.value);
   const url = process.env.REACT_APP_URL;
 
@@ -127,16 +125,10 @@ const YourMoviesLibrary = () => {
 
             <TableContainer>
               <MoviesTable
-                search={search}
-                myMovies={myMovies}
-                filterMovies={filterMovies}
                 path={`/movie?id=`}
                 currentMyMovies={currentMyMovies}
                 rateTheMovie={rateTheMovie}
-                navigate={navigate}
                 removeMovie={removeMovie}
-                watched={watched}
-                setWatched={setWatched}
               />
             </TableContainer>
             <Pagination

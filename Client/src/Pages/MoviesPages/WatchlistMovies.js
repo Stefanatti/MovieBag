@@ -1,23 +1,16 @@
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import useFetchData from "../../Hooks/useFetchData";
 import { useSelector } from "react-redux";
-import DeleteIcon from "@mui/icons-material/Delete";
 import ClipLoader from "react-spinners/ClipLoader";
-
+import WatchlistCard from "../../Components/WatchlistCard";
 import {
   Grid,
   Typography,
   Container,
-  Stack,
   Pagination,
   PaginationItem,
   Box,
-  Card,
-  CardMedia,
-  CardActions,
-  CardContent,
   styled,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
@@ -25,14 +18,13 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const WatchlistMovies = () => {
   const url = process.env.REACT_APP_URL;
-  const navigate = useNavigate();
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [pageloaded, setPageLoaded] = useState(true);
   const [page, setPage] = useState(1);
   const handleChange = (event, value) => {
     setPage(value);
   };
-  const moviesPerPage = 10;
+  const moviesPerPage = 20;
   const startIndex = (page - 1) * moviesPerPage;
   const endIndex = startIndex + moviesPerPage;
   let user = useSelector((state) => state.user.value);
@@ -56,8 +48,6 @@ const WatchlistMovies = () => {
 
   const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
 
-  console.log(watchlistMovies);
-
   const removeWatchlistMovie = async (id) => {
     try {
       await axios.delete(url + `/watchlist/movie/${id}`);
@@ -68,7 +58,7 @@ const WatchlistMovies = () => {
       console.log(error.message);
     }
   };
-
+  console.log(displayedMovies);
   return (
     <Container>
       {pageloaded ? (
@@ -105,98 +95,50 @@ const WatchlistMovies = () => {
             <Box>
               <Grid
                 container
-                direction={"column"}
-                spacing={2}
+                direction={"row"}
+                spacing={5}
                 justifyContent="center"
                 alignItems="center"
                 style={{ minHeight: "100vh" }}
               >
-                {displayedMovies.map((watchlistMovie) => (
-                  <Grid key={watchlistMovie._id} item xs={12} sm={6} md={4}>
-                    <Card
-                      sx={{
-                        maxWidth: 745,
-                        display: "flex",
-                        backgroundColor: "rgb(46, 46, 42)",
-                        borderRadius: "30px",
-                      }}
-                    >
-                      <CardMedia
-                        component="img"
-                        image={`https://image.tmdb.org/t/p/w500${watchlistMovie.poster}`}
-                        title={watchlistMovie.title}
-                        sx={{
-                          height: 250,
-                          objectFit: "contain",
-                          backgroundSize: "cover",
-                          backgroundPosition: "center",
-                        }}
+                {displayedMovies.map((movie) => (
+                  <Grid key={movie.id} item xs={12} sm={6} md={6} lg={6}>
+                    <Box>
+                      <WatchlistCard
+                        show={movie}
+                        removeShow={removeWatchlistMovie}
                       />
-                      <CardContent>
-                        <StyledTypography
-                          gutterBottom
-                          variant="h5"
-                          component="div"
-                          onClick={() =>
-                            navigate(`/movie?id=${watchlistMovie.id}`)
-                          }
-                          sx={{ cursor: "pointer" }}
-                        >
-                          {watchlistMovie.title}
-                        </StyledTypography>
-                        <StyledTypography
-                          gutterBottom
-                          variant="h7"
-                          component="div"
-                        >
-                          Director: {watchlistMovie.director}
-                        </StyledTypography>
-                        <StyledTypography
-                          variant="body2"
-                          color="text.secondary"
-                        >
-                          {watchlistMovie.plot}
-                        </StyledTypography>
-                      </CardContent>
-                      <CardActions>
-                        <DeleteIcon
-                          onClick={() => {
-                            removeWatchlistMovie(watchlistMovie._id);
-                          }}
-                          sx={{
-                            cursor: "pointer",
-                            color: "var(--basic-color)",
-                          }}
-                        />
-                      </CardActions>
-                    </Card>
+                    </Box>
                   </Grid>
                 ))}
-                <Stack spacing={2}>
-                  <Pagination
-                    count={Math.ceil(watchlistMovies.length / moviesPerPage)} // Calculate number of pages
-                    page={page}
-                    onChange={handleChange}
-                    size="large"
-                    shape="rounded"
-                    color="primary"
-                    boundaryCount={2}
-                    renderItem={(item) => (
-                      <PaginationItem
-                        {...item}
-                        icon={
-                          item.type === "previous" ? (
-                            <ArrowBackIcon />
-                          ) : (
-                            <ArrowForwardIcon />
-                          )
-                        }
-                      />
-                    )}
-                    sx={{ marginTop: 5 }}
-                  />
-                </Stack>
               </Grid>
+
+              <Box sx={{ display: "flex", justifyContent: "center" }}>
+                <Pagination
+                  count={Math.ceil(watchlistMovies.length / moviesPerPage)}
+                  page={page}
+                  onChange={handleChange}
+                  size="large"
+                  shape="rounded"
+                  boundaryCount={2}
+                  renderItem={(item) => (
+                    <PaginationItem
+                      sx={{
+                        background: "var(--basic-color)",
+                      }}
+                      {...item}
+                      icon={
+                        item.type === "previous" ? (
+                          <ArrowBackIcon color="var(--basic-color)" />
+                        ) : (
+                          <ArrowForwardIcon color="var(--basic-color)" />
+                        )
+                      }
+                    />
+                  )}
+                  sx={{ mt: 5 }}
+                />
+              </Box>
             </Box>
           )}
         </>

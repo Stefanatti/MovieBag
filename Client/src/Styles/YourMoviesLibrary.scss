@@ -1,4 +1,3 @@
-//@import "../Variables/variables.scss";
 @import "../Variables/CssVariables.css";
 
 .library-header {
@@ -19,15 +18,13 @@
   margin-left: 50px;
 }
 
-.table-container{
-   overflow-x: auto;
-    overflow-y:hidden;
-
+.table-container {
+  overflow-x: auto;
+  overflow-y: hidden;
 }
-.tableMobile{
+.tableMobile {
   width: 50%;
 }
-
 
 table {
   text-align: center;
@@ -36,7 +33,6 @@ table {
   margin: 0 auto;
   border-collapse: separate;
   border-spacing: 0 8px;
- 
 }
 
 .thead {
@@ -51,15 +47,6 @@ table {
   background-color: var(--table-background-color);
   box-shadow: 0 5px 35px rgb(0, 0, 0, 15);
 }
-.watched-th {
-  cursor: pointer;
-  &:hover {
-    color: var(--hover-color);
-  }
-}
-.watched-td {
-  width: 15%;
-}
 
 .trows {
   height: 60px;
@@ -68,22 +55,10 @@ table {
   margin-top: 10px;
   box-shadow: 0 15px 35px rgb(0, 0, 0, 15);
   &:hover {
-    background-color: var(--table-rows-hover);
-    color: var(--table-text-color-hover);
+    transform: translateY(-5px);
   }
 }
 
-.trowsMobile {
-  height: 60px;
-  background-color: var(--table-background-color);
-  border: 1px solid;
-  margin-top: 10px;
-  box-shadow: 0 15px 35px rgb(0, 0, 0, 15);
-  &:hover {
-    background-color: var(--table-rows-hover);
-    color: var(--table-text-color-hover);
-  }
-}
 .button-page {
   width: 40px;
   height: 40px;
@@ -93,11 +68,10 @@ table {
   color: var(--basic-color);
   background-color: rgb(47, 41, 41);
   box-shadow: 0 15px 35px rgb(0, 0, 0, 15);
-
 }
 
 .active {
-  color: rgb(47, 41, 41);
+  color: rgb(18, 194, 91);
   background-color: var(--basic-color);
 }
 
@@ -111,24 +85,19 @@ table {
 
 .movie-title-td:hover {
   cursor: pointer;
-  color: var(--table-titles-hover);
+  // color: var(--table-titles-hover);
 }
 
 .pages {
   text-align: center;
   min-width: 500px;
-    margin: 20px auto 60px;
+  margin: 20px auto 60px;
   display: flex;
   justify-content: center;
 }
 
-
 @media only screen and (max-width: 600px) {
-
   .watched-td {
     width: 5%;
   }
-  
-
 }
-

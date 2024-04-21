@@ -6,12 +6,9 @@ import { Typography, Container, Stack, Box, styled } from "@mui/material";
 import * as React from "react";
 import axios from "axios";
 import { lazy, Suspense } from "react";
-
-//import Carusel from "./Carusel";
+const Carusel = lazy(() => import("./Carusel"));
 
 const Main = ({ user }) => {
-  const Carusel = lazy(() => import("./Carusel"));
-
   const navigate = useNavigate();
   const url = process.env.REACT_APP_URL;
   const [popularMovies, setPopularMovies] = useState([]);

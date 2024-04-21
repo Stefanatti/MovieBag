@@ -1,16 +1,12 @@
-import { lazy, Suspense } from "react";
 import { useSelector } from "react-redux";
-
+import Main from "../Components/Main";
 function Home() {
   const url = process.env.REACT_APP_URL;
-  const Main = lazy(() => import("../Components/Main"));
   let user = useSelector((state) => state.user.value);
 
   return (
     <div>
-      <Suspense>
-        <Main user={user} />
-      </Suspense>
+      <Main user={user} />
     </div>
   );
 }

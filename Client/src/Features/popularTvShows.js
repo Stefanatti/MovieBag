@@ -19,7 +19,7 @@ export const popularTvShowsSlice = createSlice({
 
 export default popularTvShowsSlice.reducer;
 
-export const fetchPopularTvShowsSlice = () => {
+export const fetchPopularTvShows = () => {
   return async (dispatch) => {
     try {
       const response = await axios.get(`${url}/api/tv/popular`);

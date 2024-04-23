@@ -19,10 +19,10 @@ export const topRatedTvShowsSlice = createSlice({
 
 export default topRatedTvShowsSlice.reducer;
 
-export const fetchTopRatedTvShowsSlice = () => {
+export const fetchTopRatedTvShows = () => {
   return async (dispatch) => {
     try {
-      const response = await axios.get(`${url}/api/toprated`);
+      const response = await axios.get(`${url}/api/tv/toprated`);
       dispatch(topRatedTvShowsSlice.actions.getTopRatedTvShows(response.data));
     } catch (error) {
       dispatch(topRatedTvShowsSlice.actions.hasError(error.message));

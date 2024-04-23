@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPopularMovies } from "../Features/popularMovies";
+import { fetchPopularTvShows } from "../Features/popularTvShows";
+import { fetchTopRatedMovies } from "../Features/topRatedMovies";
+import { fetchTopRatedTvShows } from "../Features/topRatedTvShows";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Typography, Container, Stack, Box, styled } from "@mui/material";
 import * as React from "react";
-import axios from "axios";
 import { lazy, Suspense } from "react";
 const Carusel = lazy(() => import("./Carusel"));
 const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
@@ -13,10 +15,7 @@ const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 const Main = ({ user }) => {
   const navigate = useNavigate();
   const url = process.env.REACT_APP_URL;
-  //const [popularMovies, setPopularMovies] = useState([]);
-  const [popularTvShows, setPopularTvShows] = useState([]);
-  const [topRatedMovies, setTopRatedMovies] = useState([]);
-  const [topRatedTvShows, setTopRatedTvShows] = useState([]);
+
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
@@ -39,40 +38,34 @@ const Main = ({ user }) => {
   const popularMovies = useSelector(
     (state) => state.popularMovies.popularMovies
   );
+  const popularTvShows = useSelector(
+    (state) => state.popularTvShows.popularTvShows
+  );
+  const topRatedMovies = useSelector(
+    (state) => state.topRatedMovies.topRatedMovies
+  );
+  const topRatedTvShows = useSelector(
+    (state) => state.topRatedTvShows.topRatedTvShows
+  );
 
   useEffect(() => {
-    if (popularMovies.length === 0) dispatch(fetchPopularMovies());
-  }, [popularMovies, dispatch]);
-
-  useEffect(() => {
-    const fetchShowsData = async () => {
+    const fetchData = async () => {
+      setLoading(true);
       try {
-        const [
-          //popularMoviesResponse,
-          popularTvShowsResponse,
-          topRatedMoviesResponse,
-          topRatedTvShowsResponse,
-        ] = await Promise.all([
-          // axios.get(`${url}/api/popular`),
-          axios.get(`${url}/api/tv/popular`),
-          axios.get(`${url}/api/toprated`),
-          axios.get(`${url}/api/tv/toprated`),
-        ]);
-
-        //setPopularMovies(popularMoviesResponse.data);
-        setPopularTvShows(popularTvShowsResponse.data);
-        setTopRatedMovies(topRatedMoviesResponse.data);
-        setTopRatedTvShows(topRatedTvShowsResponse.data);
-        setLoading(false);
-      } catch (err) {
-        console.log(err);
+        if (popularMovies.length === 0) dispatch(fetchPopularMovies());
+        if (popularTvShows.length === 0) dispatch(fetchPopularTvShows());
+        if (topRatedMovies.length === 0) dispatch(fetchTopRatedMovies());
+        if (topRatedTvShows.length === 0) dispatch(fetchTopRatedTvShows());
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      } finally {
         setLoading(false);
       }
     };
 
-    fetchShowsData();
-  }, []);
-  console.log(popularMovies);
+    fetchData();
+  }, [dispatch]);
+
   return (
     <Container maxWidth="lg">
       {loading ? (

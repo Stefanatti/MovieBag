@@ -19,7 +19,7 @@ export const topRatedMoviesSlice = createSlice({
 
 export default topRatedMoviesSlice.reducer;
 
-export const fetchTopRatedMoviesSlice = () => {
+export const fetchTopRatedMovies = () => {
   return async (dispatch) => {
     try {
       const response = await axios.get(`${url}/api/toprated`);

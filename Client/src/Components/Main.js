@@ -1,22 +1,25 @@
 import { useState, useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { fetchPopularMovies } from "../Features/popularMovies";
 import { useNavigate } from "react-router-dom";
-import HaveToSignupModal from "./HaveToSignupModal";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Typography, Container, Stack, Box, styled } from "@mui/material";
 import * as React from "react";
 import axios from "axios";
 import { lazy, Suspense } from "react";
 const Carusel = lazy(() => import("./Carusel"));
+const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 
 const Main = ({ user }) => {
   const navigate = useNavigate();
   const url = process.env.REACT_APP_URL;
-  const [popularMovies, setPopularMovies] = useState([]);
+  //const [popularMovies, setPopularMovies] = useState([]);
   const [popularTvShows, setPopularTvShows] = useState([]);
   const [topRatedMovies, setTopRatedMovies] = useState([]);
   const [topRatedTvShows, setTopRatedTvShows] = useState([]);
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const dispatch = useDispatch();
 
   const StyledTitleTypography = styled(Typography)(
     ({ variant, theme, bigfont, smallfont }) => ({
@@ -33,35 +36,43 @@ const Main = ({ user }) => {
     })
   );
 
+  const popularMovies = useSelector(
+    (state) => state.popularMovies.popularMovies
+  );
+
+  useEffect(() => {
+    if (popularMovies.length === 0) dispatch(fetchPopularMovies());
+  }, [popularMovies, dispatch]);
+
   useEffect(() => {
     const fetchShowsData = async () => {
       try {
         const [
-          popularMoviesResponse,
+          //popularMoviesResponse,
           popularTvShowsResponse,
           topRatedMoviesResponse,
           topRatedTvShowsResponse,
         ] = await Promise.all([
-          axios.get(`${url}/api/popular`),
+          // axios.get(`${url}/api/popular`),
           axios.get(`${url}/api/tv/popular`),
           axios.get(`${url}/api/toprated`),
           axios.get(`${url}/api/tv/toprated`),
         ]);
 
-        setPopularMovies(popularMoviesResponse.data);
+        //setPopularMovies(popularMoviesResponse.data);
         setPopularTvShows(popularTvShowsResponse.data);
         setTopRatedMovies(topRatedMoviesResponse.data);
         setTopRatedTvShows(topRatedTvShowsResponse.data);
         setLoading(false);
       } catch (err) {
         console.log(err);
-        setLoading(false); // Ensure loading state is updated even if an error occurs
+        setLoading(false);
       }
     };
 
     fetchShowsData();
   }, []);
-
+  console.log(popularMovies);
   return (
     <Container maxWidth="lg">
       {loading ? (

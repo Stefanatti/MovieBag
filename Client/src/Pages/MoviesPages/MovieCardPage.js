@@ -8,12 +8,13 @@ import { useSelector, useDispatch } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 import { lazy, Suspense } from "react";
+const HaveToSignupModal = lazy(() =>
+  import("../../Components/HaveToSignupModal")
+);
 
 const RenderMovie = () => {
   const url = process.env.REACT_APP_URL;
-  const HaveToSignupModal = lazy(() =>
-    import("../../Components/HaveToSignupModal")
-  );
+
   const params = useQueryParams();
   const movieID = params.get("id");
   const [movie, setMovie] = useState("");
@@ -119,7 +120,7 @@ const RenderMovie = () => {
       alert("This movie already has been added.");
     }
   };
-
+  console.log(movie);
   return (
     <Container maxWidth="lg">
       <Box

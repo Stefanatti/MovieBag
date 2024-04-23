@@ -256,7 +256,9 @@ const ShowCard = ({
                                 show.title,
                                 showYear,
                                 `movie`,
-                                director == "N/A" ? "-" : `${director.name}`
+                                director == "N/A" ? "-" : `${director.name}`,
+                                show.poster_path,
+                                show.overview
                               )
                             : AddToYourWatchlist(
                                 show.id,

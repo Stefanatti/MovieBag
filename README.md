@@ -4,6 +4,7 @@ In addition to personal libraries, users can create watchlists for movies and se
 
 Technologies:
 React,
+Redux,
 MUI,
 Bootstrap,
 Sass,

@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import useFetchData from "../../Hooks/useFetchData";
 import { useSelector } from "react-redux";
 import WatchlistCard from "../../Components/WatchlistCard";
@@ -18,6 +20,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const WatchlistTvShows = () => {
   const url = process.env.REACT_APP_URL;
   let user = useSelector((state) => state.user.value);
+  const navigate = useNavigate();
 
   const [pageloaded, setPageLoaded] = useState(true);
   const [watchlistTvShows, setWatchlistTvShows] = useState([]);
@@ -29,16 +32,23 @@ const WatchlistTvShows = () => {
   const startIndex = (page - 1) * TvShowsPerPage;
   const endIndex = startIndex + TvShowsPerPage;
 
-  const { data, loading } = useFetchData(url + `/watchlist/tvShow/`, user._id);
+  const { data, loading, error } = useFetchData(
+    url + `/watchlist/tvShow/`,
+    user._id
+  );
 
   useEffect(() => {
+    if (error) {
+      console.log(error);
+      navigate("/error_page");
+    }
     if (data) {
       console.log(data);
       const allWatchlistTvShows = data;
       setWatchlistTvShows(allWatchlistTvShows);
       setPageLoaded(loading);
     }
-  }, [data, loading]);
+  }, [data, loading, error]);
   const displayedTvShows = watchlistTvShows.slice(startIndex, endIndex);
 
   console.log(watchlistTvShows);

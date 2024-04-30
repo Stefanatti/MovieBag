@@ -2,10 +2,10 @@ import React from "react";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Slider from "react-slick";
-import { Box, styled } from "@mui/material";
+import { Box, styled, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Carusel = ({ data, path }) => {
+const Carusel = ({ data, path, error }) => {
   const navigate = useNavigate();
 
   const StyledImage = styled("img")({
@@ -54,19 +54,26 @@ const Carusel = ({ data, path }) => {
     ],
   };
   return (
-    <Slider {...settings}>
-      {data.map((data, index) => (
-        <div key={index}>
-          <Box sx={{ ml: 2 }}>
-            <StyledImage
-              src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-              alt={`Slide ${index}`}
-              onClick={() => navigate(`${path}${data.id}`)}
-            />
-          </Box>
-        </div>
-      ))}
-    </Slider>
+    <>
+      {error && (
+        <Typography variant="h5" color={"var(--basic-color)"}>
+          Popular movies did not load, please try again later.
+        </Typography>
+      )}
+      <Slider {...settings}>
+        {data.map((data, index) => (
+          <div key={index}>
+            <Box sx={{ ml: 2 }}>
+              <StyledImage
+                src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                alt={`Slide ${index}`}
+                onClick={() => navigate(`${path}${data.id}`)}
+              />
+            </Box>
+          </div>
+        ))}
+      </Slider>
+    </>
   );
 };
 

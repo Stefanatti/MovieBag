@@ -14,7 +14,11 @@ const useFetchData = (url, userId) => {
         const response = await axios.get(requestUrl);
         setData(response.data);
       } catch (error) {
-        setError(error.message);
+        if (!error.response) {
+          setError("Network error: " + error.message);
+        } else {
+          setError("Server error: " + error.response.status);
+        }
       } finally {
         setLoading(false);
       }

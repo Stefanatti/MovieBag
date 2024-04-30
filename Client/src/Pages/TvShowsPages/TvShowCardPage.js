@@ -1,6 +1,8 @@
 import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
+import { useNavigate } from "react-router-dom";
+
 import { useEffect, useState } from "react";
 import HaveToSignupModal from "../../Components/HaveToSignupModal";
 import ShowCard from "../../Components/ShowCard";
@@ -12,6 +14,7 @@ const RenderTvShowCard = () => {
   const params = useQueryParams();
   const tvShowID = params.get("id");
   const url = process.env.REACT_APP_URL;
+  const navigate = useNavigate();
 
   const [tvShow, setTvShow] = useState("");
   const [loading, setLoading] = useState(true);
@@ -58,6 +61,7 @@ const RenderTvShowCard = () => {
         setTvShow(response.data);
       } catch (err) {
         console.log(err);
+        navigate("/error_page");
       } finally {
         setLoading(false);
       }

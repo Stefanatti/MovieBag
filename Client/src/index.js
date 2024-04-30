@@ -24,7 +24,6 @@ const rootReducer = combineReducers({
   popularTvShows: popularTvShowsReducer,
   topRatedMovies: topRatedMoviesReducer,
   topRatedTvShows: topRatedTvShowsReducer,
-
   theme: themeReducer,
 });
 

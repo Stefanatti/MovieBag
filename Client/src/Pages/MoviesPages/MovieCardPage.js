@@ -1,12 +1,14 @@
 import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
+
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ShowCard from "../../Components/ShowCard";
 import { useSelector, useDispatch } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
+import { useNavigate } from "react-router-dom";
+
 import { lazy, Suspense } from "react";
 const HaveToSignupModal = lazy(() =>
   import("../../Components/HaveToSignupModal")
@@ -14,6 +16,7 @@ const HaveToSignupModal = lazy(() =>
 
 const RenderMovie = () => {
   const url = process.env.REACT_APP_URL;
+  const navigate = useNavigate();
 
   const params = useQueryParams();
   const movieID = params.get("id");
@@ -62,6 +65,7 @@ const RenderMovie = () => {
         setMovie(response.data);
       } catch (err) {
         console.log(err);
+        navigate("/error_page");
       } finally {
         setLoading(false);
       }

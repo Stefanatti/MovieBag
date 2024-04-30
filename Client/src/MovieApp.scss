@@ -72,13 +72,6 @@ body {
   cursor: pointer;
 }
 
-.wrong-page {
-  margin-top: 100px;
-  text-align: center;
-  color: var(--basic-color);
-  font-family: "Montserrat", sans-serif;
-}
-
 #basic {
   color: var(--basic-color);
   border-color: #ff0a0a;
@@ -93,79 +86,3 @@ body {
   background-color: darkgoldenrod;
   color: red;
 }
-
-// .middle-div {
-//   margin-top: 50px;
-//   display: flex;
-//   flex-wrap: wrap;
-//   gap: 80px;
-//   align-items: center;
-//   justify-content: space-evenly;
-// }
-
-// .search-container {
-//   width: 500px;
-//   background: #cdcdc1;
-//   height: 50px;
-//   border-radius: 30px;
-//   padding: 10px 20px;
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-//   cursor: pointer;
-//   overflow: hidden;
-//   transition: 0.8s;
-
-//   box-shadow: 4px 4px 6px 0 rgba(255, 255, 255, 0.3),
-//     -4px -4px 6px 0 rgba(116, 125, 136, 0.2),
-//     inset -4px -4px 6px 0 rgba(255, 255, 255, 0.2),
-//     inset 4px 4px 6px 0 rgba(0, 0, 0, 0.2);
-// }
-
-// .main-page-form {
-//   display: flex;
-//   width: 100%;
-// }
-// .search-container input {
-//   background: transparent;
-//   border: none;
-//   outline: none;
-//   width: 90%;
-//   font-weight: 500;
-//   font-size: 16px;
-//   transition: 0.8s;
-// }
-
-// .search-container .search-btn .fas {
-//   color: #5cbdbb;
-// }
-
-// @keyframes hoverShake {
-//   0% {
-//     transform: skew(0deg, 0deg);
-//   }
-//   25% {
-//     transform: skew(2deg, 2deg);
-//   }
-//   75% {
-//     transform: skew(-2deg, -2deg);
-//   }
-//   100% {
-//     transform: skew(0deg, 0deg);
-//   }
-// }
-
-// .search-container:hover {
-//   animation: hoverShake 0.15s linear 3;
-// }
-
-// .btnon {
-//   border: none;
-//   height: 50px;
-//   color: var(--basic-color);
-//   display: flex;
-//   align-self: flex-end;
-//   justify-content: flex-end;
-//   align-items: center;
-//   background: transparent;
-// }

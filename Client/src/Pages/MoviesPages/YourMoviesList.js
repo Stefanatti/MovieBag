@@ -9,17 +9,19 @@ import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
 import { getUserMovies } from "../../Features/movies";
 import useFetchData from "../../Hooks/useFetchData";
+import { useNavigate } from "react-router-dom";
 
 const YourMoviesLibrary = () => {
   let user = useSelector((state) => state.user.value);
   const url = process.env.REACT_APP_URL;
+  const navigate = useNavigate();
 
   const [myMovies, setMyMovies] = useState([]);
   const [pageloaded, setPageLoaded] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [moviesPerPage] = useState(10);
-  const [watched, setWatched] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const lastMovieIndex = currentPage * moviesPerPage;
   const firstMovieIndex = lastMovieIndex - moviesPerPage;
   const dispatch = useDispatch();
@@ -27,6 +29,10 @@ const YourMoviesLibrary = () => {
   const { data, loading, error } = useFetchData(url + `/movie/`, user._id);
 
   useEffect(() => {
+    if (error) {
+      console.log(error);
+      navigate("/error_page");
+    }
     if (data) {
       const fetchedMovies = data;
       setMyMovies(fetchedMovies);
@@ -39,7 +45,7 @@ const YourMoviesLibrary = () => {
       );
       setPageLoaded(loading);
     }
-  }, [data, dispatch]);
+  }, [data, error, dispatch]);
 
   const removeMovie = async (id) => {
     try {

@@ -8,10 +8,12 @@ import { Container, Box, TableContainer } from "@mui/material";
 import MovieLibraryFilter from "../../Components/MovieLibraryFilter";
 import { getUserMovies } from "../../Features/movies";
 import useFetchData from "../../Hooks/useFetchData";
+import { useNavigate } from "react-router-dom";
 
 const YourTvShowsList = () => {
   let user = useSelector((state) => state.user.value);
   const url = process.env.REACT_APP_URL;
+  const navigate = useNavigate();
 
   const [myTvShows, setMyTvShows] = useState([]);
   const [pageloaded, setPageLoaded] = useState(true);
@@ -25,6 +27,10 @@ const YourTvShowsList = () => {
   const { data, loading, error } = useFetchData(`${url}/tvShow/`, user._id);
 
   useEffect(() => {
+    if (error) {
+      console.log(error);
+      navigate("/error_page");
+    }
     if (data) {
       const fetchedTvShows = data;
       setMyTvShows(fetchedTvShows);
@@ -37,7 +43,7 @@ const YourTvShowsList = () => {
       );
       setPageLoaded(loading);
     }
-  }, [data, dispatch]);
+  }, [data, error, dispatch]);
 
   const removeTvShow = async (id) => {
     try {

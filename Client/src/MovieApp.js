@@ -20,6 +20,7 @@ import WatchlistTvShows from "./Pages/TvShowsPages/WatchlistTvShows";
 import WrongPage404 from "./Pages/WrongPage404";
 import Footer from "./Components/Footer";
 import { useSelector } from "react-redux";
+import ErrorPage from "./Pages/ErrorPage";
 
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
@@ -54,6 +55,7 @@ function MovieApp() {
             <Route path="/movie" element={<RenderMovie />} />
             <Route path="/tvShow" element={<RenderTvShowCard />} />
             <Route path="/*" element={<WrongPage404 />} />
+            <Route path="/error_page" element={<ErrorPage />} />
           </Routes>
         </div>
       </Router>

@@ -14,6 +14,9 @@ export const popMoviesSlice = createSlice({
     hasError: (state, action) => {
       state.error = action.payload;
     },
+    clearError(state) {
+      state.error = null;
+    },
     setLoading: (state, action) => {
       state.loading = action.payload;
     },

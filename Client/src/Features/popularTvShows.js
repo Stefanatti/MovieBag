@@ -14,6 +14,17 @@ export const popularTvShowsSlice = createSlice({
     hasError: (state, action) => {
       state.error = action.payload;
     },
+    clearError(state) {
+      state.error = null;
+    },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    clearData: (state) => {
+      state.popularMovies = [];
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -27,5 +38,11 @@ export const fetchPopularTvShows = () => {
     } catch (error) {
       dispatch(popularTvShowsSlice.actions.hasError(error.message));
     }
+  };
+};
+
+export const clearPopularTvShowsData = () => {
+  return (dispatch) => {
+    dispatch(popularTvShowsSlice.actions.clearData());
   };
 };

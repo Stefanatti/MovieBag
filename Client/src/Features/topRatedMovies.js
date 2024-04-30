@@ -14,6 +14,14 @@ export const topRatedMoviesSlice = createSlice({
     hasError: (state, action) => {
       state.error = action.payload;
     },
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+    clearData: (state) => {
+      state.popularMovies = [];
+      state.error = null;
+      state.loading = false;
+    },
   },
 });
 
@@ -27,5 +35,11 @@ export const fetchTopRatedMovies = () => {
     } catch (error) {
       dispatch(topRatedMoviesSlice.actions.hasError(error.message));
     }
+  };
+};
+
+export const clearTopRatedMoviesData = () => {
+  return (dispatch) => {
+    dispatch(topRatedMoviesSlice.actions.clearData());
   };
 };

@@ -2,7 +2,7 @@ import { Box, Typography } from "@mui/material";
 import React from "react";
 import { Container } from "react-bootstrap";
 
-const WrongPage404 = () => {
+const ErrorPage = () => {
   return (
     <Container>
       <Box
@@ -14,11 +14,11 @@ const WrongPage404 = () => {
         }}
       >
         <Typography variant="h5" color={"var(--basic-color)"}>
-          Oups 404!😯 Page not found!
+          Oups! Something went wrong!🤔 Please try again later.
         </Typography>
       </Box>
     </Container>
   );
 };
 
-export default WrongPage404;
+export default ErrorPage;

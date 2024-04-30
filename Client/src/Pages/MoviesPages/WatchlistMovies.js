@@ -1,5 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import useFetchData from "../../Hooks/useFetchData";
 import { useSelector } from "react-redux";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -18,6 +20,7 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 const WatchlistMovies = () => {
   const url = process.env.REACT_APP_URL;
   let user = useSelector((state) => state.user.value);
+  const navigate = useNavigate();
 
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [pageloaded, setPageLoaded] = useState(true);
@@ -29,15 +32,22 @@ const WatchlistMovies = () => {
   const startIndex = (page - 1) * moviesPerPage;
   const endIndex = startIndex + moviesPerPage;
 
-  const { data, loading } = useFetchData(`${url}/watchlist/movie/`, user._id);
+  const { data, loading, error } = useFetchData(
+    `${url}/watchlist/movie/`,
+    user._id
+  );
 
   useEffect(() => {
+    if (error) {
+      console.log(error);
+      navigate("/error_page");
+    }
     if (data) {
       const allWatchlistMovies = data;
       setWatchlistMovies(allWatchlistMovies);
       setPageLoaded(loading);
     }
-  }, [data, loading]);
+  }, [data, loading, error]);
 
   const displayedMovies = watchlistMovies.slice(startIndex, endIndex);
 

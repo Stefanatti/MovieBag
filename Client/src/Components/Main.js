@@ -47,15 +47,30 @@ const Main = ({ user }) => {
   const topRatedTvShows = useSelector(
     (state) => state.topRatedTvShows.topRatedTvShows
   );
+  const popularMoviesError = useSelector((state) => state.popularMovies.error);
+  const popularTvShowsError = useSelector(
+    (state) => state.popularTvShows.error
+  );
+  const topRatedMoviesError = useSelector(
+    (state) => state.topRatedMovies.error
+  );
+  const topRatedTvShowsError = useSelector(
+    (state) => state.topRatedTvShows.error
+  );
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
       try {
         if (popularMovies.length === 0) dispatch(fetchPopularMovies());
+        // const intervalId = setInterval(() => {
+        //   dispatch(fetchPopularMovies());
+        // }, 0.2 * 60 * 1000);
+
         if (popularTvShows.length === 0) dispatch(fetchPopularTvShows());
         if (topRatedMovies.length === 0) dispatch(fetchTopRatedMovies());
         if (topRatedTvShows.length === 0) dispatch(fetchTopRatedTvShows());
+        //return () => clearInterval(intervalId);
       } catch (error) {
         console.error("Failed to fetch data:", error);
       } finally {
@@ -97,7 +112,11 @@ const Main = ({ user }) => {
               </StyledTitleTypography>
               <Box>
                 <Suspense>
-                  <Carusel data={popularMovies} path={`/movie?id=`} />
+                  <Carusel
+                    data={popularMovies}
+                    error={popularMoviesError}
+                    path={`/movie?id=`}
+                  />
                 </Suspense>
               </Box>
             </Stack>

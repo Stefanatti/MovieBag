@@ -5,7 +5,7 @@ import Slider from "react-slick";
 import { Box, styled, Typography } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const Carusel = ({ data, path, error }) => {
+const Carusel = ({ data, path, error, loading }) => {
   const navigate = useNavigate();
 
   const StyledImage = styled("img")({
@@ -53,11 +53,12 @@ const Carusel = ({ data, path, error }) => {
       },
     ],
   };
+
   return (
     <>
       {error && (
         <Typography variant="h5" color={"var(--basic-color)"}>
-          Popular movies did not load, please try again later.
+          Movies did not load, please try again.
         </Typography>
       )}
       <Slider {...settings}>

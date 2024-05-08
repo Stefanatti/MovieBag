@@ -1,24 +1,21 @@
 import { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { fetchPopularMovies } from "../Features/popularMovies";
-import { fetchPopularTvShows } from "../Features/popularTvShows";
-import { fetchTopRatedMovies } from "../Features/topRatedMovies";
-import { fetchTopRatedTvShows } from "../Features/topRatedTvShows";
+import { useGetPopularMoviesQuery } from "../Features/showsSlice";
+import { useGetPopularTvShowsQuery } from "../Features/showsSlice";
+import { useGetTopRatedMoviesQuery } from "../Features/showsSlice";
+import { useGetTopRatedTvShowsQuery } from "../Features/showsSlice";
 import { useNavigate } from "react-router-dom";
 import ClipLoader from "react-spinners/ClipLoader";
 import { Typography, Container, Stack, Box, styled } from "@mui/material";
 import * as React from "react";
 import { lazy, Suspense } from "react";
-const Carusel = lazy(() => import("./Carusel"));
+import Carusel from "./Carusel";
 const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 
 const Main = ({ user }) => {
   const navigate = useNavigate();
-  const url = process.env.REACT_APP_URL;
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const dispatch = useDispatch();
 
   const StyledTitleTypography = styled(Typography)(
     ({ variant, theme, bigfont, smallfont }) => ({
@@ -34,52 +31,48 @@ const Main = ({ user }) => {
       },
     })
   );
+  const {
+    data: popularMovies,
+    isLoading: isPopularMoviesLoading,
+    error: popularMoviesError,
+  } = useGetPopularMoviesQuery("movieApi");
 
-  const popularMovies = useSelector(
-    (state) => state.popularMovies.popularMovies
-  );
-  const popularTvShows = useSelector(
-    (state) => state.popularTvShows.popularTvShows
-  );
-  const topRatedMovies = useSelector(
-    (state) => state.topRatedMovies.topRatedMovies
-  );
-  const topRatedTvShows = useSelector(
-    (state) => state.topRatedTvShows.topRatedTvShows
-  );
-  const popularMoviesError = useSelector((state) => state.popularMovies.error);
-  const popularTvShowsError = useSelector(
-    (state) => state.popularTvShows.error
-  );
-  const topRatedMoviesError = useSelector(
-    (state) => state.topRatedMovies.error
-  );
-  const topRatedTvShowsError = useSelector(
-    (state) => state.topRatedTvShows.error
-  );
+  const {
+    data: popularTvShows,
+    isLoading: isPopularTvShowsLoading,
+    error: popularTvShowsError,
+  } = useGetPopularTvShowsQuery("movieApi");
+  const {
+    data: topRatedMovies,
+    isLoading: isTopRatedMoviesLoading,
+    error: topRatedMoviesError,
+  } = useGetTopRatedMoviesQuery("movieApi");
+
+  const {
+    data: topRatedTvShows,
+    isLoading: isTopRatedTvShowsLoading,
+    error: topRatedTvShowsError,
+  } = useGetTopRatedTvShowsQuery("movieApi");
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        if (popularMovies.length === 0) dispatch(fetchPopularMovies());
-        // const intervalId = setInterval(() => {
-        //   dispatch(fetchPopularMovies());
-        // }, 0.2 * 60 * 1000);
-
-        if (popularTvShows.length === 0) dispatch(fetchPopularTvShows());
-        if (topRatedMovies.length === 0) dispatch(fetchTopRatedMovies());
-        if (topRatedTvShows.length === 0) dispatch(fetchTopRatedTvShows());
-        //return () => clearInterval(intervalId);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      } finally {
+    const loadMovies = async () => {
+      if (
+        !isPopularMoviesLoading &&
+        !isPopularTvShowsLoading &&
+        !isTopRatedMoviesLoading &&
+        !isTopRatedTvShowsLoading
+      ) {
         setLoading(false);
       }
     };
 
-    fetchData();
-  }, [dispatch]);
+    loadMovies();
+  }, [
+    isPopularMoviesLoading,
+    isPopularTvShowsLoading,
+    isTopRatedMoviesLoading,
+    isTopRatedTvShowsLoading,
+  ]);
 
   return (
     <Container maxWidth="lg">
@@ -111,13 +104,11 @@ const Main = ({ user }) => {
                 Popular Movies:
               </StyledTitleTypography>
               <Box>
-                <Suspense>
-                  <Carusel
-                    data={popularMovies}
-                    error={popularMoviesError}
-                    path={`/movie?id=`}
-                  />
-                </Suspense>
+                <Carusel
+                  data={popularMovies}
+                  error={popularMoviesError}
+                  path={`/movie?id=`}
+                />
               </Box>
             </Stack>
           </Box>
@@ -132,9 +123,11 @@ const Main = ({ user }) => {
                 Popular Tv Shows:
               </StyledTitleTypography>
               <Box>
-                <Suspense>
-                  <Carusel data={popularTvShows} path={`/tvShow?id=`} />
-                </Suspense>
+                <Carusel
+                  data={popularTvShows}
+                  error={popularTvShowsError}
+                  path={`/tvShow?id=`}
+                />
               </Box>
             </Stack>
           </Box>
@@ -193,9 +186,11 @@ const Main = ({ user }) => {
                 Top Rated Movies:
               </StyledTitleTypography>
               <Box>
-                <Suspense>
-                  <Carusel data={topRatedMovies} path={`/movie?id=`} />
-                </Suspense>
+                <Carusel
+                  data={topRatedMovies}
+                  error={topRatedMoviesError}
+                  path={`/movie?id=`}
+                />
               </Box>
             </Stack>
           </Box>
@@ -212,19 +207,22 @@ const Main = ({ user }) => {
                 Top Rated Tv Shows:
               </StyledTitleTypography>
               <Box>
-                <Suspense>
-                  <Carusel data={topRatedTvShows} path={`/tvShow?id=`} />
-                </Suspense>
+                <Carusel
+                  data={topRatedTvShows}
+                  error={topRatedTvShowsError}
+                  path={`/tvShow?id=`}
+                />
               </Box>
             </Stack>
           </Box>
-
-          <HaveToSignupModal
-            open={openHaveToSignupModal}
-            onClose={() => {
-              setOpenHaveToSignupModal(false);
-            }}
-          />
+          <Suspense>
+            <HaveToSignupModal
+              open={openHaveToSignupModal}
+              onClose={() => {
+                setOpenHaveToSignupModal(false);
+              }}
+            />
+          </Suspense>
         </Stack>
       )}
     </Container>

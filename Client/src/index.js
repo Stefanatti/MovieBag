@@ -4,8 +4,7 @@ import "./index.css";
 import MovieApp from "./MovieApp";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import { combineReducers } from "redux"; // Import combineReducers
-
+import { combineReducers } from "redux";
 import { userReducer, userSlice } from "./Features/user";
 import themeReducer from "./Features/theme";
 import moviesReducer from "./Features/movies";
@@ -16,6 +15,7 @@ import topRatedTvShowsReducer from "./Features/topRatedTvShows";
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
+import { movieApi } from "./Features/showsSlice";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -25,6 +25,7 @@ const rootReducer = combineReducers({
   topRatedMovies: topRatedMoviesReducer,
   topRatedTvShows: topRatedTvShowsReducer,
   theme: themeReducer,
+  [movieApi.reducerPath]: movieApi.reducer,
 });
 
 const persistConfig = {
@@ -39,7 +40,7 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: false,
-    }),
+    }).concat(movieApi.middleware),
 });
 
 export const persistor = persistStore(store);

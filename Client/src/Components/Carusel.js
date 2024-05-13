@@ -53,27 +53,35 @@ const Carusel = ({ data, path, error, loading }) => {
       },
     ],
   };
-
+  console.log(data);
   return (
     <>
-      {error && (
-        <Typography variant="h5" color={"var(--basic-color)"}>
+      {error || data.length === 0 ? (
+        <Typography variant="h6" color={"var(--basic-color)"}>
           Movies did not load, please try again.
         </Typography>
+      ) : (
+        (loading && (
+          <Typography variant="h6" color={"var(--basic-color)"}>
+            Movies Loading...
+          </Typography>
+        ),
+        (
+          <Slider {...settings}>
+            {data.map((data, index) => (
+              <div key={index}>
+                <Box sx={{ ml: 2 }}>
+                  <StyledImage
+                    src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
+                    alt={`Slide ${index}`}
+                    onClick={() => navigate(`${path}${data.id}`)}
+                  />
+                </Box>
+              </div>
+            ))}
+          </Slider>
+        ))
       )}
-      <Slider {...settings}>
-        {data.map((data, index) => (
-          <div key={index}>
-            <Box sx={{ ml: 2 }}>
-              <StyledImage
-                src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
-                alt={`Slide ${index}`}
-                onClick={() => navigate(`${path}${data.id}`)}
-              />
-            </Box>
-          </div>
-        ))}
-      </Slider>
     </>
   );
 };

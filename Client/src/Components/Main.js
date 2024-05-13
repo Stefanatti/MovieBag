@@ -65,7 +65,6 @@ const Main = ({ user }) => {
         setLoading(false);
       }
     };
-
     loadMovies();
   }, [
     isPopularMoviesLoading,
@@ -107,6 +106,7 @@ const Main = ({ user }) => {
                 <Carusel
                   data={popularMovies}
                   error={popularMoviesError}
+                  loading={isPopularMoviesLoading}
                   path={`/movie?id=`}
                 />
               </Box>
@@ -126,6 +126,7 @@ const Main = ({ user }) => {
                 <Carusel
                   data={popularTvShows}
                   error={popularTvShowsError}
+                  loading={isPopularTvShowsLoading}
                   path={`/tvShow?id=`}
                 />
               </Box>
@@ -188,6 +189,7 @@ const Main = ({ user }) => {
               <Box>
                 <Carusel
                   data={topRatedMovies}
+                  loading={isTopRatedMoviesLoading}
                   error={topRatedMoviesError}
                   path={`/movie?id=`}
                 />
@@ -210,6 +212,7 @@ const Main = ({ user }) => {
                 <Carusel
                   data={topRatedTvShows}
                   error={topRatedTvShowsError}
+                  loading={isTopRatedTvShowsLoading}
                   path={`/tvShow?id=`}
                 />
               </Box>

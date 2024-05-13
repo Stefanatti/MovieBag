@@ -11,4 +11,6 @@ router.get("/:search", apiController.searchForMoviesAndTvShows);
 router.get("/id/:id", apiController.searchForOneMovie);
 router.get("/tv/id/:id", apiController.searchForOneTvShow);
 
+//router.get("ratings/:title", apiController.getShowsRatings);
+
 module.exports = router;

@@ -3,9 +3,10 @@ require("dotenv").config({ path: ".env" });
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
 
-// const url = `${process.env.API_URL}/?apikey=${process.env.API_KEY}`;
 const url = process.env.API_URL;
 const apikey = process.env.API_KEY;
+const ratingsUrl = process.env.RATINGS_API_URL;
+const ratingsApiKey = process.env.RATINGS_API_KEY;
 const options = {
   method: "GET",
 };
@@ -142,6 +143,23 @@ const searchForOneTvShow = (req, res) => {
     .catch((err) => console.error("error:" + err));
 };
 
+// const getShowsRatings = async (req, res) => {
+//   const query = req.params.title;
+//   try {
+//     const response = await fetch(
+//       `${ratingsUrl}?t=${query}&apikey=${ratingsApiKey}`,
+//       options
+//     );
+//     const json = await response.json();
+//     res.send(json);
+//   } catch (err) {
+//     console.error("error:" + err);
+//     res
+//       .status(500)
+//       .send({ error: "An error occurred while fetching movie data." });
+//   }
+// };
+
 module.exports = {
   searchForMoviesAndTvShows,
   searchForOneMovie,
@@ -150,4 +168,5 @@ module.exports = {
   getPopularTvShows,
   getTopRatedMovies,
   getTopRatedTvShows,
+  // getShowsRatings,
 };

@@ -4,20 +4,17 @@ const jwt = require("jsonwebtoken");
 
 const signupUser = async (req, res) => {
   try {
-    // Check if all fields are completed
     if (!req.body.username || !req.body.email || !req.body.password) {
       return res
         .status(400)
         .send({ message: "Please complete all the fields" });
     }
 
-    // Check if user exists in DB
     let user = await User.findOne({ email: req.body.email });
     if (user) {
       return res.status(400).send({ message: "The user already exists" });
     }
 
-    // Create salt and hash
     bcrypt.hash(req.body.password, 10, async (err, hash) => {
       if (err) {
         console.error(err);
@@ -32,7 +29,6 @@ const signupUser = async (req, res) => {
         password: hash,
       });
 
-      // Save user
       try {
         await newUser.save();
         res.status(201).send({ message: "User created successfully" });

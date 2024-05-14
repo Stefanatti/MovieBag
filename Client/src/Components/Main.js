@@ -35,24 +35,32 @@ const Main = ({ user }) => {
     data: popularMovies,
     isLoading: isPopularMoviesLoading,
     error: popularMoviesError,
-  } = useGetPopularMoviesQuery("movieApi");
+  } = useGetPopularMoviesQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
   const {
     data: popularTvShows,
     isLoading: isPopularTvShowsLoading,
     error: popularTvShowsError,
-  } = useGetPopularTvShowsQuery("movieApi");
+  } = useGetPopularTvShowsQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
   const {
     data: topRatedMovies,
     isLoading: isTopRatedMoviesLoading,
     error: topRatedMoviesError,
-  } = useGetTopRatedMoviesQuery("movieApi");
+  } = useGetTopRatedMoviesQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
   const {
     data: topRatedTvShows,
     isLoading: isTopRatedTvShowsLoading,
     error: topRatedTvShowsError,
-  } = useGetTopRatedTvShowsQuery("movieApi");
+  } = useGetTopRatedTvShowsQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
   useEffect(() => {
     const loadMovies = async () => {

@@ -61,7 +61,7 @@ const Login = () => {
     });
   };
 
-  const loginUser = async (e) => {
+  const loginUser = async () => {
     try {
       const response = await axios.post(`${url}/user/login`, formData);
       if (response.data.token) {
@@ -72,6 +72,7 @@ const Login = () => {
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      alert(error.response.data.message);
     }
   };
 

@@ -1,14 +1,12 @@
 import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
-
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import ShowCard from "../../Components/ShowCard";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 import { useNavigate } from "react-router-dom";
-
 import { lazy, Suspense } from "react";
 const HaveToSignupModal = lazy(() =>
   import("../../Components/HaveToSignupModal")
@@ -26,8 +24,7 @@ const RenderMovie = () => {
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
   const [moviesIds, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
-
-  const dispatch = useDispatch();
+  const [showRatings, setShowRatings] = useState("");
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
@@ -87,7 +84,6 @@ const RenderMovie = () => {
       });
       setMoviesIds((prevMoviesIds) => [...prevMoviesIds, id]);
       setToggleForList(true);
-      // dispatch(addMovie({ id: String(id), title: title, director: director }));
     } catch (err) {
       console.log(err);
       alert(err.response.data.message);
@@ -116,7 +112,6 @@ const RenderMovie = () => {
           owner: user._id,
         })
         .catch((err) => console.log(err));
-      // dispatch(addMovie({ id: id, title: title, director: director }));
 
       setWatchlistMoviesIds([...watchlistMoviesIds, id]);
       setToggleForWatchlist(true);
@@ -124,7 +119,7 @@ const RenderMovie = () => {
       alert("This movie already has been added.");
     }
   };
-  console.log(movie);
+
   return (
     <Container maxWidth="lg">
       <Box

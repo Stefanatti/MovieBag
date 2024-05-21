@@ -37,6 +37,7 @@ const ShowCard = ({
   const [actors, setActors] = useState("");
   const [showYear, setShowYear] = useState("");
   const [trailer, setTrailer] = useState("");
+  const [showRatings, setShowRatings] = useState("");
   const [openModal, setOpenModal] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorEl2, setAnchorEl2] = useState(null);
@@ -73,6 +74,7 @@ const ShowCard = ({
         ? show.release_date.slice(0, 4)
         : show.first_air_date.slice(0, 4)
     );
+    setShowRatings(show.vote_average.toFixed(1));
     setTrailer(
       show.videos.results.filter(
         (video) =>
@@ -99,7 +101,7 @@ const ShowCard = ({
 
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
-
+  console.log(show);
   return (
     <>
       <Card
@@ -141,10 +143,22 @@ const ShowCard = ({
                     display: "flex",
                     alignItems: "baseline",
                     alignContent: "flex-end",
-                    gap: "10px",
+                    gap: "15px",
                   }}
                 >
-                  <StyledTypography variant={"h4"}>
+                  <Avatar
+                    sx={{
+                      backgroundColor: "var(--basic-color)",
+                      width: 66,
+                      height: 66,
+                    }}
+                  >
+                    <StyledTypography variant={"h4"}>
+                      {" "}
+                      {showRatings}
+                    </StyledTypography>
+                  </Avatar>
+                  <StyledTypography variant={"h5"}>
                     {showYear}{" "}
                   </StyledTypography>
                   <StyledTypography variant={"h5"}>
@@ -154,13 +168,10 @@ const ShowCard = ({
                   </StyledTypography>
                   {show.imdb_id && (
                     <a
+                      style={{ textDecoration: "none" }}
                       href={`https://www.imdb.com/title/${show.imdb_id}/?ref_=fn_al_tt_1`}
                     >
-                      <StyledTypography
-                        sx={{ color: "gold", underLine: "none" }}
-                        variant={"body1"}
-                        component="span"
-                      >
+                      <StyledTypography sx={{ color: "var(--basic-color)" }}>
                         IMDB
                       </StyledTypography>
                     </a>

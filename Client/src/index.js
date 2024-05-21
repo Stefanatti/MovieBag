@@ -5,13 +5,10 @@ import MovieApp from "./MovieApp";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
 import { combineReducers } from "redux";
-import { userReducer, userSlice } from "./Features/user";
+import { userReducer } from "./Features/user";
 import themeReducer from "./Features/theme";
 import moviesReducer from "./Features/movies";
-import popularMoviesReducer from "./Features/popularMovies";
-import popularTvShowsReducer from "./Features/popularTvShows";
-import topRatedMoviesReducer from "./Features/topRatedMovies";
-import topRatedTvShowsReducer from "./Features/topRatedTvShows";
+
 import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
@@ -20,10 +17,6 @@ import { movieApi } from "./Features/showsSlice";
 const rootReducer = combineReducers({
   user: userReducer,
   movies: moviesReducer,
-  popularMovies: popularMoviesReducer,
-  popularTvShows: popularTvShowsReducer,
-  topRatedMovies: topRatedMoviesReducer,
-  topRatedTvShows: topRatedTvShowsReducer,
   theme: themeReducer,
   [movieApi.reducerPath]: movieApi.reducer,
 });

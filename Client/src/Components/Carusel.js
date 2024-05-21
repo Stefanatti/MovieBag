@@ -53,7 +53,7 @@ const Carusel = ({ data, path, error, loading }) => {
       },
     ],
   };
-  console.log(data);
+
   return (
     <>
       {error || data.length === 0 ? (

@@ -61,7 +61,7 @@ const WatchlistMovies = () => {
       console.log(error.message);
     }
   };
-  console.log(displayedMovies);
+
   return (
     <Container>
       {pageloaded ? (

@@ -43,15 +43,12 @@ const WatchlistTvShows = () => {
       navigate("/error_page");
     }
     if (data) {
-      console.log(data);
       const allWatchlistTvShows = data;
       setWatchlistTvShows(allWatchlistTvShows);
       setPageLoaded(loading);
     }
   }, [data, loading, error]);
   const displayedTvShows = watchlistTvShows.slice(startIndex, endIndex);
-
-  console.log(watchlistTvShows);
 
   const removeWatchlistTvShow = async (id) => {
     try {

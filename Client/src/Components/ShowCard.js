@@ -101,7 +101,7 @@ const ShowCard = ({
 
   const open = Boolean(anchorEl);
   const open2 = Boolean(anchorEl2);
-  console.log(show);
+
   return (
     <>
       <Card

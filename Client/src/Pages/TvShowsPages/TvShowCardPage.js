@@ -57,7 +57,6 @@ const RenderTvShowCard = () => {
     const getTvShowDetails = async () => {
       try {
         const response = await axios.get(url + `/api/tv/id/${tvShowID}`);
-        console.log(response.data);
         setTvShow(response.data);
       } catch (err) {
         console.log(err);
@@ -121,7 +120,7 @@ const RenderTvShowCard = () => {
       alert("This TV Show already has been added.");
     }
   };
-  console.log(watchlistTvShowsIds);
+
   return (
     <Container maxWidth="lg">
       <Box

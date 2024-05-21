@@ -8,7 +8,6 @@ const MoviesTable = ({ currentMyMovies, rateTheMovie, removeMovie, path }) => {
   const navigate = useNavigate();
 
   const [value, setValue] = useState();
-  console.log(currentMyMovies);
   return (
     <div className="table-container">
       <table>

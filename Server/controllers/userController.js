@@ -1,7 +1,10 @@
 const User = require("../modules/userModule");
 const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
+const speakeasy = require("speakeasy");
 
 const signupUser = async (req, res) => {
   try {
@@ -24,10 +27,13 @@ const signupUser = async (req, res) => {
           .send({ message: "An error occurred while hashing the password" });
       }
 
+      const secret = crypto.randomBytes(20).toString("hex");
+
       let newUser = new User({
         username: req.body.username,
         email: req.body.email,
         password: hash,
+        otpSecret: secret,
       });
 
       try {
@@ -102,6 +108,42 @@ const verifyUser = async (req, res) => {
   }
 };
 
+// const generateOtp = async (req, res) => {
+//   const userId = req.body.id;
+//   try {
+//     const token = speakeasy.totp({
+//       secret: userId.otpSecret,
+//       encoding: "base32",
+//     });
+
+//     res.send({ token }); // Send the generated OTP to the client
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ error: "Failed to generate OTP." });
+//   }
+// };
+
+// const verifyOtp = async (req, res) => {
+//   const { userId, token } = req.body; // Assuming these are sent in the request body
+
+//   try {
+//     const verified = speakeasy.totp.verify({
+//       secret: userId.otpSecret,
+//       encoding: "base32",
+//       token,
+//     });
+
+//     if (verified) {
+//       res.send({ success: true, message: "OTP verified successfully." });
+//     } else {
+//       res.send({ success: false, message: "Invalid OTP." });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ error: "Failed to verify OTP." });
+//   }
+// };
+
 // const forgotPassword = async (req, res) => {
 //   try {
 //     const user = await User.findOne({ email: req.body.email });
@@ -115,18 +157,24 @@ const verifyUser = async (req, res) => {
 //       service: "gmail",
 //       auth: {
 //         user: "stekots@gmail.com",
-//         pass: "1006000",
+//         pass: "xokuajxnjtbeaill",
+//       },
+//       tls: {
+//         rejectUnauthorized: false,
 //       },
 //     });
 //     const emailOptions = {
 //       from: "stekots@gmail.com",
 //       to: req.body.email,
-//       subject: "Reset Password",
-//       html: `<h1>Reset Your Password</h1>
-//     <p>Click on the following link to reset your password:</p>
-//     <a href="http://localhost:3636/reset_password/${token}">http://localhost:3636/reset_password/${token}</a>
-//     <p>The link will expire in 10 minutes.</p>
-//     <p>If you didn't request a password reset, please ignore this email.</p>`,
+//       subject: "Test Email",
+//       text: "Hello world!",
+//       html: "<b>Hello world!</b>",
+//       //   subject: "Reset Password",
+//       //   html: `<h1>Reset Your Password</h1>
+//       // <p>Click on the following link to reset your password:</p>
+//       // <a href="http://localhost:3636/reset_password/${token}">http://localhost:3636/reset_password/${token}</a>
+//       // <p>The link will expire in 10 minutes.</p>
+//       // <p>If you didn't request a password reset, please ignore this email.</p>`,
 //     };
 
 //     transpoter.sendMail(emailOptions, (err, info) => {
@@ -140,15 +188,48 @@ const verifyUser = async (req, res) => {
 //   }
 // };
 
-// const resetPassword = async (req,res) =>{
-//   try{
+// const resetPassword = async (req, res) => {
+//   try {
+//     const decodedToken = jwt.verify(
+//       req.params.token,
+//       process.env.JWT_SECRET_KEY
+//     );
 
-//   }catch(err){console.log(err)}
-// }
+//     if (!decodedToken) {
+//       return res.status(401).send({ message: "Invalid token" });
+//     }
+//     const user = await User.findOne({ _id: decodedToken.userId });
+//     if (!user) {
+//       return res.status(401).send({ message: "No user found" });
+//     }
+
+//     // Hash the new password
+//     const salt = await bcrypt.genSalt(10);
+//     req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
+
+//     // Update user's password, clear reset token and expiration time
+//     user.password = req.body.newPassword;
+//     await user.save();
+
+//     // Send success response
+//     res.status(200).send({ message: "Password updated" });
+//   } catch (err) {
+//     // Send error response if any error occurs
+//     res.status(500).send({ message: err.message });
+//   }
+// };
+
+//   } catch (err) {
+//     console.log(err);
+//   }
+// };
 
 module.exports = {
   signupUser,
   loginUser,
   verifyUser,
-  //forgotPassword
+  forgotPassword,
+  resetPassword,
+  generateOtp,
+  verifyOtp,
 };

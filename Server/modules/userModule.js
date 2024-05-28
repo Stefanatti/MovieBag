@@ -16,6 +16,9 @@ const UserSchema = new mongoose.Schema({
     required: [true, "Please enter a valid password"],
     minlength: [3, "Minimum password length must be 3 characters"],
   },
+  otpSecret: {
+    type: String,
+  },
   registerDate: {
     type: Date,
     default: Date.now(),

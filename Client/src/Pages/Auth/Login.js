@@ -96,6 +96,17 @@ const Login = () => {
     }
   };
 
+  const forgotPassword = async () => {
+    try {
+      const response = await axios.post(`${url}/user/forgot_password/`, {
+        email: "stekots@gmail.com",
+      });
+      console.log(response);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <Container component="main" maxWidth="lg">
       <Box
@@ -245,6 +256,14 @@ const Login = () => {
                       sx={{ cursor: "pointer" }}
                     >
                       Don't have an account? Sign Up
+                    </Typography>
+                    <Typography
+                      variant="body2"
+                      color={"var(--basic-color)"}
+                      onClick={forgotPassword}
+                      sx={{ cursor: "pointer" }}
+                    >
+                      Forgot your password?
                     </Typography>
                   </Grid>
                 </Grid>

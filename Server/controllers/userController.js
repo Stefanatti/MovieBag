@@ -1,10 +1,12 @@
 const User = require("../modules/userModule");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-
 const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-const speakeasy = require("speakeasy");
+//const speakeasy = require("speakeasy");
+require("dotenv").config({ path: ".env" });
+
+const appUrl = process.env.APP_URL;
 
 const signupUser = async (req, res) => {
   try {
@@ -108,42 +110,6 @@ const verifyUser = async (req, res) => {
   }
 };
 
-// const generateOtp = async (req, res) => {
-//   const userId = req.body.id;
-//   try {
-//     const token = speakeasy.totp({
-//       secret: userId.otpSecret,
-//       encoding: "base32",
-//     });
-
-//     res.send({ token }); // Send the generated OTP to the client
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({ error: "Failed to generate OTP." });
-//   }
-// };
-
-// const verifyOtp = async (req, res) => {
-//   const { userId, token } = req.body; // Assuming these are sent in the request body
-
-//   try {
-//     const verified = speakeasy.totp.verify({
-//       secret: userId.otpSecret,
-//       encoding: "base32",
-//       token,
-//     });
-
-//     if (verified) {
-//       res.send({ success: true, message: "OTP verified successfully." });
-//     } else {
-//       res.send({ success: false, message: "Invalid OTP." });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({ error: "Failed to verify OTP." });
-//   }
-// };
-
 const forgotPassword = async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
@@ -163,7 +129,7 @@ const forgotPassword = async (req, res) => {
         rejectUnauthorized: false,
       },
     });
-    const resetUrl = `http://localhost:3000/reset_password/${token}`;
+    const resetUrl = `${appUrl}/reset_password/${token}`;
 
     const emailOptions = {
       from: "stekots@gmail.com",
@@ -212,6 +178,42 @@ const resetPassword = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+// const generateOtp = async (req, res) => {
+//   const userId = req.body.id;
+//   try {
+//     const token = speakeasy.totp({
+//       secret: userId.otpSecret,
+//       encoding: "base32",
+//     });
+
+//     res.send({ token }); // Send the generated OTP to the client
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ error: "Failed to generate OTP." });
+//   }
+// };
+
+// const verifyOtp = async (req, res) => {
+//   const { userId, token } = req.body; // Assuming these are sent in the request body
+
+//   try {
+//     const verified = speakeasy.totp.verify({
+//       secret: userId.otpSecret,
+//       encoding: "base32",
+//       token,
+//     });
+
+//     if (verified) {
+//       res.send({ success: true, message: "OTP verified successfully." });
+//     } else {
+//       res.send({ success: false, message: "Invalid OTP." });
+//     }
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).send({ error: "Failed to verify OTP." });
+//   }
+// };
 
 module.exports = {
   signupUser,

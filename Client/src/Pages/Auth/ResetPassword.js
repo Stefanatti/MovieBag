@@ -1,9 +1,6 @@
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { userSignInSchema } from "../../Validations/UserValidation";
-import { useState } from "react";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { userLogInSchema } from "../../Validations/UserValidation";
 import {
   Grid,
   Paper,
@@ -13,34 +10,38 @@ import {
   Container,
   Box,
   TextField,
-  InputAdornment,
-  IconButton,
 } from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 
 const fields = [
-  { label: "Username", name: "username" },
-  { label: "Email", name: "email" },
-  { label: "Password", name: "password" },
+  { label: "New Password", name: "newPassword" },
+  { label: "Confirm New Password", name: "confirmNewPassword" },
 ];
-const Signup = () => {
-  const url = process.env.REACT_APP_URL;
 
+const ResetPassword = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
+  const url = process.env.REACT_APP_URL;
+  const { token } = useParams();
   const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
+    newPassword: "",
+    confirmNewPassword: "",
   });
-  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
-  const handleClickShowPassword = () =>
-    setShowPassword((prevShowPassword) => !prevShowPassword);
+  const {
+    // reset,
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
+    resolver: yupResolver(userLogInSchema),
+  });
 
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -48,27 +49,24 @@ const Signup = () => {
     });
   };
 
-  const {
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(userSignInSchema),
-  });
+  const handleNewPasswordSubmit = async (e) => {
+    e.preventDefault();
 
-  const createUser = async (e) => {
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setMessage("Passwords do not match!");
+      return;
+    }
+
     try {
-      const response = await axios.post(`${url}/user/signup`, formData, {});
-      console.log(response.data);
-      if (response.data.message === true) {
+      const response = await axios.post(`${url}/user/reset_password/${token}`, {
+        newPassword: formData.newPassword,
+      });
+      setMessage(response.data.message);
+      setTimeout(() => {
         navigate("/login");
-      } else {
-        alert(response.data.message);
-      }
+      }, 3000);
     } catch (error) {
-      console.error("Error submitting form:", error);
-      reset();
+      setMessage("Error resetting password");
     }
   };
 
@@ -92,16 +90,14 @@ const Signup = () => {
               display: { xs: "none", sm: "block" },
 
               backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
+                "url(https://alternativemovieposters.com/wp-content/uploads/2020/09/JuanRomero_Recall.jpg)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"
                   ? t.palette.grey[50]
                   : t.palette.grey[900],
               backgroundSize: "cover",
-              backgroundPosition: "center",
               border: "2px solid var(--home-page-posters-color)",
-              borderRadius: "2%",
               marginBottom: 5,
             }}
           />
@@ -133,12 +129,12 @@ const Signup = () => {
                   marginBottom: 3,
                 }}
               >
-                Sign In
+                Reset Password
               </Typography>
               <Box
                 component="form"
                 noValidate
-                onSubmit={handleSubmit(createUser)}
+                onSubmit={handleNewPasswordSubmit}
                 sx={{
                   mt: 1,
                   display: "flex",
@@ -153,13 +149,7 @@ const Signup = () => {
                     fullWidth
                     placeholder={field.label}
                     name={field.name}
-                    type={
-                      field.name === "password"
-                        ? showPassword
-                          ? "text"
-                          : "password"
-                        : "text"
-                    }
+                    type={"text"}
                     {...register(`${field.name}`)}
                     error={Boolean(errors[field.name])}
                     helperText={errors[field.name]?.message}
@@ -185,19 +175,6 @@ const Signup = () => {
                             transition: "background-color 5000s ease-in-out 0s",
                           },
                       },
-                      endAdornment: field.name === "password" && (
-                        <InputAdornment position="end">
-                          <IconButton
-                            sx={{ color: "var(--basic-color)" }}
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
                     }}
                   />
                 ))}
@@ -213,7 +190,7 @@ const Signup = () => {
                     "&:hover": { bgcolor: "var(--basic-color)" },
                   }}
                 >
-                  Sign in
+                  Reset
                 </Button>
 
                 <Grid container>
@@ -224,7 +201,7 @@ const Signup = () => {
                       onClick={() => navigate("/login")}
                       sx={{ cursor: "pointer" }}
                     >
-                      Have you already an account? Login
+                      Go Back to Login
                     </Typography>
                   </Grid>
                 </Grid>
@@ -237,4 +214,4 @@ const Signup = () => {
   );
 };
 
-export default Signup;
+export default ResetPassword;

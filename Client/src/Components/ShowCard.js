@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect } from "react";
-import TrailerModal from "./Modal";
+import TrailerModal from "./TrailerModal";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import MouseOverPopover from "./PopOver";
 

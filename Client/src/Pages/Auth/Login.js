@@ -15,13 +15,13 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch } from "react-redux";
-
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login, logout } from "../../Features/user";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const fields = [
   { label: "Username", name: "username" },
   { label: "Password", name: "password" },
@@ -35,9 +35,10 @@ const Login = () => {
   const [formData, setFormData] = useState({
     username: "",
     password: "",
+    email: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-
+  const [resetPasswordForm, setResetPasswordForm] = useState(false);
   const handleClickShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
 
@@ -96,14 +97,83 @@ const Login = () => {
     }
   };
 
-  const forgotPassword = async () => {
+  const handleForgotPasswordSubmit = (e) => {
+    e.preventDefault();
+    forgotPassword(formData.email);
+  };
+
+  const forgotPassword = async (email) => {
     try {
       const response = await axios.post(`${url}/user/forgot_password/`, {
-        email: "stekots@gmail.com",
+        email: email,
       });
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      } else {
+        throw new Error(`Unexpected status code: ${response.status}`);
+      }
+
       console.log(response);
     } catch (err) {
-      console.log(err);
+      console.error(err);
+
+      if (err.response) {
+        switch (err.response.status) {
+          case 404:
+            toast.error(err.response.data.message, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            break;
+          case 500:
+            toast.error(err.response.data.message, {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+            });
+            break;
+          default:
+            toast.error(
+              `An error occurred (${err.response.status}). ${err.response.data.message}`,
+              {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+              }
+            );
+        }
+      } else {
+        toast.error("An unexpected error occurred.", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+      }
     }
   };
 
@@ -117,14 +187,18 @@ const Login = () => {
       >
         <Grid container>
           <CssBaseline />
+
           <Grid
             item
             xs={false}
             sm={4}
             md={7}
             sx={{
-              backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2013/12/mementobg.jpg)",
+              height: "550px",
+              display: { xs: "none", sm: "block" },
+              backgroundImage: resetPasswordForm
+                ? "url(https://alternativemovieposters.com/wp-content/uploads/2020/03/ratliff_eternalsunshine.jpg)"
+                : "url(https://alternativemovieposters.com/wp-content/uploads/2013/12/mementobg.jpg)",
               backgroundRepeat: "no-repeat",
               backgroundColor: (t) =>
                 t.palette.mode === "light"
@@ -146,55 +220,48 @@ const Login = () => {
             square
             sx={{ backgroundColor: "var(--main-card-color)" }}
           >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{
-                  color: "var(--basic-color)",
-                  fontFamily: "Limelight",
-                  marginBottom: 3,
-                }}
-              >
-                Log In
-              </Typography>
+            {resetPasswordForm ? (
               <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(loginUser)}
                 sx={{
-                  mt: 1,
+                  my: 8,
+                  mx: 4,
                   display: "flex",
                   flexDirection: "column",
+                  alignItems: "center",
                 }}
               >
-                {fields.map((field) => (
+                <Typography
+                  component="h1"
+                  variant="h5"
+                  sx={{
+                    color: "var(--basic-color)",
+                    fontFamily: "Limelight",
+                    marginBottom: 3,
+                  }}
+                >
+                  Enter Your Email
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleForgotPasswordSubmit}
+                  sx={{
+                    mt: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
                   <TextField
-                    key={field.name}
                     margin="normal"
                     required
                     fullWidth
-                    placeholder={field.label}
-                    name={field.name}
-                    type={
-                      field.name === "password"
-                        ? showPassword
-                          ? "text"
-                          : "password"
-                        : "text"
-                    }
-                    {...register(`${field.name}`)}
-                    error={Boolean(errors[field.name])}
-                    helperText={errors[field.name]?.message}
-                    value={formData[field.name]}
+                    placeholder={`Email`}
+                    name={`email`}
+                    type={"text"}
+                    {...register(`email`)}
+                    error={Boolean(errors["email"])}
+                    helperText={errors["email"]?.message}
+                    value={formData["email"]}
                     onChange={handleChange}
                     InputProps={{
                       style: {
@@ -216,61 +283,168 @@ const Login = () => {
                             transition: "background-color 5000s ease-in-out 0s",
                           },
                       },
-                      endAdornment: field.name === "password" && (
-                        <InputAdornment position="end">
-                          <IconButton
-                            sx={{ color: "var(--basic-color)" }}
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
                     }}
                   />
-                ))}
 
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    background: "var(--basic-color)",
-                    "&:hover": { bgcolor: "var(--basic-color)" },
-                  }}
-                >
-                  Log in
-                </Button>
-
-                <Grid container>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      background: "var(--basic-color)",
+                      "&:hover": { bgcolor: "var(--basic-color)" },
+                    }}
+                  >
+                    Submit
+                  </Button>
                   <Grid item>
                     <Typography
                       variant="body2"
                       color={"var(--basic-color)"}
-                      onClick={() => navigate("/signup")}
+                      onClick={() => setResetPasswordForm(false)}
                       sx={{ cursor: "pointer" }}
                     >
-                      Don't have an account? Sign Up
+                      Back to login
                     </Typography>
+                  </Grid>
+                </Box>
+              </Box>
+            ) : (
+              <Box
+                sx={{
+                  my: 8,
+                  mx: 4,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                }}
+              >
+                <Typography
+                  component="h1"
+                  variant="h5"
+                  sx={{
+                    color: "var(--basic-color)",
+                    fontFamily: "Limelight",
+                    marginBottom: 3,
+                  }}
+                >
+                  Log In
+                </Typography>
+                <Box
+                  component="form"
+                  noValidate
+                  onSubmit={handleSubmit(loginUser)}
+                  sx={{
+                    mt: 1,
+                    display: "flex",
+                    flexDirection: "column",
+                  }}
+                >
+                  {fields.map((field) => (
+                    <TextField
+                      key={field.name}
+                      margin="normal"
+                      required
+                      fullWidth
+                      placeholder={field.label}
+                      name={field.name}
+                      type={
+                        field.name === "password"
+                          ? showPassword
+                            ? "text"
+                            : "password"
+                          : "text"
+                      }
+                      {...register(`${field.name}`)}
+                      error={Boolean(errors[field.name])}
+                      helperText={errors[field.name]?.message}
+                      value={formData[field.name]}
+                      onChange={handleChange}
+                      InputProps={{
+                        style: {
+                          color: "var(--basic-color)",
+                          border: "2px solid var(--basic-color)",
+                        },
+                        sx: {
+                          "&:hover fieldset": {
+                            border: "2px solid var(--basic-color)",
+                            borderRadius: 0,
+                          },
+                          "&:focus-within fieldset, &:focus-visible fieldset": {
+                            border: "2px solid var(--basic-color)!important",
+                          },
+                          "& input:-webkit-autofill, & textarea:-webkit-autofill, & select:-webkit-autofill":
+                            {
+                              WebkitTextFillColor: "var(--basic-color)",
+                              WebkitBoxShadow: "red inset",
+                              transition:
+                                "background-color 5000s ease-in-out 0s",
+                            },
+                        },
+                        endAdornment: field.name === "password" && (
+                          <InputAdornment position="end">
+                            <IconButton
+                              sx={{ color: "var(--basic-color)" }}
+                              aria-label="toggle password visibility"
+                              onClick={handleClickShowPassword}
+                              onMouseDown={handleMouseDownPassword}
+                              edge="end"
+                            >
+                              {showPassword ? (
+                                <VisibilityOff />
+                              ) : (
+                                <Visibility />
+                              )}
+                            </IconButton>
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                  ))}
+                  <Grid item>
                     <Typography
                       variant="body2"
                       color={"var(--basic-color)"}
-                      onClick={forgotPassword}
+                      onClick={() => setResetPasswordForm(true)}
                       sx={{ cursor: "pointer" }}
                     >
                       Forgot your password?
                     </Typography>
                   </Grid>
-                </Grid>
+                  <Button
+                    type="submit"
+                    fullWidth
+                    variant="contained"
+                    sx={{
+                      mt: 3,
+                      mb: 2,
+                      background: "var(--basic-color)",
+                      "&:hover": { bgcolor: "var(--basic-color)" },
+                    }}
+                  >
+                    Log in
+                  </Button>
+
+                  <Grid container>
+                    <Grid item>
+                      <Typography
+                        variant="body2"
+                        color={"var(--basic-color)"}
+                        onClick={() => navigate("/signup")}
+                        sx={{ cursor: "pointer" }}
+                      >
+                        Don't have an account? Sign Up
+                      </Typography>
+                    </Grid>
+                  </Grid>
+                </Box>
               </Box>
-            </Box>
+            )}
           </Grid>
         </Grid>
+        <ToastContainer />
       </Box>
     </Container>
   );

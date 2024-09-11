@@ -9,6 +9,7 @@ import {
 import Home from "./Pages/Home";
 import Signup from "./Pages/Auth/Signup";
 import Login from "./Pages/Auth/Login";
+import ResetPassword from "./Pages/Auth/ResetPassword";
 import MovieSearchResult from "./Pages/SearchResults";
 import YourMoviesLibrary from "./Pages/MoviesPages/YourMoviesList";
 import YourTvShowsList from "./Pages/TvShowsPages/YourTvShowsList";
@@ -39,6 +40,7 @@ function MovieApp() {
             <Route path="/" element={<Home />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset_password/:token?" element={<ResetPassword />} />
             <Route path="/yourmovies" element={<PrivateRoute />}>
               <Route index element={<YourMoviesLibrary />} />
             </Route>

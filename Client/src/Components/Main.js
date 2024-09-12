@@ -188,6 +188,13 @@ const Main = ({ user }) => {
       setLoading(false);
     });
   }, []);
+  console.log(
+    "Received Data:",
+    popularMovies,
+    popularTvShows,
+    topRatedMovies,
+    topRatedTvShows
+  );
 
   return (
     <Container maxWidth="lg">

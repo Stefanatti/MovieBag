@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
 export const movieApi = createApi({
   reducerPath: "movieApi",
-  baseQuery: fetchBaseQuery({ baseUrl: process.env.REACT_APP_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: process.env.REACT_APP_URL || "http://localhost:3636",
+  }),
   endpoints: (builder) => ({
     getPopularMovies: builder.query({
       query: () => "api/popular",

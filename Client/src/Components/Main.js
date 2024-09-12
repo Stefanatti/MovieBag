@@ -16,6 +16,7 @@ const Main = ({ user }) => {
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const StyledTitleTypography = styled(Typography)(
     ({ variant, theme, bigfont, smallfont }) => ({
@@ -31,48 +32,89 @@ const Main = ({ user }) => {
       },
     })
   );
-  const {
-    data: popularMovies,
-    isLoading: isPopularMoviesLoading,
-    error: popularMoviesError,
-  } = useGetPopularMoviesQuery("movieApi", {
-    pollingInterval: 24 * 60 * 60 * 1000,
-  });
+  // const {
+  //   data: popularMovies,
+  //   isLoading: isPopularMoviesLoading,
+  //   error: popularMoviesError,
+  // } = useGetPopularMoviesQuery("movieApi", {
+  //   pollingInterval: 24 * 60 * 60 * 1000,
+  // });
 
-  const {
-    data: popularTvShows,
-    isLoading: isPopularTvShowsLoading,
-    error: popularTvShowsError,
-  } = useGetPopularTvShowsQuery("movieApi", {
-    pollingInterval: 24 * 60 * 60 * 1000,
-  });
-  const {
-    data: topRatedMovies,
-    isLoading: isTopRatedMoviesLoading,
-    error: topRatedMoviesError,
-  } = useGetTopRatedMoviesQuery("movieApi", {
-    pollingInterval: 24 * 60 * 60 * 1000,
-  });
+  // const {
+  //   data: popularTvShows,
+  //   isLoading: isPopularTvShowsLoading,
+  //   error: popularTvShowsError,
+  // } = useGetPopularTvShowsQuery("movieApi", {
+  //   pollingInterval: 24 * 60 * 60 * 1000,
+  // });
+  // const {
+  //   data: topRatedMovies,
+  //   isLoading: isTopRatedMoviesLoading,
+  //   error: topRatedMoviesError,
+  // } = useGetTopRatedMoviesQuery("movieApi", {
+  //   pollingInterval: 24 * 60 * 60 * 1000,
+  // });
 
-  const {
-    data: topRatedTvShows,
-    isLoading: isTopRatedTvShowsLoading,
-    error: topRatedTvShowsError,
-  } = useGetTopRatedTvShowsQuery("movieApi", {
-    pollingInterval: 24 * 60 * 60 * 1000,
-  });
+  // const {
+  //   data: topRatedTvShows,
+  //   isLoading: isTopRatedTvShowsLoading,
+  //   error: topRatedTvShowsError,
+  // } = useGetTopRatedTvShowsQuery("movieApi", {
+  //   pollingInterval: 24 * 60 * 60 * 1000,
+  // });
+
+  // // useEffect(() => {
+  // //   const loadMovies = async () => {
+  // //     if (
+  // //       !isPopularMoviesLoading &&
+  // //       !isPopularTvShowsLoading &&
+  // //       !isTopRatedMoviesLoading &&
+  // //       !isTopRatedTvShowsLoading
+  // //     ) {
+  // //       setLoading(false);
+  // //     }
+  // //   };
+  // //   loadMovies();
+  // // }, [
+  // //   isPopularMoviesLoading,
+  // //   isPopularTvShowsLoading,
+  // //   isTopRatedMoviesLoading,
+  // //   isTopRatedTvShowsLoading,
+  // // ]);
 
   // useEffect(() => {
+  //   console.log("Component mounted");
+
   //   const loadMovies = async () => {
-  //     if (
-  //       !isPopularMoviesLoading &&
-  //       !isPopularTvShowsLoading &&
-  //       !isTopRatedMoviesLoading &&
-  //       !isTopRatedTvShowsLoading
-  //     ) {
-  //       setLoading(false);
+  //     try {
+  //       console.log("Starting API calls");
+
+  //       // Wait for all queries to complete
+  //       await Promise.all([
+  //         new Promise((resolve) => setTimeout(resolve, 5000)), // Add a small delay
+  //         popularMovies,
+  //         popularTvShows,
+  //         topRatedMovies,
+  //         topRatedTvShows,
+  //       ]);
+
+  //       console.log("API calls completed");
+
+  //       if (
+  //         !isPopularMoviesLoading &&
+  //         !isPopularTvShowsLoading &&
+  //         !isTopRatedMoviesLoading &&
+  //         !isTopRatedTvShowsLoading
+  //       ) {
+  //         console.log("All data loaded successfully");
+  //         setLoading(false);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error loading movies:", error);
+  //       setLoading(false); // Ensure loading state is cleared even on error
   //     }
   //   };
+
   //   loadMovies();
   // }, [
   //   isPopularMoviesLoading,
@@ -81,6 +123,30 @@ const Main = ({ user }) => {
   //   isTopRatedTvShowsLoading,
   // ]);
 
+  const {
+    data: popularMovies,
+    isLoading: isPopularMoviesLoading,
+    error: popularMoviesError,
+  } = useGetPopularMoviesQuery("movieApi");
+
+  const {
+    data: popularTvShows,
+    isLoading: isPopularTvShowsLoading,
+    error: popularTvShowsError,
+  } = useGetPopularTvShowsQuery("movieApi");
+
+  const {
+    data: topRatedMovies,
+    isLoading: isTopRatedMoviesLoading,
+    error: topRatedMoviesError,
+  } = useGetTopRatedMoviesQuery("movieApi");
+
+  const {
+    data: topRatedTvShows,
+    isLoading: isTopRatedTvShowsLoading,
+    error: topRatedTvShowsError,
+  } = useGetTopRatedTvShowsQuery("movieApi");
+
   useEffect(() => {
     console.log("Component mounted");
 
@@ -88,9 +154,7 @@ const Main = ({ user }) => {
       try {
         console.log("Starting API calls");
 
-        // Wait for all queries to complete
         await Promise.all([
-          new Promise((resolve) => setTimeout(resolve, 5000)), // Add a small delay
           popularMovies,
           popularTvShows,
           topRatedMovies,
@@ -107,20 +171,23 @@ const Main = ({ user }) => {
         ) {
           console.log("All data loaded successfully");
           setLoading(false);
+        } else {
+          console.log("Some queries are still loading");
+          setError(new Error("Not all queries completed"));
         }
       } catch (error) {
         console.error("Error loading movies:", error);
-        setLoading(false); // Ensure loading state is cleared even on error
+        setError(error);
+        setLoading(false); // Clear loading state even on error
       }
     };
 
-    loadMovies();
-  }, [
-    isPopularMoviesLoading,
-    isPopularTvShowsLoading,
-    isTopRatedMoviesLoading,
-    isTopRatedTvShowsLoading,
-  ]);
+    loadMovies().catch((err) => {
+      console.error("loadMovies promise rejected:", err);
+      setError(err);
+      setLoading(false);
+    });
+  }, []);
 
   return (
     <Container maxWidth="lg">

@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const movieApi = createApi({
   reducerPath: "movieApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.REACT_APP_URL || "http://localhost:3636",
+    baseUrl: "http://localhost:3636",
   }),
   endpoints: (builder) => ({
     getPopularMovies: builder.query({
@@ -27,3 +27,5 @@ export const {
   useGetTopRatedMoviesQuery,
   useGetTopRatedTvShowsQuery,
 } = movieApi;
+
+//process.env.REACT_APP_URL ||

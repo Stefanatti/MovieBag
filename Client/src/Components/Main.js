@@ -127,67 +127,70 @@ const Main = ({ user }) => {
     data: popularMovies,
     isLoading: isPopularMoviesLoading,
     error: popularMoviesError,
-  } = useGetPopularMoviesQuery("movieApi");
+  } = useGetPopularMoviesQuery();
 
   const {
     data: popularTvShows,
     isLoading: isPopularTvShowsLoading,
     error: popularTvShowsError,
-  } = useGetPopularTvShowsQuery("movieApi");
+  } = useGetPopularTvShowsQuery();
 
   const {
     data: topRatedMovies,
     isLoading: isTopRatedMoviesLoading,
     error: topRatedMoviesError,
-  } = useGetTopRatedMoviesQuery("movieApi");
+  } = useGetTopRatedMoviesQuery();
 
   const {
     data: topRatedTvShows,
     isLoading: isTopRatedTvShowsLoading,
     error: topRatedTvShowsError,
-  } = useGetTopRatedTvShowsQuery("movieApi");
+  } = useGetTopRatedTvShowsQuery();
 
   useEffect(() => {
-    console.log("Component mounted");
-
-    const loadMovies = async () => {
-      try {
-        console.log("Starting API calls");
-
-        await Promise.all([
+    if (
+      !isPopularMoviesLoading &&
+      !isPopularTvShowsLoading &&
+      !isTopRatedMoviesLoading &&
+      !isTopRatedTvShowsLoading
+    ) {
+      if (
+        popularMoviesError ||
+        popularTvShowsError ||
+        topRatedMoviesError ||
+        topRatedTvShowsError
+      ) {
+        // Handle error state
+        setError(new Error("One or more queries failed"));
+        setLoading(false);
+      } else {
+        // Data successfully loaded
+        setError(null);
+        setLoading(false);
+        console.log(
+          "Received Data:",
           popularMovies,
           popularTvShows,
           topRatedMovies,
-          topRatedTvShows,
-        ]);
-
-        console.log("API calls completed");
-
-        if (
-          !isPopularMoviesLoading &&
-          !isPopularTvShowsLoading &&
-          !isTopRatedMoviesLoading &&
-          !isTopRatedTvShowsLoading
-        ) {
-          console.log("All data loaded successfully");
-          setLoading(false);
-        } else {
-          console.log("Some queries are still loading");
-          setError(new Error("Not all queries completed"));
-        }
-      } catch (error) {
-        console.error("Error loading movies:", error);
-        setError(error);
-        setLoading(false); // Clear loading state even on error
+          topRatedTvShows
+        );
       }
-    };
+    }
+  }, [
+    isPopularMoviesLoading,
+    isPopularTvShowsLoading,
+    isTopRatedMoviesLoading,
+    isTopRatedTvShowsLoading,
+    popularMoviesError,
+    popularTvShowsError,
+    topRatedMoviesError,
+    topRatedTvShowsError,
+    popularMovies,
+    popularTvShows,
+    topRatedMovies,
+    topRatedTvShows,
+  ]);
 
-    loadMovies().catch((err) => {
-      console.error("loadMovies promise rejected:", err);
-      setError(err);
-      setLoading(false);
-    });
-  }, []);
   console.log(
     "Received Data:",
     popularMovies,

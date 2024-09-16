@@ -15,6 +15,7 @@ Node.js,
 MongoDB,
 Express,
 bcrypt,
+jwt,
 dotenv,
 nodemailer
 

@@ -32,55 +32,55 @@ const Main = ({ user }) => {
       },
     })
   );
-  // const {
-  //   data: popularMovies,
-  //   isLoading: isPopularMoviesLoading,
-  //   error: popularMoviesError,
-  // } = useGetPopularMoviesQuery("movieApi", {
-  //   pollingInterval: 24 * 60 * 60 * 1000,
-  // });
+  const {
+    data: popularMovies,
+    isLoading: isPopularMoviesLoading,
+    error: popularMoviesError,
+  } = useGetPopularMoviesQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
-  // const {
-  //   data: popularTvShows,
-  //   isLoading: isPopularTvShowsLoading,
-  //   error: popularTvShowsError,
-  // } = useGetPopularTvShowsQuery("movieApi", {
-  //   pollingInterval: 24 * 60 * 60 * 1000,
-  // });
-  // const {
-  //   data: topRatedMovies,
-  //   isLoading: isTopRatedMoviesLoading,
-  //   error: topRatedMoviesError,
-  // } = useGetTopRatedMoviesQuery("movieApi", {
-  //   pollingInterval: 24 * 60 * 60 * 1000,
-  // });
+  const {
+    data: popularTvShows,
+    isLoading: isPopularTvShowsLoading,
+    error: popularTvShowsError,
+  } = useGetPopularTvShowsQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
+  const {
+    data: topRatedMovies,
+    isLoading: isTopRatedMoviesLoading,
+    error: topRatedMoviesError,
+  } = useGetTopRatedMoviesQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
-  // const {
-  //   data: topRatedTvShows,
-  //   isLoading: isTopRatedTvShowsLoading,
-  //   error: topRatedTvShowsError,
-  // } = useGetTopRatedTvShowsQuery("movieApi", {
-  //   pollingInterval: 24 * 60 * 60 * 1000,
-  // });
+  const {
+    data: topRatedTvShows,
+    isLoading: isTopRatedTvShowsLoading,
+    error: topRatedTvShowsError,
+  } = useGetTopRatedTvShowsQuery("movieApi", {
+    pollingInterval: 24 * 60 * 60 * 1000,
+  });
 
-  // // useEffect(() => {
-  // //   const loadMovies = async () => {
-  // //     if (
-  // //       !isPopularMoviesLoading &&
-  // //       !isPopularTvShowsLoading &&
-  // //       !isTopRatedMoviesLoading &&
-  // //       !isTopRatedTvShowsLoading
-  // //     ) {
-  // //       setLoading(false);
-  // //     }
-  // //   };
-  // //   loadMovies();
-  // // }, [
-  // //   isPopularMoviesLoading,
-  // //   isPopularTvShowsLoading,
-  // //   isTopRatedMoviesLoading,
-  // //   isTopRatedTvShowsLoading,
-  // // ]);
+  useEffect(() => {
+    const loadMovies = async () => {
+      if (
+        !isPopularMoviesLoading &&
+        !isPopularTvShowsLoading &&
+        !isTopRatedMoviesLoading &&
+        !isTopRatedTvShowsLoading
+      ) {
+        setLoading(false);
+      }
+    };
+    loadMovies();
+  }, [
+    isPopularMoviesLoading,
+    isPopularTvShowsLoading,
+    isTopRatedMoviesLoading,
+    isTopRatedTvShowsLoading,
+  ]);
 
   // useEffect(() => {
   //   console.log("Component mounted");
@@ -123,73 +123,73 @@ const Main = ({ user }) => {
   //   isTopRatedTvShowsLoading,
   // ]);
 
-  const {
-    data: popularMovies,
-    isLoading: isPopularMoviesLoading,
-    error: popularMoviesError,
-  } = useGetPopularMoviesQuery();
+  // const {
+  //   data: popularMovies,
+  //   isLoading: isPopularMoviesLoading,
+  //   error: popularMoviesError,
+  // } = useGetPopularMoviesQuery();
 
-  const {
-    data: popularTvShows,
-    isLoading: isPopularTvShowsLoading,
-    error: popularTvShowsError,
-  } = useGetPopularTvShowsQuery();
+  // const {
+  //   data: popularTvShows,
+  //   isLoading: isPopularTvShowsLoading,
+  //   error: popularTvShowsError,
+  // } = useGetPopularTvShowsQuery();
 
-  const {
-    data: topRatedMovies,
-    isLoading: isTopRatedMoviesLoading,
-    error: topRatedMoviesError,
-  } = useGetTopRatedMoviesQuery();
+  // const {
+  //   data: topRatedMovies,
+  //   isLoading: isTopRatedMoviesLoading,
+  //   error: topRatedMoviesError,
+  // } = useGetTopRatedMoviesQuery();
 
-  const {
-    data: topRatedTvShows,
-    isLoading: isTopRatedTvShowsLoading,
-    error: topRatedTvShowsError,
-  } = useGetTopRatedTvShowsQuery();
+  // const {
+  //   data: topRatedTvShows,
+  //   isLoading: isTopRatedTvShowsLoading,
+  //   error: topRatedTvShowsError,
+  // } = useGetTopRatedTvShowsQuery();
 
-  useEffect(() => {
-    if (
-      !isPopularMoviesLoading &&
-      !isPopularTvShowsLoading &&
-      !isTopRatedMoviesLoading &&
-      !isTopRatedTvShowsLoading
-    ) {
-      if (
-        popularMoviesError ||
-        popularTvShowsError ||
-        topRatedMoviesError ||
-        topRatedTvShowsError
-      ) {
-        // Handle error state
-        setError(new Error("One or more queries failed"));
-        setLoading(false);
-      } else {
-        // Data successfully loaded
-        setError(null);
-        setLoading(false);
-        console.log(
-          "Received Data:",
-          popularMovies,
-          popularTvShows,
-          topRatedMovies,
-          topRatedTvShows
-        );
-      }
-    }
-  }, [
-    isPopularMoviesLoading,
-    isPopularTvShowsLoading,
-    isTopRatedMoviesLoading,
-    isTopRatedTvShowsLoading,
-    popularMoviesError,
-    popularTvShowsError,
-    topRatedMoviesError,
-    topRatedTvShowsError,
-    popularMovies,
-    popularTvShows,
-    topRatedMovies,
-    topRatedTvShows,
-  ]);
+  // useEffect(() => {
+  //   if (
+  //     !isPopularMoviesLoading &&
+  //     !isPopularTvShowsLoading &&
+  //     !isTopRatedMoviesLoading &&
+  //     !isTopRatedTvShowsLoading
+  //   ) {
+  //     if (
+  //       popularMoviesError ||
+  //       popularTvShowsError ||
+  //       topRatedMoviesError ||
+  //       topRatedTvShowsError
+  //     ) {
+  //       // Handle error state
+  //       setError(new Error("One or more queries failed"));
+  //       setLoading(false);
+  //     } else {
+  //       // Data successfully loaded
+  //       setError(null);
+  //       setLoading(false);
+  //       console.log(
+  //         "Received Data:",
+  //         popularMovies,
+  //         popularTvShows,
+  //         topRatedMovies,
+  //         topRatedTvShows
+  //       );
+  //     }
+  //   }
+  // }, [
+  //   isPopularMoviesLoading,
+  //   isPopularTvShowsLoading,
+  //   isTopRatedMoviesLoading,
+  //   isTopRatedTvShowsLoading,
+  //   popularMoviesError,
+  //   popularTvShowsError,
+  //   topRatedMoviesError,
+  //   topRatedTvShowsError,
+  //   popularMovies,
+  //   popularTvShows,
+  //   topRatedMovies,
+  //   topRatedTvShows,
+  // ]);
 
   console.log(
     "Received Data:",

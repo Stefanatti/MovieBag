@@ -6,7 +6,7 @@ const nodemailer = require("nodemailer");
 //const speakeasy = require("speakeasy");
 require("dotenv").config({ path: ".env" });
 
-//const appUrl = process.env.APP_URL;
+const appUrl = process.env.APP_URL;
 
 const signupUser = async (req, res) => {
   try {
@@ -129,7 +129,7 @@ const forgotPassword = async (req, res) => {
         rejectUnauthorized: false,
       },
     });
-    const resetUrl = `http://localhost:3000/reset_password/${token}`;
+    const resetUrl = `${appUrl}/reset_password/${token}`;
 
     const emailOptions = {
       from: "stekots@gmail.com",

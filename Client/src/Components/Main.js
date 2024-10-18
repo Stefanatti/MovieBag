@@ -71,7 +71,7 @@ const Main = ({ user }) => {
         !isTopRatedMoviesLoading &&
         !isTopRatedTvShowsLoading
       ) {
-        setLoading(true);
+        setLoading(false);
       }
     };
     loadMovies();

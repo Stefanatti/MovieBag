@@ -71,7 +71,7 @@ const Main = ({ user }) => {
         !isTopRatedMoviesLoading &&
         !isTopRatedTvShowsLoading
       ) {
-        setLoading(false);
+        setLoading(true);
       }
     };
     loadMovies();
@@ -88,7 +88,10 @@ const Main = ({ user }) => {
         <Box
           sx={{
             display: "flex",
+            flexDirection: "column",
             justifyContent: "center",
+            alignItems: "center",
+            gap: "20px",
           }}
         >
           <ClipLoader
@@ -99,6 +102,12 @@ const Main = ({ user }) => {
             aria-label="Loading Spinner"
             data-testid="loader"
           />
+          <StyledTitleTypography sx={{ textAlign: "center" }}>
+            {" "}
+            Please note, this may take a minute as we're fetching the latest
+            movie data for the first time.
+            <br /> Thank you for your patience!
+          </StyledTitleTypography>
         </Box>
       ) : (
         <Stack spacing={2}>

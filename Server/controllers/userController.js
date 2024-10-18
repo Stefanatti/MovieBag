@@ -187,7 +187,7 @@ const resetPassword = async (req, res) => {
 //       encoding: "base32",
 //     });
 
-//     res.send({ token }); // Send the generated OTP to the client
+//     res.send({ token });
 //   } catch (error) {
 //     console.error(error);
 //     res.status(500).send({ error: "Failed to generate OTP." });
@@ -195,7 +195,7 @@ const resetPassword = async (req, res) => {
 // };
 
 // const verifyOtp = async (req, res) => {
-//   const { userId, token } = req.body; // Assuming these are sent in the request body
+//   const { userId, token } = req.body;
 
 //   try {
 //     const verified = speakeasy.totp.verify({

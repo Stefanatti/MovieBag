@@ -1,8 +1,11 @@
 # MovieBag
-My web application is designed to provide users with comprehensive information about movies and series, sourced from an open API. Also suggests popular movies and TV shows for the current period, as well as top-rated content. Users have the ability to sign up and log in securely, thanks to authentication and authorization systems. The application allows users to search for their favorite movies and series, and store them in their personal library. Here, they can not only save their favorite shows but also rate them, providing valuable feedback.
-In addition to personal libraries, users can create watchlists for movies and series they intend to watch. This feature helps users keep track of their viewing plans and discover new content. To enhance user experience, the application includes a feature that allows users to switch between three distinct color themes. This color theme switcher adds a personalized touch, making the application more visually appealing and user-friendly.
+My web application is designed to provide users with comprehensive information about movies and series, sourced from an open API. It also suggests popular movies and TV shows for the current period, as well as top-rated content. Users can securely sign up and log in, thanks to robust authentication and authorization systems, which ensure user data is protected. If users forget their password, the application includes a "Forgot Password" feature that allows them to easily reset it.
 
-Technologies:
+The application allows users to search for their favorite movies and series and store them in their personal library. In this library, users can not only save their favorite shows but also rate them, providing valuable feedback. Additionally, users can create watchlists for movies and series they plan to watch, helping them stay organized and discover new content.
+
+To enhance the user experience, the application includes a color theme switcher that allows users to toggle between three distinct color themes. This personalized feature adds a visually appealing and user-friendly touch to the overall design.
+
+**Technologies:**
 React,
 Redux,
 MUI,
@@ -12,11 +15,13 @@ Node.js,
 MongoDB,
 Express,
 bcrypt,
-dotenv
+jwt,
+dotenv,
+nodemailer
 
 
 
-You can visit my web-app here:https://moviebag-1bhe.onrender.com  
+You can visit my web-app here: https://moviebag-1bhe.onrender.com  
 (Please note that due to the use of a free deployment platform, the initial loading of the page may take a few seconds)
 
 ![Στιγμιότυπο οθόνης (5)](https://github.com/Stefanatti/MovieBag/assets/101453394/006e1858-aff3-4507-b768-a45bc1e7eb4b)

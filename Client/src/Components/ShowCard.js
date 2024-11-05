@@ -342,9 +342,10 @@ const ShowCard = ({
                       alignItems: "center",
                       cursor: "pointer",
                     }}
+                    onClick={handleOpen}
                   >
                     <PlayCircleIcon sx={{ color: "var(--basic-color)" }} />
-                    <StyledTypography variant={"h6"} onClick={handleOpen}>
+                    <StyledTypography variant={"h6"}>
                       Play Trailer
                     </StyledTypography>
                   </Box>

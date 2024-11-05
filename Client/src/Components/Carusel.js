@@ -12,11 +12,13 @@ const Carusel = ({ data, path, error, loading }) => {
     width: "90%",
     height: "auto",
     border: "1px solid ",
-    borderRadius: "10px",
+    borderRadius: "15px",
+    boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.3)`,
     cursor: "pointer",
     transition: "transform 0.3s ease-in-out",
     "&:hover": {
       transform: "translateY(-10px)",
+      boxShadow: `0px 8px 16px rgba(0, 0, 0, 0.5)`,
     },
   });
 

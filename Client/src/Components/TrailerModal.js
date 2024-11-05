@@ -23,9 +23,10 @@ export default function TrailerModal({ open, trailer, onClose }) {
         PaperProps={{
           sx: {
             width: "80vw",
-            height: "80vh",
+            // height: "80vh",
             maxHeight: responsiveHeight,
             maxWidth: "none",
+            overflow: "hidden",
           },
         }}
       >

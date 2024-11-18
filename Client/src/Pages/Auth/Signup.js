@@ -2,6 +2,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSignInSchema } from "../../Validations/UserValidation";
 import { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,6 +17,7 @@ import {
   TextField,
   InputAdornment,
   IconButton,
+  styled,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -24,6 +27,7 @@ const fields = [
   { label: "Email", name: "email" },
   { label: "Password", name: "password" },
 ];
+
 const Signup = () => {
   const url = process.env.REACT_APP_URL;
 
@@ -34,6 +38,9 @@ const Signup = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [openInfoModal, setOpenInfoModal] = useState(false);
+  const handleOpen = () => setOpenInfoModal(true);
+  const handleClose = () => setOpenInfoModal(false);
 
   const handleClickShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);
@@ -57,17 +64,29 @@ const Signup = () => {
     resolver: yupResolver(userSignInSchema),
   });
 
-  const createUser = async (e) => {
+  const createUser = async () => {
     try {
-      const response = await axios.post(`${url}/user/signup`, formData, {});
-      console.log(response.data);
-      if (response.data.message === true) {
-        navigate("/login");
+      const response = await axios.post(`${url}/user/signup`, formData);
+
+      if (response.status === 200 || response.status === 201) {
+        toast.success(response.data.message);
+        setTimeout(() => {
+          navigate("/login");
+        }, 3000);
       } else {
-        alert(response.data.message);
+        throw new Error(`Unexpected status code: ${response.status}`);
       }
     } catch (error) {
-      console.error("Error submitting form:", error);
+      if (error.response) {
+        const { status, data } = error.response;
+        if (status === 400) {
+          toast.warning(data.message);
+        } else {
+          toast.error(`Unexpected error occurred: ${status}`);
+        }
+      } else {
+        toast.error("An unexpected error occurred. Please try again.");
+      }
       reset();
     }
   };
@@ -201,7 +220,7 @@ const Signup = () => {
                     }}
                   />
                 ))}
-
+                ;
                 <Button
                   type="submit"
                   fullWidth
@@ -215,7 +234,6 @@ const Signup = () => {
                 >
                   Sign in
                 </Button>
-
                 <Grid container>
                   <Grid item>
                     <Typography
@@ -232,6 +250,17 @@ const Signup = () => {
             </Box>
           </Grid>
         </Grid>
+        <ToastContainer
+          theme="dark"
+          toastStyle={{
+            backgroundColor: "black", // Global black background
+            color: "white", // Global white text
+          }}
+          progressStyle={{
+            backgroundColor: "var(--basic-color)", // Global progress bar style
+          }}
+          closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
+        />
       </Box>
     </Container>
   );

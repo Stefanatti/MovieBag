@@ -18,7 +18,9 @@ const signupUser = async (req, res) => {
 
     let user = await User.findOne({ email: req.body.email });
     if (user) {
-      return res.status(400).send({ message: "The user already exists" });
+      return res
+        .status(400)
+        .send({ message: "The user already exists, please try to log in!" });
     }
 
     bcrypt.hash(req.body.password, 10, async (err, hash) => {
@@ -40,7 +42,9 @@ const signupUser = async (req, res) => {
 
       try {
         await newUser.save();
-        res.status(201).send({ message: "User created successfully" });
+        res.status(201).send({
+          message: "User created successfully! Please login now!",
+        });
       } catch (saveErr) {
         console.error(saveErr);
         res

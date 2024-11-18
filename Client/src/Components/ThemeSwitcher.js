@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { themeSwich } from "../Features/theme";
 
-const ThemeSwitcher = ({ theme, setTheme }) => {
+const ThemeSwitcher = ({ setTheme }) => {
   const [moveBall, setMoveBall] = useState(0);
   const dispatch = useDispatch();
 
@@ -19,7 +19,7 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
           setMoveBall(52);
           break;
         default:
-          setMoveBall(2);
+          setMoveBall(3);
       }
     }
   }, []);
@@ -34,7 +34,7 @@ const ThemeSwitcher = ({ theme, setTheme }) => {
     <div className="switch">
       <div className="switch-radios">
         <input
-          onChange={() => handleThemeChange("", 2)}
+          onChange={() => handleThemeChange("", 3)}
           type="radio"
           name="theme-type"
           value="one"

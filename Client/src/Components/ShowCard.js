@@ -3,7 +3,6 @@ import { useState, useEffect } from "react";
 import TrailerModal from "./TrailerModal";
 import PlayCircleIcon from "@mui/icons-material/PlayCircle";
 import MouseOverPopover from "./PopOver";
-
 import {
   Grid,
   Card,

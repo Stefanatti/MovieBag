@@ -69,11 +69,11 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
         await verifyUser();
       } else {
-        alert(response.data.message);
+        throw new Error(`Unexpected status code: ${response.status}`);
       }
     } catch (error) {
       console.error("Error submitting form:", error);
-      alert(error.response.data.message);
+      toast.warning(error.response.data.message);
     }
   };
 
@@ -444,7 +444,17 @@ const Login = () => {
             )}
           </Grid>
         </Grid>
-        <ToastContainer />
+        <ToastContainer
+          theme="dark"
+          toastStyle={{
+            backgroundColor: "black", // Global black background
+            color: "white", // Global white text
+          }}
+          progressStyle={{
+            backgroundColor: "var(--basic-color)", // Global progress bar style
+          }}
+          closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
+        />
       </Box>
     </Container>
   );

@@ -17,7 +17,6 @@ import {
   TextField,
   InputAdornment,
   IconButton,
-  styled,
 } from "@mui/material";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
@@ -38,9 +37,6 @@ const Signup = () => {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [openInfoModal, setOpenInfoModal] = useState(false);
-  const handleOpen = () => setOpenInfoModal(true);
-  const handleClose = () => setOpenInfoModal(false);
 
   const handleClickShowPassword = () =>
     setShowPassword((prevShowPassword) => !prevShowPassword);

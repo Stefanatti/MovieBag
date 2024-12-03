@@ -11,14 +11,8 @@ import { useNavigate } from "react-router-dom";
 import MoviesTable from "./MoviesTable";
 import useFetchData from "../Hooks/useFetchData";
 import { getUserMovies } from "../Features/movies";
-const ShowsLibraryList = ({
-  showType,
-  itemKey,
-  removeItemFunc,
-  rateItemFunc,
-  getItemsAction,
-  filterKey,
-}) => {
+
+const ShowsLibraryList = ({ showType, filterKey }) => {
   const user = useSelector((state) => state.user.value);
   const url = process.env.REACT_APP_URL;
   const navigate = useNavigate();

@@ -14,7 +14,7 @@ function MovieLibraryFilter({ placeholder, setSearch, search }) {
     >
       <TextField
         onChange={(e) => setSearch(e.target.value)}
-        value={search}
+        value={search.toLowerCase()}
         type="text"
         placeholder={placeholder}
         aria-label="Search"

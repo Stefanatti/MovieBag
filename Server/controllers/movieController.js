@@ -17,9 +17,7 @@ const addMovie = async (req, res) => {
       owner: req.body.owner,
     });
     if (movieExists) {
-      res
-        .status(400)
-        .send({ message: "This movie already exists in your list!" });
+      res.status(400).send({ message: "This movie is already in your list!" });
     } else {
       let newMovie = new Movie(req.body);
       await newMovie.save();

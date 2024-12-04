@@ -445,6 +445,7 @@ const Login = () => {
           </Grid>
         </Grid>
         <ToastContainer
+          position="bottom-left"
           theme="dark"
           toastStyle={{
             backgroundColor: "black", // Global black background

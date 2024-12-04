@@ -6,7 +6,7 @@ const getTvShow = async (req, res) => {
     res.send(tvShows);
   } catch (err) {
     console.log(err);
-    res.status(500).send("Something went wrong");
+    res.status(500).send("Something went wrong, please try again later");
   }
 };
 
@@ -17,15 +17,17 @@ const addTvShow = async (req, res) => {
       owner: req.body.owner,
     });
     if (tvShowExists) {
-      res.status(400).send({ message: "TvShow already exists in your list." });
+      res
+        .status(400)
+        .send({ message: "This Tv Show is already in your list." });
     } else {
       let newTvShow = new TvShow(req.body);
       await newTvShow.save();
-      res.send({ message: "TvShow added to list" });
+      res.send({ message: "Tv Show added to your list" });
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send("Something went wrong");
+    res.status(500).send("Something went wrong, please try again later");
   }
 };
 
@@ -38,7 +40,9 @@ const deleteTvShow = async (req, res) => {
     res.send({ message: "Tv Show deleted" });
   } catch (err) {
     console.error(err);
-    res.status(500).send({ message: "Something went wrong" });
+    res
+      .status(500)
+      .send({ message: "Something went wrong, please try again later" });
   }
 };
 
@@ -57,7 +61,9 @@ const rateTvShow = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send({ message: "Something went wrong" });
+    res
+      .status(500)
+      .send({ message: "Something went wrong, please try again later" });
   }
 };
 

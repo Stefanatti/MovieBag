@@ -21,11 +21,11 @@ const addWatchlistMovie = async (req, res) => {
     if (watchlistMovieExists) {
       res
         .status(400)
-        .send({ message: "Movie already exists in your watchlist." });
+        .send({ message: "This movie is already in your watchlist." });
     } else {
       let newWatchlistMovie = new WatchlistMovie(req.body);
       await newWatchlistMovie.save();
-      res.send({ message: "Movie added to watchlist" });
+      res.send({ message: "Movie added to your watchlist" });
     }
   } catch (err) {
     console.log(err);

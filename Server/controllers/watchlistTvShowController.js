@@ -21,11 +21,11 @@ const addWatchlistTvShow = async (req, res) => {
     if (watchlistTvShowExists) {
       res
         .status(400)
-        .send({ message: "TvShow already exists in your watchlist." });
+        .send({ message: "This Tv Show is already in your watchlist." });
     } else {
       let newWatchlistTvShow = new WatchlistTvShow(req.body);
       await newWatchlistTvShow.save();
-      res.send({ message: "TvShow added to watchlist" });
+      res.send({ message: "Tv Show added to watchlist" });
     }
   } catch (err) {
     console.log(err);
@@ -37,9 +37,11 @@ const deleteWatchlistTvShow = async (req, res) => {
   try {
     const result = await WatchlistTvShow.deleteOne({ _id: req.params.id });
     if (result.deletedCount === 0) {
-      return res.status(404).send({ message: "TvShow not found in watchlist" });
+      return res
+        .status(404)
+        .send({ message: "Tv Show not found in watchlist" });
     }
-    res.send({ message: "TvShow deleted from watchlist" });
+    res.send({ message: "Tv Show deleted from watchlist" });
   } catch (err) {
     console.error(err);
     res.status(500).send({ message: "Something went wrong" });

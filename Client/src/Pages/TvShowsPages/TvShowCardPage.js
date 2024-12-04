@@ -155,6 +155,7 @@ const RenderTvShowCard = () => {
         )}
       </Box>
       <ToastContainer
+        position="bottom-left"
         theme="dark"
         toastStyle={{
           backgroundColor: "black",

@@ -247,6 +247,7 @@ const Signup = () => {
           </Grid>
         </Grid>
         <ToastContainer
+          position="bottom-left"
           theme="dark"
           toastStyle={{
             backgroundColor: "black",

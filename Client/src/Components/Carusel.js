@@ -9,16 +9,17 @@ const Carusel = ({ data, path, error, loading }) => {
   const navigate = useNavigate();
 
   const StyledImage = styled("img")({
-    width: "90%",
+    width: "85%",
     height: "auto",
     border: "1px solid ",
     borderRadius: "15px",
-    boxShadow: `0px 4px 8px rgba(0, 0, 0, 0.3)`,
+    boxShadow: `0px 16px 24px rgba(0, 0, 0, 0.3)`,
     cursor: "pointer",
-    transition: "transform 0.3s ease-in-out",
+    marginBottom: "50px",
+    transition: "transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out",
     "&:hover": {
-      transform: "translateY(-10px)",
-      boxShadow: `0px 8px 16px rgba(0, 0, 0, 0.5)`,
+      transform: "translateY(-10px) scale(1.05) rotate(-2deg)", // Add scaling and slight rotation
+      boxShadow: `0px 12px 24px rgba(0, 0, 0, 0.5)`, // Make the shadow more intense
     },
   });
 
@@ -72,7 +73,7 @@ const Carusel = ({ data, path, error, loading }) => {
           <Slider {...settings}>
             {data.map((data, index) => (
               <div key={index}>
-                <Box sx={{ ml: 2 }}>
+                <Box sx={{ ml: 2, paddingTop: "30px" }}>
                   <StyledImage
                     src={`https://image.tmdb.org/t/p/w500/${data.poster_path}`}
                     alt={`Slide ${index}`}

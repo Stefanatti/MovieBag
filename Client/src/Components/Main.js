@@ -83,7 +83,7 @@ const Main = ({ user }) => {
   ]);
 
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="xl">
       {loading ? (
         <Box
           sx={{
@@ -112,7 +112,7 @@ const Main = ({ user }) => {
       ) : (
         <Stack spacing={2}>
           <Box>
-            <Stack spacing={2}>
+            <Stack spacing={3}>
               <StyledTitleTypography
                 variant="h5"
                 bigfont="34px"
@@ -132,7 +132,7 @@ const Main = ({ user }) => {
           </Box>
 
           <Box>
-            <Stack spacing={2}>
+            <Stack spacing={5}>
               <StyledTitleTypography
                 variant="h5"
                 bigfont="34px"
@@ -150,7 +150,7 @@ const Main = ({ user }) => {
               </Box>
             </Stack>
           </Box>
-          <Stack spacing={1}>
+          <Stack spacing={3}>
             <Box
               sx={{
                 display: "flex",
@@ -196,7 +196,7 @@ const Main = ({ user }) => {
           </Stack>
 
           <Box>
-            <Stack spacing={2}>
+            <Stack spacing={5}>
               <StyledTitleTypography
                 variant="h5"
                 bigfont="34px"
@@ -218,7 +218,7 @@ const Main = ({ user }) => {
           <Box
             sx={{ "& .css-1p5q5e5-MuiStack-root": { marginBottom: "100px" } }}
           >
-            <Stack spacing={2}>
+            <Stack spacing={5}>
               <StyledTitleTypography
                 variant="h5"
                 bigfont="34px"

@@ -99,7 +99,7 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
             color={"var(--basic-color)"}
             className="loading"
             loading={pageloaded}
-            cssOverride={{ marginLeft: "50vw", marginTop: "10vw" }}
+            cssOverride={{ marginLeft: "35vw", marginTop: "10vw" }}
             size={50}
             aria-label="Loading Spinner"
           />

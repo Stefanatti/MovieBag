@@ -2,7 +2,8 @@ import useQueryParams from "../../Hooks/useQueryParams";
 import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { useEffect, useState } from "react";
 import HaveToSignupModal from "../../Components/HaveToSignupModal";
 import ShowCard from "../../Components/ShowCard";
@@ -84,10 +85,11 @@ const RenderTvShowCard = () => {
         .then((response) => {
           setTvShowIds([...tvShowIds, id]);
           setToggleForList(true);
+          toast.success(response.data.message);
         });
     } catch (err) {
       console.log(err);
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
     }
   };
   const AddToTvShowsWatchlist = async (
@@ -99,9 +101,9 @@ const RenderTvShowCard = () => {
     poster,
     plot
   ) => {
-    if (!watchlistTvShowsIds.includes(id)) {
-      await axios
-        .post(url + `/watchlist/tvShow/`, {
+    try {
+      if (!watchlistTvShowsIds.includes(id)) {
+        const response = await axios.post(url + `/watchlist/tvShow/`, {
           id: id,
           name: name,
           year: year,
@@ -110,14 +112,14 @@ const RenderTvShowCard = () => {
           poster: poster,
           plot: plot,
           owner: user._id,
-        })
-        .catch((err) => console.log(err));
-      // dispatch(addMovie({ id: id, title: title, director: director }));
-
-      setWatchlistTvShowsIds([...watchlistTvShowsIds, id]);
-      setToggleForWatchlist(true);
-    } else {
-      alert("This TV Show already has been added.");
+        });
+        // dispatch(addMovie({ id: id, title: title, director: director }));
+        setWatchlistTvShowsIds([...watchlistTvShowsIds, id]);
+        setToggleForWatchlist(true);
+        toast.success(response.data.message);
+      }
+    } catch (err) {
+      toast.error(err.response.data.message);
     }
   };
 
@@ -152,6 +154,17 @@ const RenderTvShowCard = () => {
           />
         )}
       </Box>
+      <ToastContainer
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+        progressStyle={{
+          backgroundColor: "var(--basic-color)",
+        }}
+        closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
+      />
       <HaveToSignupModal
         open={openHaveToSignupModal}
         onClose={() => {

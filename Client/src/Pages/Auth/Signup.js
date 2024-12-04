@@ -249,11 +249,11 @@ const Signup = () => {
         <ToastContainer
           theme="dark"
           toastStyle={{
-            backgroundColor: "black", // Global black background
-            color: "white", // Global white text
+            backgroundColor: "black",
+            color: "white",
           }}
           progressStyle={{
-            backgroundColor: "var(--basic-color)", // Global progress bar style
+            backgroundColor: "var(--basic-color)",
           }}
           closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
         />

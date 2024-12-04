@@ -17,7 +17,9 @@ const addMovie = async (req, res) => {
       owner: req.body.owner,
     });
     if (movieExists) {
-      res.status(400).send({ message: "Movie already exists in your list." });
+      res
+        .status(400)
+        .send({ message: "This movie already exists in your list!" });
     } else {
       let newMovie = new Movie(req.body);
       await newMovie.save();
@@ -25,7 +27,7 @@ const addMovie = async (req, res) => {
     }
   } catch (err) {
     console.log(err);
-    res.status(500).send("Something went wrong");
+    res.status(500).send("Sorry, something went wrong, try again later.");
   }
 };
 

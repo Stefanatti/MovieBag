@@ -8,6 +8,8 @@ import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const HaveToSignupModal = lazy(() =>
   import("../../Components/HaveToSignupModal")
 );
@@ -74,7 +76,7 @@ const RenderMovie = () => {
 
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
-      await axios.post(url + `/movie/`, {
+      const response = await axios.post(url + `/movie/`, {
         id: id,
         title: title,
         year: year,
@@ -83,10 +85,10 @@ const RenderMovie = () => {
         owner: user._id,
       });
       setMoviesIds((prevMoviesIds) => [...prevMoviesIds, id]);
+      toast.success(response.data.message);
       setToggleForList(true);
     } catch (err) {
-      console.log(err);
-      alert(err.response.data.message);
+      toast.error(err.response.data.message);
     }
   };
 
@@ -99,9 +101,9 @@ const RenderMovie = () => {
     poster,
     plot
   ) => {
-    if (!watchlistMoviesIds.includes(id)) {
-      await axios
-        .post(url + `/watchlist/movie/`, {
+    try {
+      if (!watchlistMoviesIds.includes(id)) {
+        const response = await axios.post(url + `/watchlist/movie/`, {
           id: id,
           title: title,
           year: year,
@@ -110,13 +112,17 @@ const RenderMovie = () => {
           poster: poster,
           plot: plot,
           owner: user._id,
-        })
-        .catch((err) => console.log(err));
+        });
+        setWatchlistMoviesIds((prevWatchlistMoviesIds) => [
+          ...prevWatchlistMoviesIds,
+          id,
+        ]);
+        toast.success(response.data.message);
 
-      setWatchlistMoviesIds([...watchlistMoviesIds, id]);
-      setToggleForWatchlist(true);
-    } else {
-      alert("This movie already has been added.");
+        setToggleForWatchlist(true);
+      }
+    } catch (err) {
+      toast.error(err.response.data.message);
     }
   };
 
@@ -149,6 +155,17 @@ const RenderMovie = () => {
           />
         )}
       </Box>
+      <ToastContainer
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+        progressStyle={{
+          backgroundColor: "var(--basic-color)",
+        }}
+        closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
+      />
       <Suspense>
         <HaveToSignupModal
           open={openHaveToSignupModal}

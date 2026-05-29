@@ -7,11 +7,10 @@ const watchlistMovieRooter = require("./routers/watchlistMovieRoute");
 const tvShowRooter = require("./routers/tvShowRoute");
 const watchlistTvShowRooter = require("./routers/watchlistTvShowRoute");
 const apiRooter = require("./routers/apiRoute");
-var bodyParser = require("body-parser");
 require("dotenv").config({ path: ".env" });
 
 const cors = require("cors");
-app.use(bodyParser.json());
+app.use(express.json());
 app.use(cors({ origin: "*" }));
 app.use(express.static(path.join(__dirname, "build")));
 

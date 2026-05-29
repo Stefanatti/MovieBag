@@ -123,11 +123,11 @@ const forgotPassword = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, {
       expiresIn: "10m",
     });
-    const transpoter = nodemailer.createTransport({
+    const transporter = nodemailer.createTransport({
       service: "gmail",
       auth: {
-        user: "stekots@gmail.com",
-        pass: "xokuajxnjtbeaill",
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
       tls: {
         rejectUnauthorized: false,
@@ -136,9 +136,8 @@ const forgotPassword = async (req, res) => {
     const resetUrl = `${appUrl}/reset_password/${token}`;
 
     const emailOptions = {
-      from: "stekots@gmail.com",
+      from: process.env.EMAIL_USER,
       to: req.body.email,
-      subject: "Test Email",
       subject: "Reset Password",
       html: `<h1>Reset Your Password</h1>
       <p>Click on the following link to reset your password:</p>
@@ -147,7 +146,7 @@ const forgotPassword = async (req, res) => {
       <p>If you didn't request a password reset, please ignore this email.</p>`,
     };
 
-    transpoter.sendMail(emailOptions, (err, info) => {
+    transporter.sendMail(emailOptions, (err, info) => {
       if (err) {
         return res.status(500).send({ message: err.message });
       }
@@ -165,8 +164,7 @@ const resetPassword = async (req, res) => {
     if (!decodedToken) {
       return res.status(401).send({ message: "Invalid token" });
     }
-    console.log(decodedToken);
-    const user = await User.findOne({ id: decodedToken.userId });
+    const user = await User.findOne({ _id: decodedToken.id });
     if (!user) {
       return res.status(401).send({ message: "No user found" });
     }

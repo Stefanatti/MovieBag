@@ -8,7 +8,7 @@ const MovieSchema = new mongoose.Schema({
   director: { type: String },
   date_added: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
   watched: {
     type: Boolean,

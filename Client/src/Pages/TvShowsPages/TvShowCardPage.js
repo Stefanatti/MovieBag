@@ -30,7 +30,7 @@ const RenderTvShowCard = () => {
 
   const { data: watchlistTvShowsData } = useFetchData(
     url + `/watchlist/tvShow/`,
-    user._id
+    user._id,
   );
 
   useEffect(() => {
@@ -39,12 +39,12 @@ const RenderTvShowCard = () => {
       setTvShowIds(allTvShowIds);
       if (allTvShowIds.includes(tvShowID)) setToggleForList(true);
     }
-  }, [tvShowsData]);
+  }, [tvShowsData, tvShowID]);
 
   useEffect(() => {
     if (watchlistTvShowsData) {
       const allWatchlistTvShowsIds = watchlistTvShowsData.map(
-        (value) => value.id
+        (value) => value.id,
       );
       if (allWatchlistTvShowsIds.includes(tvShowID))
         setToggleForWatchlist(true);
@@ -69,7 +69,7 @@ const RenderTvShowCard = () => {
     if (tvShowID) {
       getTvShowDetails();
     }
-  }, [tvShowID]);
+  }, [tvShowID, navigate, url]);
 
   const AddToYourTvShows = async (id, name, year, type, creator) => {
     try {
@@ -99,7 +99,7 @@ const RenderTvShowCard = () => {
     type,
     creator,
     poster,
-    plot
+    plot,
   ) => {
     try {
       if (!watchlistTvShowsIds.includes(id)) {

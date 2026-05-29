@@ -16,7 +16,6 @@ const Main = ({ user }) => {
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
 
   const StyledTitleTypography = styled(Typography)(
     ({ variant, theme, bigfont, smallfont }) => ({
@@ -30,7 +29,7 @@ const Main = ({ user }) => {
         whiteSpace: "nowrap",
         textOverflow: "ellipsis",
       },
-    })
+    }),
   );
   const {
     data: popularMovies,

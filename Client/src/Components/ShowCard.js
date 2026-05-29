@@ -60,18 +60,18 @@ const ShowCard = ({
       show.credits.crew
         .filter((obj) => obj.job === "Writer" || obj.job === "Screenplay")
         .map((writer) => writer.name)
-        .join(", ")
+        .join(", "),
     );
     setActors(
       show.credits.cast
         .map((obj) => obj.name)
         .slice(0, 4)
-        .join(", ")
+        .join(", "),
     );
     setShowYear(
       show.release_date
         ? show.release_date.slice(0, 4)
-        : show.first_air_date.slice(0, 4)
+        : show.first_air_date.slice(0, 4),
     );
     setShowRatings(show.vote_average.toFixed(1));
     setTrailer(
@@ -80,8 +80,8 @@ const ShowCard = ({
           (video.type === "Trailer" &&
             video.site === "YouTube" &&
             video.name.includes("Official")) ||
-          video.name.includes("Trailer")
-      )
+          video.name.includes("Trailer"),
+      ),
     );
   }, [show]);
 
@@ -232,14 +232,14 @@ const ShowCard = ({
                                 show.title,
                                 showYear,
                                 `movie`,
-                                director == "N/A" ? "-" : `${director.name}`
+                                director === "N/A" ? "-" : `${director.name}`,
                               )
                             : AddToYourShows(
                                 show.id,
                                 show.name,
                                 showYear,
                                 `Tv Show`,
-                                creator == "N/A" ? "-" : `${creator}`
+                                creator === "N/A" ? "-" : `${creator}`,
                               );
                         }}
                         sx={{
@@ -266,18 +266,18 @@ const ShowCard = ({
                                 show.title,
                                 showYear,
                                 `movie`,
-                                director == "N/A" ? "-" : `${director.name}`,
+                                director === "N/A" ? "-" : `${director.name}`,
                                 show.poster_path,
-                                show.overview
+                                show.overview,
                               )
                             : AddToYourWatchlist(
                                 show.id,
                                 show.name,
                                 showYear,
                                 `Tv Show`,
-                                creator == "N/A" ? "-" : `${creator}`,
+                                creator === "N/A" ? "-" : `${creator}`,
                                 show.poster_path,
-                                show.overview
+                                show.overview,
                               );
                         }}
                         sx={{

@@ -29,7 +29,7 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
 
   const { data, loading, error } = useFetchData(
     `${url}/${showType}/`,
-    user._id
+    user._id,
   );
 
   useEffect(() => {
@@ -45,11 +45,11 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
           id: fetchedItems.map((item) => item.id),
           title: fetchedItems.map((item) => item.title),
           director: fetchedItems.map((item) => item.director),
-        })
+        }),
       );
       setPageLoaded(loading);
     }
-  }, [data, error, dispatch]);
+  }, [data, error, dispatch, loading, navigate]);
 
   const removeItem = async (id) => {
     try {
@@ -63,8 +63,8 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
   const handleRatingChange = (id, stars) => {
     setItems((prevItems) =>
       prevItems.map((item) =>
-        item._id === id ? { ...item, ratings: { stars: stars } } : item
-      )
+        item._id === id ? { ...item, ratings: { stars: stars } } : item,
+      ),
     );
   };
 

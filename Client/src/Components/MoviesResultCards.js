@@ -33,7 +33,7 @@ const MoviesResultCards = ({ movies, navigate }) => {
           gap: 5,
         }}
       >
-        {movies.length != 0 ? (
+        {movies.length !== 0 ? (
           movies.map((movie) => {
             return (
               <Card
@@ -53,7 +53,7 @@ const MoviesResultCards = ({ movies, navigate }) => {
                   navigate(
                     movie.media_type === "movie"
                       ? `/movie?id=${movie.id}`
-                      : `/tvShow?id=${movie.id}`
+                      : `/tvShow?id=${movie.id}`,
                   )
                 }
               >

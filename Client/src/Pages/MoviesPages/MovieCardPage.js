@@ -10,8 +10,8 @@ import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-const HaveToSignupModal = lazy(() =>
-  import("../../Components/HaveToSignupModal")
+const HaveToSignupModal = lazy(
+  () => import("../../Components/HaveToSignupModal"),
 );
 
 const RenderMovie = () => {
@@ -24,9 +24,9 @@ const RenderMovie = () => {
   const [loading, setLoading] = useState(true);
   const [toggleForList, setToggleForList] = useState(false);
   const [toggleForWatchlist, setToggleForWatchlist] = useState(false);
-  const [moviesIds, setMoviesIds] = useState([]);
+  const [, setMoviesIds] = useState([]);
   const [watchlistMoviesIds, setWatchlistMoviesIds] = useState([]);
-  const [showRatings, setShowRatings] = useState("");
+  const [, setShowRatings] = useState("");
 
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   let user = useSelector((state) => state.user.value);
@@ -34,7 +34,7 @@ const RenderMovie = () => {
   const { data: moviesData } = useFetchData(`${url}/movie/`, user._id);
   const { data: watchlistMoviesData } = useFetchData(
     `${url}/watchlist/movie/`,
-    user._id
+    user._id,
   );
 
   useEffect(() => {
@@ -43,12 +43,12 @@ const RenderMovie = () => {
       if (allMoviesIds.includes(movieID)) setToggleForList(true);
       setMoviesIds(allMoviesIds);
     }
-  }, [moviesData]);
+  }, [moviesData, movieID]);
 
   useEffect(() => {
     if (watchlistMoviesData) {
       const allWatchlistMoviesIds = watchlistMoviesData.map(
-        (value) => value.id
+        (value) => value.id,
       );
       if (allWatchlistMoviesIds.includes(movieID)) setToggleForWatchlist(true);
       setWatchlistMoviesIds(allWatchlistMoviesIds);
@@ -72,7 +72,7 @@ const RenderMovie = () => {
     if (movieID) {
       getMovieDetails();
     }
-  }, [movieID]);
+  }, [movieID, navigate, url]);
 
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
@@ -99,7 +99,7 @@ const RenderMovie = () => {
     type,
     director,
     poster,
-    plot
+    plot,
   ) => {
     try {
       if (!watchlistMoviesIds.includes(id)) {

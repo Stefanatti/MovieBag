@@ -33,7 +33,7 @@ const ShowsWatchlist = ({ showType }) => {
 
   const { data, loading, error } = useFetchData(
     `${url}/watchlist/${showType}/`,
-    user._id
+    user._id,
   );
 
   useEffect(() => {
@@ -46,7 +46,7 @@ const ShowsWatchlist = ({ showType }) => {
       setWatchlistShows(allWatchlistShows);
       setPageLoaded(loading);
     }
-  }, [data, loading, error]);
+  }, [data, loading, error, navigate]);
 
   const displayedShows = watchlistShows.slice(startIndex, endIndex);
 
@@ -54,7 +54,7 @@ const ShowsWatchlist = ({ showType }) => {
     try {
       await axios.delete(url + `/watchlist/${showType}/${id}`);
       setWatchlistShows((watchlistShow) =>
-        watchlistShow.filter((show) => show._id !== id)
+        watchlistShow.filter((show) => show._id !== id),
       );
     } catch (error) {
       console.log(error.message);

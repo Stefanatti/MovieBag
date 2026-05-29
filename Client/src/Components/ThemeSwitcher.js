@@ -22,7 +22,7 @@ const ThemeSwitcher = ({ setTheme }) => {
           setMoveBall(3);
       }
     }
-  }, []);
+  }, [setTheme]);
 
   const handleThemeChange = (newTheme, ballPosition) => {
     setMoveBall(ballPosition);

@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import MoviesResultCards from "../Components/MoviesResultCards";
-import { useSelector } from "react-redux";
 
 const MovieSearchResult = () => {
   const url = process.env.REACT_APP_URL;
@@ -26,7 +25,7 @@ const MovieSearchResult = () => {
       .finally(() => {
         setLoading(false);
       });
-  }, [movieTitle]);
+  }, [movieTitle, url]);
   console.log(movies);
   return (
     <div>

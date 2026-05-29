@@ -6,6 +6,7 @@ const HaveToSignupModal = ({ open, onClose }) => {
         <img
           className="modal-poster"
           src={require("../images/strain_lighthouse.jpg")}
+          alt="Sign up required"
         />
 
         <h3 class="title">You have to sign up first! </h3>

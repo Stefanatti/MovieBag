@@ -12,7 +12,6 @@ import {
   TextField,
 } from "@mui/material";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
 
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -23,7 +22,6 @@ const fields = [
 ];
 
 const ResetPassword = () => {
-  const dispatch = useDispatch();
   const navigate = useNavigate();
   const url = process.env.REACT_APP_URL;
   const { token } = useParams();
@@ -36,7 +34,7 @@ const ResetPassword = () => {
   const {
     // reset,
     register,
-    handleSubmit,
+    // handleSubmit,
     formState: { errors },
   } = useForm({
     resolver: yupResolver(userLogInSchema),

@@ -1,4 +1,4 @@
-import { DeleteOutlined } from "@ant-design/icons";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
 import { useState } from "react";
@@ -51,10 +51,11 @@ const MoviesTable = ({ currentMyMovies, rateTheMovie, removeMovie, path }) => {
               <td>{myMovie.type}</td>
               <td>{myMovie.director || myMovie.creator}</td>
               <td>
-                <DeleteOutlined
+                <DeleteOutlineIcon
                   onClick={() => {
                     removeMovie(myMovie._id);
                   }}
+                  sx={{ cursor: "pointer" }}
                 />
               </td>
             </tr>

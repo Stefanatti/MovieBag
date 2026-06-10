@@ -1,4 +1,5 @@
-import { DeleteOutlined, PushpinFilled } from "@ant-design/icons";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import PushPinIcon from "@mui/icons-material/PushPin";
 import { useState } from "react";
 import Pagination from "../Components/Pagination";
 import { Container } from "@mui/material";
@@ -41,11 +42,12 @@ const MoviesTableMobile = ({
             return (
               <tr key={myMovie._id} className="trowsMobile">
                 <td className="watched-td">
-                  <PushpinFilled
+                  <PushPinIcon
                     onClick={() => {
                       watchedMovie(myMovie._id);
                     }}
                     className={myMovie.watched ? "watched" : "not-watched "}
+                    sx={{ cursor: "pointer", fontSize: 18 }}
                   />
                 </td>
                 <td
@@ -58,10 +60,11 @@ const MoviesTableMobile = ({
                 {/*<td>{myMovie.type}</td>*/}
                 {/*<td>{myMovie.director}</td>*/}
                 <td>
-                  <DeleteOutlined
+                  <DeleteOutlineIcon
                     onClick={() => {
                       removeMovie(myMovie._id);
                     }}
+                    sx={{ cursor: "pointer" }}
                   />
                 </td>
               </tr>
@@ -74,11 +77,12 @@ const MoviesTableMobile = ({
             return (
               <tr key={myMovie._id} className="trows">
                 <td className="watched-td">
-                  <PushpinFilled
+                  <PushPinIcon
                     onClick={() => {
                       watchedMovie(myMovie._id);
                     }}
                     className={myMovie.watched ? "watched" : "not-watched "}
+                    sx={{ cursor: "pointer", fontSize: 18 }}
                   />
                 </td>
                 <td
@@ -91,10 +95,11 @@ const MoviesTableMobile = ({
                 <td>{myMovie.type}</td>
                 <td>{myMovie.director}</td>
                 <td>
-                  <DeleteOutlined
+                  <DeleteOutlineIcon
                     onClick={() => {
                       removeMovie(myMovie._id);
                     }}
+                    sx={{ cursor: "pointer" }}
                   />
                 </td>
               </tr>

@@ -1,6 +1,5 @@
-import { Box, Typography } from "@mui/material";
+import { Box, Typography, Container } from "@mui/material";
 import React from "react";
-import { Container } from "react-bootstrap";
 
 const WrongPage404 = () => {
   return (

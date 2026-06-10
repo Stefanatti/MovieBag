@@ -30,7 +30,7 @@ const fields = [
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const url = process.env.REACT_APP_URL;
+  const url = process.env.REACT_APP_URL || "http://localhost:3000";
 
   const [formData, setFormData] = useState({
     username: "",
@@ -160,7 +160,7 @@ const Login = () => {
                 pauseOnHover: true,
                 draggable: true,
                 progress: undefined,
-              }
+              },
             );
         }
       } else {

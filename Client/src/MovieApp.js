@@ -1,4 +1,5 @@
 import "./MovieApp.scss";
+import { lazy, Suspense } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -6,22 +7,35 @@ import {
   Navigate,
   Outlet,
 } from "react-router-dom";
-import Home from "./Pages/Home";
-import Signup from "./Pages/Auth/Signup";
-import Login from "./Pages/Auth/Login";
-import ResetPassword from "./Pages/Auth/ResetPassword";
-import MovieSearchResult from "./Pages/SearchResults";
-import YourMoviesLibrary from "./Pages/MoviesPages/YourMoviesList";
-import YourTvShowsList from "./Pages/TvShowsPages/YourTvShowsList";
-import RenderMovie from "./Pages/MoviesPages/MovieCardPage";
-import RenderTvShowCard from "./Pages/TvShowsPages/TvShowCardPage";
 import Navbar from "./Components/Navbar";
-import WatchlistMovies from "./Pages/MoviesPages/WatchlistMovies";
-import WatchlistTvShows from "./Pages/TvShowsPages/WatchlistTvShows";
-import WrongPage404 from "./Pages/WrongPage404";
 import Footer from "./Components/Footer";
 import { useSelector } from "react-redux";
-import ErrorPage from "./Pages/ErrorPage";
+import ClipLoader from "react-spinners/ClipLoader";
+
+// Lazy-loaded pages
+const Home = lazy(() => import("./Pages/Home"));
+const Signup = lazy(() => import("./Pages/Auth/Signup"));
+const Login = lazy(() => import("./Pages/Auth/Login"));
+const ResetPassword = lazy(() => import("./Pages/Auth/ResetPassword"));
+const MovieSearchResult = lazy(() => import("./Pages/SearchResults"));
+const YourMoviesLibrary = lazy(
+  () => import("./Pages/MoviesPages/YourMoviesList"),
+);
+const YourTvShowsList = lazy(
+  () => import("./Pages/TvShowsPages/YourTvShowsList"),
+);
+const RenderMovie = lazy(() => import("./Pages/MoviesPages/MovieCardPage"));
+const RenderTvShowCard = lazy(
+  () => import("./Pages/TvShowsPages/TvShowCardPage"),
+);
+const WatchlistMovies = lazy(
+  () => import("./Pages/MoviesPages/WatchlistMovies"),
+);
+const WatchlistTvShows = lazy(
+  () => import("./Pages/TvShowsPages/WatchlistTvShows"),
+);
+const WrongPage404 = lazy(() => import("./Pages/WrongPage404"));
+const ErrorPage = lazy(() => import("./Pages/ErrorPage"));
 
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
@@ -36,29 +50,42 @@ function MovieApp() {
       <Router>
         <div>
           <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/reset_password/:token?" element={<ResetPassword />} />
-            <Route path="/yourmovies" element={<PrivateRoute />}>
-              <Route index element={<YourMoviesLibrary />} />
-            </Route>
-            <Route path="/yourTvShows" element={<PrivateRoute />}>
-              <Route index element={<YourTvShowsList />} />
-            </Route>
-            <Route path="/watchlist/movies" element={<PrivateRoute />}>
-              <Route index element={<WatchlistMovies />} />
-            </Route>
-            <Route path="/watchlist/TvShows" element={<PrivateRoute />}>
-              <Route index element={<WatchlistTvShows />} />
-            </Route>
-            <Route path="/movieSearch" element={<MovieSearchResult />} />
-            <Route path="/movie" element={<RenderMovie />} />
-            <Route path="/tvShow" element={<RenderTvShowCard />} />
-            <Route path="/*" element={<WrongPage404 />} />
-            <Route path="/error_page" element={<ErrorPage />} />
-          </Routes>
+          <Suspense
+            fallback={
+              <ClipLoader
+                color={"var(--basic-color)"}
+                cssOverride={{ display: "block", margin: "20vh auto" }}
+                size={50}
+              />
+            }
+          >
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/login" element={<Login />} />
+              <Route
+                path="/reset_password/:token?"
+                element={<ResetPassword />}
+              />
+              <Route path="/yourmovies" element={<PrivateRoute />}>
+                <Route index element={<YourMoviesLibrary />} />
+              </Route>
+              <Route path="/yourTvShows" element={<PrivateRoute />}>
+                <Route index element={<YourTvShowsList />} />
+              </Route>
+              <Route path="/watchlist/movies" element={<PrivateRoute />}>
+                <Route index element={<WatchlistMovies />} />
+              </Route>
+              <Route path="/watchlist/TvShows" element={<PrivateRoute />}>
+                <Route index element={<WatchlistTvShows />} />
+              </Route>
+              <Route path="/movieSearch" element={<MovieSearchResult />} />
+              <Route path="/movie" element={<RenderMovie />} />
+              <Route path="/tvShow" element={<RenderTvShowCard />} />
+              <Route path="/*" element={<WrongPage404 />} />
+              <Route path="/error_page" element={<ErrorPage />} />
+            </Routes>
+          </Suspense>
         </div>
       </Router>
       <Footer />

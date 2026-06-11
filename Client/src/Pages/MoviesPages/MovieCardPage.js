@@ -1,5 +1,5 @@
 import useQueryParams from "../../Hooks/useQueryParams";
-import axios from "axios";
+import api from "../../api/axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useEffect, useState } from "react";
 import ShowCard from "../../Components/ShowCard";
@@ -60,7 +60,7 @@ const RenderMovie = () => {
 
     const getMovieDetails = async () => {
       try {
-        const response = await axios.get(url + `/api/id/${movieID}`);
+        const response = await api.get(url + `/api/id/${movieID}`);
         setMovie(response.data);
       } catch (err) {
         console.log(err);
@@ -76,7 +76,7 @@ const RenderMovie = () => {
 
   const AddToYourMovies = async (id, title, year, type, director) => {
     try {
-      const response = await axios.post(url + `/movie/`, {
+      const response = await api.post(url + `/movie/`, {
         id: id,
         title: title,
         year: year,
@@ -103,7 +103,7 @@ const RenderMovie = () => {
   ) => {
     try {
       if (!watchlistMoviesIds.includes(id)) {
-        const response = await axios.post(url + `/watchlist/movie/`, {
+        const response = await api.post(url + `/watchlist/movie/`, {
           id: id,
           title: title,
           year: year,

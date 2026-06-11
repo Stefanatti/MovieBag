@@ -1,4 +1,4 @@
-import axios from "axios";
+import api from "../api/axios";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetchData from "./../Hooks/useFetchData";
@@ -52,7 +52,7 @@ const ShowsWatchlist = ({ showType }) => {
 
   const removeWatchlistShow = async (id) => {
     try {
-      await axios.delete(url + `/watchlist/${showType}/${id}`);
+      await api.delete(url + `/watchlist/${showType}/${id}`);
       setWatchlistShows((watchlistShow) =>
         watchlistShow.filter((show) => show._id !== id),
       );

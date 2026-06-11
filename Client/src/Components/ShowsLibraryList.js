@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./../Styles/YourMoviesLibrary.scss";
 
-import axios from "axios";
+import api from "../api/axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import Pagination from "./Pagination";
 import { useSelector, useDispatch } from "react-redux";
@@ -53,7 +53,7 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
 
   const removeItem = async (id) => {
     try {
-      await axios.delete(`${url}/${showType}/${id}`);
+      await api.delete(`${url}/${showType}/${id}`);
       setItems((prevItems) => prevItems.filter((item) => item._id !== id));
     } catch (error) {
       console.log(error.message);
@@ -74,7 +74,7 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
       const data = {
         stars: stars,
       };
-      await axios.put(`${url}/${showType}/rate/${id}`, data);
+      await api.put(`${url}/${showType}/rate/${id}`, data);
       // .then((response) => {
       //   console.log("Success:", response.data);
       // });

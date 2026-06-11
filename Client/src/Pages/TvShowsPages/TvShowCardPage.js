@@ -1,5 +1,5 @@
 import useQueryParams from "../../Hooks/useQueryParams";
-import axios from "axios";
+import api from "../../api/axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
@@ -57,7 +57,7 @@ const RenderTvShowCard = () => {
 
     const getTvShowDetails = async () => {
       try {
-        const response = await axios.get(url + `/api/tv/id/${tvShowID}`);
+        const response = await api.get(url + `/api/tv/id/${tvShowID}`);
         setTvShow(response.data);
       } catch (err) {
         console.log(err);
@@ -73,7 +73,7 @@ const RenderTvShowCard = () => {
 
   const AddToYourTvShows = async (id, name, year, type, creator) => {
     try {
-      await axios
+      await api
         .post(url + `/tvShow/`, {
           id: id,
           name: name,
@@ -103,7 +103,7 @@ const RenderTvShowCard = () => {
   ) => {
     try {
       if (!watchlistTvShowsIds.includes(id)) {
-        const response = await axios.post(url + `/watchlist/tvShow/`, {
+        const response = await api.post(url + `/watchlist/tvShow/`, {
           id: id,
           name: name,
           year: year,

@@ -1,6 +1,6 @@
 import "../Styles/MovieSearch.scss";
 import useQueryParams from "../Hooks/useQueryParams";
-import axios from "axios";
+import api from "../api/axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
@@ -16,7 +16,7 @@ const MovieSearchResult = () => {
 
   useEffect(() => {
     if (!movieTitle) return null;
-    axios
+    api
       .get(url + `/api/${movieTitle}`)
       .then(({ data }) => {
         setMovies(data);

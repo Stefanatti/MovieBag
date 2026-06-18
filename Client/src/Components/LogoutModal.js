@@ -1,6 +1,7 @@
 import { logout } from "../Features/user";
 import { useDispatch } from "react-redux";
 import * as React from "react";
+import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -14,14 +15,15 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 const LogoutModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
+  const url = process.env.REACT_APP_URL || "http://localhost:3000";
 
-  const logOut = () => {
-    if (localStorage.getItem("token")) {
-      localStorage.removeItem("token");
-      localStorage.removeItem("user");
-      localStorage.removeItem("id");
-      dispatch(logout());
+  const logOut = async () => {
+    try {
+      await axios.post(`${url}/user/logout`, {}, { withCredentials: true });
+    } catch (err) {
+      console.error("Logout error:", err);
     }
+    dispatch(logout());
     onClose();
   };
 

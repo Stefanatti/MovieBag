@@ -3,7 +3,8 @@ const userController = require("../controllers/userController");
 
 router.post("/signup", userController.signupUser);
 router.post("/login", userController.loginUser);
-router.post("/verify", userController.verifyUser);
+router.post("/logout", userController.logoutUser);
+router.get("/verify", userController.verifyUser);
 router.post("/forgot_password", userController.forgotPassword);
 router.post("/reset_password/:token", userController.resetPassword);
 // router.get("/generate_otp", userController.generateOtp);

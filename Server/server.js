@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const cookieParser = require("cookie-parser");
 const userRooter = require("./routers/userRoute.js");
 const movieRooter = require("./routers/movieRoute");
 const watchlistMovieRooter = require("./routers/watchlistMovieRoute");
@@ -11,7 +12,13 @@ require("dotenv").config({ path: ".env" });
 
 const cors = require("cors");
 app.use(express.json());
-app.use(cors({ origin: "*" }));
+app.use(cookieParser());
+app.use(
+  cors({
+    origin: process.env.CLIENT_URL || "http://localhost:3000",
+    credentials: true,
+  }),
+);
 app.use(express.static(path.join(__dirname, "build")));
 
 app.use("/user", userRooter);

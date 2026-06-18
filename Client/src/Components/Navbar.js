@@ -119,7 +119,10 @@ const Navbar = (props) => {
   const [theme, setTheme] = useState("other-theme");
 
   const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
+  const handleOpen = () => {
+    setOpen(true);
+    handleCloseUserMenu();
+  };
   const handleClose = () => setOpen(false);
 
   const handleDrawerToggle = () => {

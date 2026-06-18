@@ -64,10 +64,17 @@ const Login = () => {
 
   const loginUser = async () => {
     try {
-      const response = await axios.post(`${url}/user/login`, formData);
-      if (response.data.token) {
-        localStorage.setItem("token", response.data.token);
-        await verifyUser();
+      const response = await axios.post(`${url}/user/login`, formData, {
+        withCredentials: true,
+      });
+      if (response.data.user) {
+        dispatch(
+          login({
+            _id: response.data.user._id,
+            username: response.data.user.username,
+          }),
+        );
+        navigate("/");
       } else {
         throw new Error(`Unexpected status code: ${response.status}`);
       }
@@ -78,21 +85,14 @@ const Login = () => {
   };
 
   const verifyUser = async () => {
-    if (localStorage.getItem("token")) {
-      await axios
-        .post(`${url}/user/verify`, {
-          token: localStorage.getItem("token"),
-        })
-        .then(({ data }) => {
-          console.log(data);
-          localStorage.setItem("user", data.username);
-          localStorage.setItem("id", data._id);
-
-          dispatch(login({ _id: data._id, username: data.username }));
-          navigate("/");
-        })
-        .catch((err) => console.log(err));
-    } else {
+    try {
+      const response = await axios.get(`${url}/user/verify`, {
+        withCredentials: true,
+      });
+      dispatch(
+        login({ _id: response.data._id, username: response.data.username }),
+      );
+    } catch (err) {
       dispatch(logout());
     }
   };

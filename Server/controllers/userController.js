@@ -78,7 +78,16 @@ const loginUser = async (req, res) => {
           expiresIn: process.env.TOKEN_EXPIRES_IN,
         });
 
-        res.status(200).send({ token });
+        res.cookie("token", token, {
+          httpOnly: true,
+          secure: process.env.NODE_ENV === "production",
+          sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+          maxAge: 24 * 60 * 60 * 1000, // 1 day
+        });
+
+        res.status(200).send({
+          user: { _id: user._id, username: user.username },
+        });
       } else {
         res.status(401).send({ message: "Wrong password" });
       }
@@ -91,7 +100,12 @@ const loginUser = async (req, res) => {
 
 const verifyUser = async (req, res) => {
   try {
-    jwt.verify(req.body.token, process.env.TOKEN_KEY, async (err, payload) => {
+    const token = req.cookies?.token;
+    if (!token) {
+      return res.status(401).send({ message: "Session expired" });
+    }
+
+    jwt.verify(token, process.env.TOKEN_KEY, async (err, payload) => {
       if (err) {
         console.error(err);
         return res.status(401).send({ message: "Session expired" });
@@ -100,7 +114,7 @@ const verifyUser = async (req, res) => {
       if (payload) {
         let user = await User.findOne({ _id: payload.id });
         if (user) {
-          res.status(200).send(user);
+          res.status(200).send({ _id: user._id, username: user.username });
         } else {
           res.status(404).send({ message: "User not found" });
         }
@@ -112,6 +126,15 @@ const verifyUser = async (req, res) => {
     console.error(err);
     res.status(500).send({ message: "An error occurred" });
   }
+};
+
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+  });
+  res.status(200).send({ message: "Logged out successfully" });
 };
 
 const forgotPassword = async (req, res) => {
@@ -221,6 +244,7 @@ module.exports = {
   signupUser,
   loginUser,
   verifyUser,
+  logoutUser,
   forgotPassword,
   resetPassword,
   // generateOtp,

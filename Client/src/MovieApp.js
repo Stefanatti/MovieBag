@@ -1,5 +1,5 @@
 import "./MovieApp.scss";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import {
   BrowserRouter as Router,
   Route,
@@ -9,7 +9,9 @@ import {
 } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { login, logout } from "./Features/user";
+import axios from "axios";
 import ClipLoader from "react-spinners/ClipLoader";
 
 // Lazy-loaded pages
@@ -39,6 +41,26 @@ const ErrorPage = lazy(() => import("./Pages/ErrorPage"));
 
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
+  const dispatch = useDispatch();
+
+  const url = process.env.REACT_APP_URL || "http://localhost:3000";
+
+  // Verify session on app load using HttpOnly cookie
+  useEffect(() => {
+    const verifySession = async () => {
+      try {
+        const response = await axios.get(`${url}/user/verify`, {
+          withCredentials: true,
+        });
+        dispatch(
+          login({ _id: response.data._id, username: response.data.username }),
+        );
+      } catch (err) {
+        dispatch(logout());
+      }
+    };
+    verifySession();
+  }, [dispatch, url]);
 
   const PrivateRoute = ({ element, ...rest }) => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);

@@ -13,6 +13,7 @@
 
   --basic-color: rgb(255, 124, 0);
   --hover-color: rgb(249, 237, 3);
+  --modal-bg: rgba(16, 12, 12, 0.97);
   --main-card-color: linear-gradient(
     to right,
     rgba(89, 225, 87, 0.2) 0%,
@@ -48,6 +49,7 @@
 
   --basic-color: rgb(204, 32, 226);
   --hover-color: rgb(177, 15, 137);
+  --modal-bg: rgba(19, 1, 20, 0.97);
   --main-card-color: linear-gradient(
     45deg,
     rgb(0, 0, 0),
@@ -86,6 +88,7 @@
 
   --basic-color: rgb(180, 15, 3);
   --hover-color: rgb(214, 72, 72);
+  --modal-bg: rgba(20, 30, 48, 0.97);
 
   --main-card-color: linear-gradient(
     45deg,

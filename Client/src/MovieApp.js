@@ -65,6 +65,11 @@ function MovieApp() {
     verifySession();
   }, [dispatch, url]);
 
+  // Sync theme class on <body> so MUI portals (Dialogs) inherit CSS variables
+  useEffect(() => {
+    document.body.className = theme.theme || "";
+  }, [theme.theme]);
+
   const PrivateRoute = ({ element, ...rest }) => {
     const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
     return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;

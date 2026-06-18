@@ -1,20 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Card,
   Typography,
   Box,
   useMediaQuery,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogActions as MuiDialogActions,
-  Button,
   IconButton,
   Chip,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useTheme } from "@mui/material/styles";
+
+const ConfirmDialog = lazy(() => import("./ConfirmDialog"));
 
 const WatchlistCard = ({ show, removeShow }) => {
   const theme = useTheme();
@@ -203,70 +200,22 @@ const WatchlistCard = ({ show, removeShow }) => {
         </Box>
       </Card>
 
-      {/* Delete confirmation dialog */}
-      <Dialog
-        open={confirmOpen}
-        onClose={() => setConfirmOpen(false)}
-        PaperProps={{
-          sx: {
-            background: "rgba(30, 28, 28, 0.97)",
-            borderRadius: "12px",
-            border: "1px solid rgba(255,255,255,0.1)",
-            minWidth: 300,
-          },
-        }}
-      >
-        <DialogTitle
-          sx={{ color: "var(--basic-color)", fontFamily: "Limelight" }}
-        >
-          Remove from Watchlist?
-        </DialogTitle>
-        <DialogContent>
-          <Typography sx={{ color: "rgba(255,255,255,0.7)" }}>
-            Are you sure you want to remove{" "}
-            <strong style={{ color: "var(--basic-color)" }}>
-              {show.title || show.name}
-            </strong>{" "}
-            from your watchlist?
-          </Typography>
-        </DialogContent>
-        <MuiDialogActions sx={{ px: 3, pb: 2, gap: 1 }}>
-          <Button
-            onClick={() => setConfirmOpen(false)}
-            variant="outlined"
-            sx={{
-              borderColor: "var(--basic-color)",
-              color: "var(--basic-color)",
-              borderRadius: "8px",
-              textTransform: "none",
-              "&:hover": {
-                borderColor: "var(--hover-color)",
-                color: "var(--hover-color)",
-              },
-            }}
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={() => {
-              removeShow(show._id);
-              setConfirmOpen(false);
-            }}
-            variant="contained"
-            sx={{
-              backgroundColor: "var(--basic-color)",
-              borderRadius: "8px",
-              textTransform: "none",
-              color: "#fff",
-              "&:hover": {
-                backgroundColor: "var(--hover-color)",
-              },
-            }}
-          >
-            Remove
-          </Button>
-        </MuiDialogActions>
-      </Dialog>
+      {/* Lazy-loaded confirmation dialog */}
+      <Suspense fallback={null}>
+        <ConfirmDialog
+          open={confirmOpen}
+          onClose={() => setConfirmOpen(false)}
+          onConfirm={() => {
+            removeShow(show._id);
+            setConfirmOpen(false);
+          }}
+          title="Remove from Watchlist?"
+          message="Are you sure you want to remove"
+          highlightText={show.title || show.name}
+          confirmText="Remove"
+          cancelText="Cancel"
+        />
+      </Suspense>
     </>
   );
 };

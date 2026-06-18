@@ -12,7 +12,7 @@ function Footer() {
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        mt: "auto",
+        mt: 8,
         flexShrink: 0,
       }}
     >

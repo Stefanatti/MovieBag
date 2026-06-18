@@ -14,6 +14,7 @@ import {
   Box,
   styled,
   Avatar,
+  Chip,
 } from "@mui/material";
 import ListIcon from "@mui/icons-material/List";
 import PlaylistAddCheckIcon from "@mui/icons-material/PlaylistAddCheck";
@@ -124,14 +125,14 @@ const ShowCard = ({
             <CardContent>
               <Stack spacing={1}>
                 <Typography
-                  variant="h3"
+                  variant={isSmallScreen ? "h5" : "h3"}
                   component="div"
                   sx={{
                     color: "rgb(234, 204, 231)",
                     fontFamily: "Montserrat, Sans-serif",
-
                     fontWeight: 500,
                     textShadow: "0 3 10 rgba(0, 0, 0, 0.7)",
+                    wordBreak: "break-word",
                   }}
                 >
                   {show.title ? show.title : show.name}
@@ -140,27 +141,27 @@ const ShowCard = ({
                 <Box
                   sx={{
                     display: "flex",
-                    alignItems: "baseline",
-                    alignContent: "flex-end",
-                    gap: "15px",
+                    alignItems: "center",
+                    gap: { xs: 1, sm: "15px" },
+                    flexWrap: "wrap",
                   }}
                 >
                   <Avatar
                     sx={{
                       backgroundColor: "var(--basic-color)",
-                      width: 66,
-                      height: 66,
+                      width: { xs: 48, sm: 66 },
+                      height: { xs: 48, sm: 66 },
                     }}
                   >
-                    <StyledTypography variant={"h4"}>
+                    <StyledTypography variant={isSmallScreen ? "h5" : "h4"}>
                       {" "}
                       {showRatings}
                     </StyledTypography>
                   </Avatar>
-                  <StyledTypography variant={"h5"}>
+                  <StyledTypography variant={isSmallScreen ? "body1" : "h5"}>
                     {showYear}{" "}
                   </StyledTypography>
-                  <StyledTypography variant={"h5"}>
+                  <StyledTypography variant={isSmallScreen ? "body1" : "h5"}>
                     {show.runtime
                       ? `${show.runtime} min`
                       : `Seasons: ${show.number_of_seasons}`}
@@ -176,21 +177,20 @@ const ShowCard = ({
                     </a>
                   )}
                 </Box>
-                <Box sx={{ display: "flex", gap: "8px" }}>
+                <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
                   {show.genres.map((genre, index) => (
-                    <StyledTypography
+                    <Chip
                       key={index}
-                      variant={"h6"}
+                      label={genre.name}
+                      size="small"
                       sx={{
-                        listStyleType: "none",
-                        "::before": {
-                          content: '"\\2022"',
-                          marginRight: "0.5em",
-                        },
+                        backgroundColor: "rgba(255,255,255,0.1)",
+                        color: "rgb(234, 204, 231)",
+                        fontFamily: "Montserrat, sans-serif",
+                        fontSize: "0.8rem",
+                        border: "1px solid rgba(255,255,255,0.15)",
                       }}
-                    >
-                      {genre.name}
-                    </StyledTypography>
+                    />
                   ))}
                 </Box>
                 <Box>

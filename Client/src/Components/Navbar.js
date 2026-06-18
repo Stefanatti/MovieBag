@@ -1,6 +1,6 @@
 import "../Styles/Navbar.scss";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
 import ThemeSwitcher from "./ThemeSwitcher";
@@ -35,10 +35,10 @@ const LogoutModal = lazy(() => import("./LogoutModal"));
 
 const drawerWidth = 240;
 const navItems = [
-  "Your Movies",
-  "Your Tv Shows",
-  "Movies Watchlist",
-  "Tv Watchlist",
+  { label: "Your Movies", path: "/yourmovies" },
+  { label: "Your Tv Shows", path: "/yourtvshows" },
+  { label: "Movies Watchlist", path: "/watchlist/movies" },
+  { label: "Tv Watchlist", path: "/watchlist/tvshows" },
 ];
 
 const StyledNavbarButton = styled(Button)`
@@ -113,6 +113,7 @@ const Navbar = (props) => {
   let user = useSelector((state) => state.user.value);
 
   const navigate = useNavigate();
+  const location = useLocation();
   const [title, setTitle] = useState("");
   const [openHaveToSignupModal, setOpenHaveToSignupModal] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -147,12 +148,12 @@ const Navbar = (props) => {
 
   const handleItemClick = (item) => {
     if (user._id) {
-      if (item === "Your Movies") navigate(`/yourmovies`);
-      else if (item === "Your Tv Shows") navigate(`/yourtvShows`);
-      else if (item === "Movies Watchlist") navigate(`/watchlist/movies`);
-      else navigate("/watchlist/tvShows");
+      navigate(item.path);
     } else setOpenHaveToSignupModal(true);
   };
+
+  const isActive = (path) =>
+    location.pathname.toLowerCase() === path.toLowerCase();
 
   const drawer = (
     <Box onClick={handleDrawerToggle} sx={{ textAlign: "center" }}>
@@ -172,12 +173,21 @@ const Navbar = (props) => {
           <ThemeSwitcher setTheme={setTheme} theme={theme} />
         </ListItem>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
+          <ListItem key={item.label} disablePadding>
             <ListItemButton
-              sx={{ textAlign: "center", color: "var(--basic-color)" }}
+              sx={{
+                textAlign: "center",
+                color: "var(--basic-color)",
+                borderLeft: isActive(item.path)
+                  ? "3px solid var(--basic-color)"
+                  : "3px solid transparent",
+                backgroundColor: isActive(item.path)
+                  ? "rgba(255,255,255,0.05)"
+                  : "transparent",
+              }}
               onClick={() => handleItemClick(item)}
             >
-              <ListItemText primary={item} />
+              <ListItemText primary={item.label} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -259,10 +269,16 @@ const Navbar = (props) => {
             >
               {navItems.map((item) => (
                 <StyledNavbarButton
-                  key={item}
+                  key={item.label}
                   onClick={() => handleItemClick(item)}
+                  sx={{
+                    "&::after": {
+                      opacity: isActive(item.path) ? 1 : undefined,
+                    },
+                    fontWeight: isActive(item.path) ? 700 : 400,
+                  }}
                 >
-                  {item}
+                  {item.label}
                 </StyledNavbarButton>
               ))}
             </Box>

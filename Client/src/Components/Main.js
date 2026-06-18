@@ -4,11 +4,21 @@ import { useGetPopularTvShowsQuery } from "../Features/showsSlice";
 import { useGetTopRatedMoviesQuery } from "../Features/showsSlice";
 import { useGetTopRatedTvShowsQuery } from "../Features/showsSlice";
 import { useNavigate } from "react-router-dom";
-import ClipLoader from "react-spinners/ClipLoader";
-import { Typography, Container, Stack, Box, styled } from "@mui/material";
+import {
+  Typography,
+  Container,
+  Stack,
+  Box,
+  styled,
+  Skeleton,
+  Card,
+  CardActionArea,
+} from "@mui/material";
 import * as React from "react";
 import { lazy, Suspense } from "react";
 import Carusel from "./Carusel";
+import MovieIcon from "@mui/icons-material/Movie";
+import TvIcon from "@mui/icons-material/Tv";
 const HaveToSignupModal = lazy(() => import("./HaveToSignupModal"));
 
 const Main = ({ user }) => {
@@ -84,30 +94,42 @@ const Main = ({ user }) => {
   return (
     <Container maxWidth="xl">
       {loading ? (
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-            gap: "20px",
-          }}
-        >
-          <ClipLoader
-            color={"  var(--basic-color)"}
-            className="loading"
-            loading={loading}
-            size={50}
-            aria-label="Loading Spinner"
-            data-testid="loader"
-          />
-          <StyledTitleTypography sx={{ textAlign: "center" }}>
-            {" "}
-            Please note, this may take a minute as we're fetching the latest
-            movie data for the first time.
-            <br /> Thank you for your patience!
-          </StyledTitleTypography>
-        </Box>
+        <Stack spacing={4} sx={{ mt: 2 }}>
+          {[1, 2].map((section) => (
+            <Box key={section}>
+              <Skeleton
+                variant="text"
+                width={220}
+                height={45}
+                sx={{ bgcolor: "rgba(255,255,255,0.08)", borderRadius: 1 }}
+              />
+              <Box sx={{ display: "flex", gap: 2, mt: 2, overflow: "hidden" }}>
+                {[1, 2, 3, 4, 5].map((i) => (
+                  <Box key={i} sx={{ minWidth: "18%" }}>
+                    <Skeleton
+                      variant="rounded"
+                      width="100%"
+                      height={280}
+                      sx={{
+                        bgcolor: "rgba(255,255,255,0.08)",
+                        borderRadius: "12px",
+                      }}
+                    />
+                    <Skeleton
+                      variant="text"
+                      width="80%"
+                      sx={{
+                        bgcolor: "rgba(255,255,255,0.06)",
+                        mt: 1,
+                        mx: "auto",
+                      }}
+                    />
+                  </Box>
+                ))}
+              </Box>
+            </Box>
+          ))}
+        </Stack>
       ) : (
         <Stack spacing={2}>
           <Box>
@@ -153,44 +175,69 @@ const Main = ({ user }) => {
             <Box
               sx={{
                 display: "flex",
-                justifyContent: "space-evenly",
+                justifyContent: "center",
+                gap: { xs: 2, sm: 4 },
                 my: 5,
+                flexWrap: "wrap",
+                px: 2,
               }}
             >
-              <Box>
-                <StyledTitleTypography
-                  sx={{ cursor: "pointer" }}
-                  variant="h1"
-                  bigfont="72px"
-                  smallfont="32px"
-                  onClick={
-                    user._id
-                      ? () => navigate(`/yourmovies`)
-                      : () => {
-                          setOpenHaveToSignupModal(true);
-                        }
-                  }
+              {[
+                {
+                  label: "Your Movies",
+                  icon: <MovieIcon sx={{ fontSize: { xs: 40, md: 56 } }} />,
+                  route: "/yourmovies",
+                },
+                {
+                  label: "Your TV Shows",
+                  icon: <TvIcon sx={{ fontSize: { xs: 40, md: 56 } }} />,
+                  route: "/yourTvShows",
+                },
+              ].map((cta) => (
+                <Card
+                  key={cta.label}
+                  sx={{
+                    background:
+                      "linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: "16px",
+                    width: { xs: "100%", sm: 280 },
+                    maxWidth: 320,
+                    transition: "all 0.3s ease",
+                    "&:hover": {
+                      transform: "translateY(-6px)",
+                      borderColor: "var(--basic-color)",
+                      boxShadow: "0 12px 40px rgba(0,0,0,0.4)",
+                    },
+                  }}
                 >
-                  Your <br /> Movies
-                </StyledTitleTypography>
-              </Box>
-              <Box>
-                <StyledTitleTypography
-                  sx={{ cursor: "pointer" }}
-                  variant="h1"
-                  bigfont="72px"
-                  smallfont="32px"
-                  onClick={
-                    user._id
-                      ? () => navigate(`/yourTvShows`)
-                      : () => {
-                          setOpenHaveToSignupModal(true);
-                        }
-                  }
-                >
-                  Your <br /> TV Shows
-                </StyledTitleTypography>
-              </Box>
+                  <CardActionArea
+                    onClick={
+                      user._id
+                        ? () => navigate(cta.route)
+                        : () => setOpenHaveToSignupModal(true)
+                    }
+                    sx={{
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      py: { xs: 4, md: 6 },
+                      gap: 2,
+                      color: "var(--basic-color)",
+                    }}
+                  >
+                    {cta.icon}
+                    <StyledTitleTypography
+                      variant="h4"
+                      bigfont="32px"
+                      smallfont="22px"
+                      sx={{ textAlign: "center" }}
+                    >
+                      {cta.label}
+                    </StyledTitleTypography>
+                  </CardActionArea>
+                </Card>
+              ))}
             </Box>
           </Stack>
 
@@ -214,9 +261,7 @@ const Main = ({ user }) => {
             </Stack>
           </Box>
 
-          <Box
-            sx={{ "& .css-1p5q5e5-MuiStack-root": { marginBottom: "100px" } }}
-          >
+          <Box sx={{ mb: 8 }}>
             <Stack spacing={5}>
               <StyledTitleTypography
                 variant="h5"

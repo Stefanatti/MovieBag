@@ -12,7 +12,10 @@ import Footer from "./Components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "./Features/user";
 import axios from "axios";
+import { Box } from "@mui/material";
 import ClipLoader from "react-spinners/ClipLoader";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 // Lazy-loaded pages
 const Home = lazy(() => import("./Pages/Home"));
@@ -70,8 +73,8 @@ function MovieApp() {
   return (
     <div className={`App ${theme.theme}`}>
       <Router>
-        <div>
-          <Navbar />
+        <Navbar />
+        <Box component="main" sx={{ flex: 1 }}>
           <Suspense
             fallback={
               <ClipLoader
@@ -108,9 +111,21 @@ function MovieApp() {
               <Route path="/error_page" element={<ErrorPage />} />
             </Routes>
           </Suspense>
-        </div>
+        </Box>
       </Router>
       <Footer />
+      <ToastContainer
+        position="bottom-left"
+        theme="dark"
+        toastStyle={{
+          backgroundColor: "black",
+          color: "white",
+        }}
+        progressStyle={{
+          backgroundColor: "var(--basic-color)",
+        }}
+        closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
+      />
     </div>
   );
 }

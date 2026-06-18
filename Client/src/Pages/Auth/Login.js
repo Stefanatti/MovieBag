@@ -20,8 +20,7 @@ import { useNavigate } from "react-router-dom";
 import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import { login, logout } from "../../Features/user";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 const fields = [
   { label: "Username", name: "username" },
   { label: "Password", name: "password" },
@@ -444,18 +443,6 @@ const Login = () => {
             )}
           </Grid>
         </Grid>
-        <ToastContainer
-          position="bottom-left"
-          theme="dark"
-          toastStyle={{
-            backgroundColor: "black", // Global black background
-            color: "white", // Global white text
-          }}
-          progressStyle={{
-            backgroundColor: "var(--basic-color)", // Global progress bar style
-          }}
-          closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
-        />
       </Box>
     </Container>
   );

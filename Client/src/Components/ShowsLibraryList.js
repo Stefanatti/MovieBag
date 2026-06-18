@@ -3,9 +3,16 @@ import "./../Styles/YourMoviesLibrary.scss";
 
 import api from "../api/axios";
 import ClipLoader from "react-spinners/ClipLoader";
-import Pagination from "./Pagination";
 import { useSelector, useDispatch } from "react-redux";
-import { Container, Box, TableContainer } from "@mui/material";
+import {
+  Container,
+  Box,
+  TableContainer,
+  Pagination,
+  PaginationItem,
+} from "@mui/material";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import MovieLibraryFilter from "./MovieLibraryFilter";
 import { useNavigate } from "react-router-dom";
 import MoviesTable from "./MoviesTable";
@@ -125,14 +132,41 @@ const ShowsLibraryList = ({ showType, filterKey }) => {
                 removeMovie={removeItem}
               />
             </TableContainer>
-            <Pagination
-              className="down-pages"
-              style={{ marginBottom: "60px" }}
-              totalMovies={filterItems.length}
-              moviesPerPage={itemsPerPage}
-              setCurrentPage={setCurrentPage}
-              currentPage={currentPage}
-            />
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "center",
+                my: 3,
+                mb: 8,
+              }}
+            >
+              <Pagination
+                count={Math.ceil(filterItems.length / itemsPerPage)}
+                page={currentPage}
+                onChange={(e, page) => setCurrentPage(page)}
+                size="large"
+                shape="rounded"
+                boundaryCount={2}
+                renderItem={(item) => (
+                  <PaginationItem
+                    sx={{
+                      background: "var(--basic-color)",
+                      "&.Mui-selected": {
+                        background: "var(--hover-color)",
+                      },
+                    }}
+                    {...item}
+                    icon={
+                      item.type === "previous" ? (
+                        <ArrowBackIcon sx={{ cursor: "pointer" }} />
+                      ) : (
+                        <ArrowForwardIcon />
+                      )
+                    }
+                  />
+                )}
+              />
+            </Box>
           </div>
         )}
       </Box>

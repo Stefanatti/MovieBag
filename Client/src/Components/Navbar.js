@@ -291,8 +291,12 @@ const Navbar = (props) => {
             <Menu
               sx={{
                 mt: "45px",
-                "& .css-1ka5eyc-MuiPaper-root-MuiMenu-paper-MuiPopover-paper": {
-                  backgroundColor: "rgb(80 70 70 / 75%)",
+                "& .MuiPaper-root": {
+                  backgroundColor: "rgba(30, 28, 28, 0.95)",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "12px",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  minWidth: "180px",
                 },
               }}
               id="menu-appbar"
@@ -309,14 +313,57 @@ const Navbar = (props) => {
               open={Boolean(anchorElUser)}
               onClose={handleCloseUserMenu}
             >
+              {user._id && (
+                <Box
+                  sx={{
+                    px: 2,
+                    py: 1.5,
+                    borderBottom: "1px solid rgba(255,255,255,0.1)",
+                    display: "flex",
+                    alignItems: "center",
+                    gap: 1.5,
+                  }}
+                >
+                  <Avatar
+                    alt={user.username}
+                    src="/broken-image.jpg"
+                    sx={{
+                      bgcolor: "var(--basic-color)",
+                      width: 36,
+                      height: 36,
+                      fontSize: "1rem",
+                    }}
+                  />
+                  <Box>
+                    <Typography
+                      sx={{
+                        color: "#fff",
+                        fontWeight: 600,
+                        fontSize: "0.9rem",
+                        lineHeight: 1.2,
+                      }}
+                    >
+                      {user.username}
+                    </Typography>
+                    <Typography
+                      sx={{
+                        color: "var(--basic-color)",
+                        fontSize: "0.75rem",
+                      }}
+                    >
+                      Signed in
+                    </Typography>
+                  </Box>
+                </Box>
+              )}
               {user._id ? (
-                <MenuItem onClick={handleOpen}>
+                <MenuItem onClick={handleOpen} sx={{ py: 1.2 }}>
                   <Typography color="var(--basic-color)" textAlign="center">
                     Logout
                   </Typography>
                 </MenuItem>
               ) : (
-                <MenuItem onClick={() => navigate(`/login`)}>
+                <MenuItem onClick={() => navigate(`/login`)} sx={{ py: 1.2 }}>
                   <Typography color="var(--basic-color)" textAlign="center">
                     Login
                   </Typography>

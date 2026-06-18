@@ -2,8 +2,7 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { userSignInSchema } from "../../Validations/UserValidation";
 import { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import {
@@ -246,18 +245,6 @@ const Signup = () => {
             </Box>
           </Grid>
         </Grid>
-        <ToastContainer
-          position="bottom-left"
-          theme="dark"
-          toastStyle={{
-            backgroundColor: "black",
-            color: "white",
-          }}
-          progressStyle={{
-            backgroundColor: "var(--basic-color)",
-          }}
-          closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
-        />
       </Box>
     </Container>
   );

@@ -1,7 +1,6 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import { useState } from "react";
-import Pagination from "../Components/Pagination";
 import { Container } from "@mui/material";
 
 const MoviesTableMobile = ({

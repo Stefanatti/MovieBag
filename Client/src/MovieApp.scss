@@ -11,7 +11,9 @@ body {
 }
 
 .App {
-  min-height: 118vh;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   background: var(--background-app-color);
   overflow: hidden;
 }

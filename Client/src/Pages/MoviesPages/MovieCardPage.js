@@ -8,8 +8,7 @@ import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 const HaveToSignupModal = lazy(
   () => import("../../Components/HaveToSignupModal"),
 );
@@ -155,18 +154,6 @@ const RenderMovie = () => {
           />
         )}
       </Box>
-      <ToastContainer
-        position="bottom-left"
-        theme="dark"
-        toastStyle={{
-          backgroundColor: "black",
-          color: "white",
-        }}
-        progressStyle={{
-          backgroundColor: "var(--basic-color)",
-        }}
-        closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
-      />
       <Suspense>
         <HaveToSignupModal
           open={openHaveToSignupModal}

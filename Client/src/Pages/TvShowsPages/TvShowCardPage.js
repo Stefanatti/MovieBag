@@ -2,8 +2,7 @@ import useQueryParams from "../../Hooks/useQueryParams";
 import api from "../../api/axios";
 import ClipLoader from "react-spinners/ClipLoader";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+import { toast } from "react-toastify";
 import { useEffect, useState } from "react";
 import HaveToSignupModal from "../../Components/HaveToSignupModal";
 import ShowCard from "../../Components/ShowCard";
@@ -154,18 +153,6 @@ const RenderTvShowCard = () => {
           />
         )}
       </Box>
-      <ToastContainer
-        position="bottom-left"
-        theme="dark"
-        toastStyle={{
-          backgroundColor: "black",
-          color: "white",
-        }}
-        progressStyle={{
-          backgroundColor: "var(--basic-color)",
-        }}
-        closeButton={{ color: "var(--basic-color)", fontSize: "18px" }}
-      />
       <HaveToSignupModal
         open={openHaveToSignupModal}
         onClose={() => {

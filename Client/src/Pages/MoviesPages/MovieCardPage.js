@@ -73,7 +73,7 @@ const RenderMovie = () => {
     }
   }, [movieID, navigate, url]);
 
-  const AddToYourMovies = async (id, title, year, type, director) => {
+  const AddToYourMovies = async (id, title, year, type, director, poster) => {
     try {
       const response = await api.post(url + `/movie/`, {
         id: id,
@@ -81,6 +81,7 @@ const RenderMovie = () => {
         year: year,
         type: type,
         director: director,
+        poster: poster,
         owner: user._id,
       });
       setMoviesIds((prevMoviesIds) => [...prevMoviesIds, id]);

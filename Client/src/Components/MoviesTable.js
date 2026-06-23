@@ -1,67 +1,126 @@
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import StarIcon from "@mui/icons-material/Star";
 import Box from "@mui/material/Box";
 import Rating from "@mui/material/Rating";
-import { useState } from "react";
+import Tooltip from "@mui/material/Tooltip";
+import IconButton from "@mui/material/IconButton";
+import Chip from "@mui/material/Chip";
 import { useNavigate } from "react-router-dom";
 
 const MoviesTable = ({ currentMyMovies, rateTheMovie, removeMovie, path }) => {
   const navigate = useNavigate();
 
-  const [value, setValue] = useState();
   return (
-    <div className="table-container">
-      <table>
-        <thead>
-          <tr className="thead">
-            <th className="table-th">Rate</th>
-            <th className="table-th">Title</th>
-            <th className="table-th">Year</th>
-            <th className="table-th">Type</th>
-            <th className="table-th">Director</th>
-            <th className="table-th">Delete</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentMyMovies.map((myMovie) => (
-            <tr key={myMovie._id} className="trows">
-              <td className="watched-td">
-                <Box
-                  sx={{
-                    "& > legend": { mt: 1 },
-                  }}
-                >
-                  <Rating
-                    name={`movie-rating-${myMovie._id}`}
-                    size="small"
-                    value={myMovie.ratings.stars}
-                    onChange={(event, newValue) => {
-                      setValue(newValue);
-                      rateTheMovie(myMovie._id, newValue);
-                    }}
-                  />
-                </Box>
-              </td>
-              <td
+    <div className="library-table">
+      {/* Table Header */}
+      <div className="library-table__header">
+        <div className="library-table__header-cell library-table__header-cell--num">
+          #
+        </div>
+        <div className="library-table__header-cell library-table__header-cell--title">
+          Title
+        </div>
+        <div className="library-table__header-cell library-table__header-cell--year">
+          Year
+        </div>
+        <div className="library-table__header-cell library-table__header-cell--director">
+          Director
+        </div>
+        <div className="library-table__header-cell library-table__header-cell--rating">
+          Rating
+        </div>
+        <div className="library-table__header-cell library-table__header-cell--actions">
+          Actions
+        </div>
+      </div>
+
+      {/* Table Rows */}
+      <div className="library-table__body">
+        {currentMyMovies.map((myMovie, index) => (
+          <div key={myMovie._id} className="library-table__row">
+            {/* Row Number */}
+            <div className="library-table__cell library-table__cell--num">
+              <span className="library-table__index">{index + 1}</span>
+            </div>
+
+            {/* Title */}
+            <div className="library-table__cell library-table__cell--title">
+              <span
+                className="library-table__title-text"
                 onClick={() => navigate(path + `${myMovie.id}`)}
-                className="movie-title-td"
               >
                 {myMovie.title || myMovie.name}
-              </td>
-              <td>{myMovie.year}</td>
-              <td>{myMovie.type}</td>
-              <td>{myMovie.director || myMovie.creator}</td>
-              <td>
-                <DeleteOutlineIcon
-                  onClick={() => {
-                    removeMovie(myMovie._id);
+              </span>
+            </div>
+
+            {/* Year */}
+            <div className="library-table__cell library-table__cell--year">
+              <Chip
+                label={myMovie.year || "N/A"}
+                size="small"
+                variant="outlined"
+                sx={{
+                  color: "var(--table-text-color)",
+                  borderColor: "var(--table-text-color)",
+                  opacity: 0.85,
+                  fontSize: "0.75rem",
+                }}
+              />
+            </div>
+
+            {/* Director */}
+            <div className="library-table__cell library-table__cell--director">
+              <div className="library-table__director-info">
+                <span>{myMovie.director || myMovie.creator || "Unknown"}</span>
+              </div>
+            </div>
+
+            {/* Rating */}
+            <div className="library-table__cell library-table__cell--rating">
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "4px",
+                }}
+              >
+                <Rating
+                  name={`movie-rating-${myMovie._id}`}
+                  size="small"
+                  value={myMovie.ratings?.stars || 0}
+                  onChange={(event, newValue) => {
+                    rateTheMovie(myMovie._id, newValue);
                   }}
-                  sx={{ cursor: "pointer" }}
+                  emptyIcon={
+                    <StarIcon
+                      style={{ opacity: 0.3, color: "var(--basic-color)" }}
+                      fontSize="inherit"
+                    />
+                  }
+                  sx={{
+                    "& .MuiRating-iconFilled": {
+                      color: "var(--basic-color)",
+                    },
+                  }}
                 />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              </Box>
+            </div>
+
+            {/* Actions */}
+            <div className="library-table__cell library-table__cell--actions">
+              <Tooltip title="Remove from library" arrow placement="top">
+                <IconButton
+                  onClick={() => removeMovie(myMovie._id)}
+                  className="library-table__delete-btn"
+                  size="small"
+                >
+                  <DeleteOutlineIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </div>
+          </div>
+        ))}
+      </div>
     </div>
   );
 };

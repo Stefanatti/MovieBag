@@ -6,6 +6,7 @@ const TvShowSchema = new mongoose.Schema({
   year: { type: String },
   type: { type: String },
   creator: { type: String },
+  poster: { type: String },
   date_added: {
     type: Date,
     default: Date.now(),

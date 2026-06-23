@@ -70,7 +70,7 @@ const RenderTvShowCard = () => {
     }
   }, [tvShowID, navigate, url]);
 
-  const AddToYourTvShows = async (id, name, year, type, creator) => {
+  const AddToYourTvShows = async (id, name, year, type, creator, poster) => {
     try {
       await api
         .post(url + `/tvShow/`, {
@@ -79,6 +79,7 @@ const RenderTvShowCard = () => {
           year: year,
           type: type,
           creator: creator,
+          poster: poster,
           owner: user._id,
         })
         .then((response) => {

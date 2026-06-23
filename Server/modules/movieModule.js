@@ -6,6 +6,7 @@ const MovieSchema = new mongoose.Schema({
   year: { type: String },
   type: { type: String },
   director: { type: String },
+  poster: { type: String },
   date_added: {
     type: Date,
     default: Date.now,

@@ -233,6 +233,9 @@ const ShowCard = ({
                                 showYear,
                                 `movie`,
                                 director === "N/A" ? "-" : `${director.name}`,
+                                show.poster_path
+                                  ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
+                                  : null,
                               )
                             : AddToYourShows(
                                 show.id,
@@ -240,6 +243,9 @@ const ShowCard = ({
                                 showYear,
                                 `Tv Show`,
                                 creator === "N/A" ? "-" : `${creator}`,
+                                show.poster_path
+                                  ? `https://image.tmdb.org/t/p/w200${show.poster_path}`
+                                  : null,
                               );
                         }}
                         sx={{

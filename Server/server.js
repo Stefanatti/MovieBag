@@ -29,6 +29,11 @@ app.use("/watchlist/tvShow", watchlistTvShowRooter);
 
 app.use("/api", apiRooter);
 
+// Serve React frontend for any non-API route
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "build", "index.html"));
+});
+
 const PORT = process.env.PORT || 3636;
 app.listen(PORT, () => {
   console.log("App is running on port", PORT);

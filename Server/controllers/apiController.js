@@ -189,6 +189,70 @@ const searchForOneTvShow = async (req, res) => {
   }
 };
 
+const getSimilarMovies = async (req, res) => {
+  const movieId = req.params.id;
+  const cacheKey = `similar_movie_${movieId}`;
+  try {
+    const cached = cache.get(cacheKey);
+    if (cached) return res.send(cached);
+
+    const response = await fetch(
+      `${url}movie/${movieId}/recommendations?language=en-US&page=1&api_key=${apikey}`,
+      options,
+    );
+    const json = await response.json();
+    const movies = json.results
+      .filter((m) => m.poster_path)
+      .slice(0, 12)
+      .map((movie) => ({
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        vote_average: movie.vote_average,
+      }));
+
+    cache.set(cacheKey, movies, 1800);
+    res.send(movies);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching similar movies." });
+  }
+};
+
+const getSimilarTvShows = async (req, res) => {
+  const tvShowId = req.params.id;
+  const cacheKey = `similar_tvShow_${tvShowId}`;
+  try {
+    const cached = cache.get(cacheKey);
+    if (cached) return res.send(cached);
+
+    const response = await fetch(
+      `${url}tv/${tvShowId}/recommendations?language=en-US&page=1&api_key=${apikey}`,
+      options,
+    );
+    const json = await response.json();
+    const tvShows = json.results
+      .filter((s) => s.poster_path)
+      .slice(0, 12)
+      .map((show) => ({
+        id: show.id,
+        title: show.name,
+        poster_path: show.poster_path,
+        vote_average: show.vote_average,
+      }));
+
+    cache.set(cacheKey, tvShows, 1800);
+    res.send(tvShows);
+  } catch (err) {
+    console.error("error:" + err);
+    res
+      .status(500)
+      .send({ error: "An error occurred while fetching similar TV shows." });
+  }
+};
+
 module.exports = {
   searchForMoviesAndTvShows,
   searchForOneMovie,
@@ -197,4 +261,6 @@ module.exports = {
   getPopularTvShows,
   getTopRatedMovies,
   getTopRatedTvShows,
+  getSimilarMovies,
+  getSimilarTvShows,
 };

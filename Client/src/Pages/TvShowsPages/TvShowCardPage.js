@@ -9,6 +9,7 @@ import ShowCard from "../../Components/ShowCard";
 import { useSelector } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
+import SimilarShows from "../../Components/SimilarShows";
 
 const RenderTvShowCard = () => {
   const params = useQueryParams();
@@ -154,6 +155,7 @@ const RenderTvShowCard = () => {
           />
         )}
       </Box>
+      <SimilarShows showId={tvShowID} type="tv" />
       <HaveToSignupModal
         open={openHaveToSignupModal}
         onClose={() => {

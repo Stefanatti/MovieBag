@@ -9,6 +9,7 @@ import useFetchData from "../../Hooks/useFetchData";
 import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { toast } from "react-toastify";
+import SimilarShows from "../../Components/SimilarShows";
 const HaveToSignupModal = lazy(
   () => import("../../Components/HaveToSignupModal"),
 );
@@ -155,6 +156,7 @@ const RenderMovie = () => {
           />
         )}
       </Box>
+      <SimilarShows showId={movieID} type="movie" />
       <Suspense>
         <HaveToSignupModal
           open={openHaveToSignupModal}

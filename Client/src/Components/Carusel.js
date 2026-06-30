@@ -149,7 +149,7 @@ const Carusel = ({ data, path, error, loading }) => {
                   <Typography
                     sx={{
                       color: "var(--basic-color)",
-                      fontSize: "0.75rem",
+                      fontSize: "1.25rem",
                       fontWeight: 700,
                     }}
                   >

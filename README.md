@@ -163,23 +163,56 @@ The client runs on `http://localhost:3000` and the server on `http://localhost:3
 ## Community Reviews
 
 Movie and TV-show details pages display a shared reviews section above similar
-titles. Everyone can read reviews; an authenticated account is required to write
-one. Each account can publish one review per title and can edit or delete only its
-own review. Reviews accept 1-2,000 characters after trimming whitespace.
+titles. Everyone can read public reviews; private reviews are visible only to
+their author. An authenticated account is required to write a review. Each account
+can save one review per title (public or private) and can edit, delete, or change
+visibility only for its own reviews. Reviews accept 1-2,000 characters after
+trimming whitespace.
 
 - Reviews are ordered newest first, five per page.
 - Authors can mark spoilers; readers must explicitly reveal the text.
+- The editor has a **Private review (only you can see it)** choice. Public is the
+  default, and the form explicitly shows who can read the review before saving.
+- Title pages keep the author's own review visible above the public list,
+  including private reviews. Private reviews never appear in public listings or
+  their counts, even when the author is logged in.
+- The same inline editor and delete confirmation are available on title pages
+  and My Reviews. **Publish review** and **Make private** actions change
+  visibility without changing the text or spoiler setting.
 - Reviews are independent of library membership. Removing a title from a library
   does not remove its review.
 - Existing personal star ratings and TMDB scores are unchanged.
 - Only the author's ID and username are exposed, not private account fields.
 - Movies and TV shows use separate identities even when their TMDB IDs match.
 
+### My Reviews
+
+Signed-in users can open **My Reviews** (`/myreviews`) from the desktop navbar,
+mobile/tablet drawer, or account menu. This protected page shows only the current
+account's reviews across movies and TV shows, newest first, five per page.
+Each card includes the title, media type, poster, review date and text, and a
+**Public** or **Private** label. Users can edit text, spoilers and visibility,
+publish a private review, make a public review private, or delete a review
+directly on the card without leaving the page. A title link remains available.
+Spoiler reviews retain their reveal/hide controls. Failed saves retain the draft
+and its visibility choice; failed visibility changes keep the previous status.
+
+Title names and posters are fetched through the existing cached TMDB details
+endpoints, so older reviews work without a metadata backfill. Missing posters
+have a placeholder; if title details fail, the review remains visible with a
+warning and retry action. History loading failures also provide a retry action.
+
 Reviews use a new MongoDB `reviews` collection, with a unique index on
-`author + tmdbId + mediaType` and an index for title-based chronological listing.
+`author + tmdbId + mediaType`, an index for title-based chronological listing,
+and an `author + createdAt + _id` index for personal history.
 No existing library data needs migration. With Mongoose's default automatic
 index creation enabled, indexes are created when the model connects; deployments
 that disable `autoIndex` must provision these indexes before accepting reviews.
+Existing reviews without an `isPrivate` field remain public; no review backfill
+is needed. New reviews default to `isPrivate: false`. All review API responses
+use `Cache-Control: no-store` so browser/shared caches do not retain review
+responses after visibility changes. Making a review private prevents future
+public API reads; it cannot retract copies someone has already read or saved.
 
 Likes, replies, review ratings, reporting/moderation tools, and posting rate limits
 are not included in this first version. Plan moderation and abuse controls before
@@ -200,7 +233,7 @@ Client interaction tests use the existing React test tooling:
 
 ```powershell
 cd Client
-node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js
+node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js MyReviews.test.js Navbar.test.js
 ```
 
 ---
@@ -233,17 +266,26 @@ node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --r
 | POST   | `/watchlist/tvShow/`          | Add to TV show watchlist      |
 | DELETE | `/watchlist/tvShow/:id`       | Remove from TV show watchlist |
 | GET    | `/reviews/:mediaType/:tmdbId?page=1` | List public reviews, five per page |
+| GET    | `/reviews/mine?page=1`       | List the authenticated user's reviews across movies and TV, five per page |
 | GET    | `/reviews/mine/:mediaType/:tmdbId` | Get the authenticated user's review |
-| POST   | `/reviews/:mediaType/:tmdbId` | Publish a review (authentication required) |
-| PATCH  | `/reviews/:reviewId`         | Edit an owned review |
+| POST   | `/reviews/:mediaType/:tmdbId` | Create a public or private review (authentication required) |
+| PATCH  | `/reviews/:reviewId`         | Edit an owned review or change its visibility |
 | DELETE | `/reviews/:reviewId`         | Delete an owned review |
 
 Review `mediaType` is `movie` or `tv`; `tmdbId` is a positive integer represented
-as a string. POST accepts `{ "text": "...", "containsSpoilers": false }`; the
-spoiler flag is optional and defaults to `false`. PATCH accepts either or both
-fields. Author and title identity cannot be supplied or changed in the body.
-GET listing returns `{ reviews, page, total, totalPages }`; the `mine` endpoint
-returns `{ review }`, with `null` when the user has not reviewed the title.
+as a string. POST accepts
+`{ "text": "...", "containsSpoilers": false, "isPrivate": false }`; both boolean
+flags are optional and default to `false`. PATCH accepts any non-empty subset of
+these fields. For example, `{ "isPrivate": true }` makes an owned review private,
+and `{ "isPrivate": false }` publishes it without altering its content. Flags
+must be actual booleans. Author and title identity cannot be supplied or changed
+in the body.
+Both listing endpoints return `{ reviews, page, total, totalPages }`. Personal
+history includes public and private reviews and derives ownership from the
+session, not a caller-supplied user ID. Public title listings and their counts
+exclude private reviews.
+The per-title `mine/:mediaType/:tmdbId` endpoint returns `{ review }`, with
+`null` when the user has not reviewed the title.
 Creation returns HTTP 201 and `{ message, review }`; edits return
 `{ message, review }`; deletion returns `{ message }`. Duplicate reviews return
 409, invalid input 400, unauthenticated writes 401, and missing/non-owned reviews

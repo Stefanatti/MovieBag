@@ -12,6 +12,7 @@ const serializeReview = (review) => ({
   mediaType: review.mediaType,
   text: review.text,
   containsSpoilers: review.containsSpoilers,
+  isPrivate: review.isPrivate === true,
   createdAt: review.createdAt,
   updatedAt: review.updatedAt,
 });
@@ -42,10 +43,10 @@ const validateBody = (req, res, next) => {
     !body ||
     typeof body !== "object" ||
     Array.isArray(body) ||
-    Object.keys(body).some((key) => !["text", "containsSpoilers"].includes(key)) ||
+    Object.keys(body).some((key) => !["text", "containsSpoilers", "isPrivate"].includes(key)) ||
     (isUpdate && Object.keys(body).length === 0)
   ) {
-    return res.status(400).send({ message: "Provide review text and an optional spoiler flag only." });
+    return res.status(400).send({ message: "Provide review text and optional spoiler and privacy flags only." });
   }
   if (
     (!isUpdate || body.text !== undefined) &&
@@ -58,11 +59,15 @@ const validateBody = (req, res, next) => {
   if (body.containsSpoilers !== undefined && typeof body.containsSpoilers !== "boolean") {
     return res.status(400).send({ message: "The spoiler flag must be true or false." });
   }
+  if (body.isPrivate !== undefined && typeof body.isPrivate !== "boolean") {
+    return res.status(400).send({ message: "The privacy flag must be true or false." });
+  }
   req.reviewChanges = {};
   if (body.text !== undefined) req.reviewChanges.text = body.text.trim();
   if (body.containsSpoilers !== undefined) {
     req.reviewChanges.containsSpoilers = body.containsSpoilers;
   }
+  if (body.isPrivate !== undefined) req.reviewChanges.isPrivate = body.isPrivate;
   next();
 };
 
@@ -77,7 +82,7 @@ const handleError = (res, err) => {
   return res.status(500).send({ message: "Unable to process reviews. Please try again later." });
 };
 
-const getReviews = async (req, res) => {
+const listReviews = async (req, res, filter) => {
   const rawPage = req.query.page === undefined ? "1" : req.query.page;
   if (typeof rawPage !== "string" || !/^[1-9]\d*$/.test(rawPage) || !Number.isSafeInteger(Number(rawPage))) {
     return res.status(400).send({ message: "Page must be a positive integer." });
@@ -87,7 +92,6 @@ const getReviews = async (req, res) => {
   if (!Number.isSafeInteger((page - 1) * limit)) {
     return res.status(400).send({ message: "Page is too large." });
   }
-  const filter = { mediaType: req.params.mediaType, tmdbId: req.params.tmdbId };
   try {
     const [reviews, total] = await Promise.all([
       Review.find(filter)
@@ -108,6 +112,17 @@ const getReviews = async (req, res) => {
     handleError(res, err);
   }
 };
+
+const getReviews = (req, res) =>
+  listReviews(req, res, {
+    mediaType: req.params.mediaType,
+    tmdbId: req.params.tmdbId,
+    // Reviews written before privacy was introduced are public.
+    $or: [{ isPrivate: false }, { isPrivate: { $exists: false } }],
+  });
+
+const getMyReviews = (req, res) =>
+  listReviews(req, res, { author: req.user.id });
 
 const getMyReview = async (req, res) => {
   try {
@@ -134,7 +149,10 @@ const createReview = async (req, res) => {
       tmdbId: req.params.tmdbId,
     });
     await review.populate(publicAuthor);
-    res.status(201).send({ message: "Review published.", review: serializeReview(review) });
+    res.status(201).send({
+      message: review.isPrivate ? "Private review saved." : "Review published.",
+      review: serializeReview(review),
+    });
   } catch (err) {
     handleError(res, err);
   }
@@ -173,6 +191,7 @@ module.exports = {
   validateReviewId,
   validateBody,
   getReviews,
+  getMyReviews,
   getMyReview,
   createReview,
   updateReview,

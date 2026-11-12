@@ -5,20 +5,13 @@ import {
   Alert,
   Box,
   Button,
-  Checkbox,
   Chip,
   CircularProgress,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  FormControlLabel,
   Stack,
-  TextField,
   Typography,
 } from "@mui/material";
-import { toast } from "react-toastify";
 import api from "../api/axios";
+import ReviewEditor from "./ReviewEditor";
 
 const panelStyle = {
   background: "var(--main-card-color)",
@@ -36,7 +29,7 @@ const buttonStyle = {
 const errorMessage = (error, fallback) =>
   error.response?.data?.message || fallback;
 
-const ReviewItem = ({ review, userId }) => {
+export const ReviewItem = ({ review, userId }) => {
   const [showSpoilers, setShowSpoilers] = useState(false);
   const hidden = review.containsSpoilers && !showSpoilers;
 
@@ -47,6 +40,7 @@ const ReviewItem = ({ review, userId }) => {
           {review.author ? review.author.username : "Deleted user"}
         </Typography>
         {review.author?._id === userId && <Chip label="Your review" size="small" sx={{ color: "inherit" }} />}
+        <Chip label={review.isPrivate ? "Private" : "Public"} size="small" sx={{ color: "inherit", border: "1px solid var(--basic-color)" }} />
         {review.containsSpoilers && <Chip label="Contains spoilers" size="small" color="warning" />}
       </Stack>
       <Typography variant="caption" component="p" sx={{ opacity: 0.8, mb: 1 }}>
@@ -80,12 +74,7 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
   const [reload, setReload] = useState(0);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState("");
-  const [formOpen, setFormOpen] = useState(false);
-  const [text, setText] = useState("");
-  const [containsSpoilers, setContainsSpoilers] = useState(false);
-  const [formError, setFormError] = useState("");
   const [saving, setSaving] = useState(false);
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const titlePath = `/reviews/${mediaType}/${tmdbId}`;
 
   useEffect(() => {
@@ -120,66 +109,11 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
     return () => controller.abort();
   }, [titlePath, mediaType, tmdbId, page, reload, userId]);
 
-  const openForm = () => {
-    setText(myReview ? myReview.text : "");
-    setContainsSpoilers(myReview ? myReview.containsSpoilers : false);
-    setFormError("");
-    setFormOpen(true);
+  const reviewChanged = (review) => {
+    setMyReview(review);
+    setPage(1);
+    setReload((value) => value + 1);
   };
-
-  const submitReview = async (event) => {
-    event.preventDefault();
-    if (saving) return;
-    if (!text.trim() || text.trim().length > 2000) {
-      setFormError("Review text must contain 1 to 2,000 characters.");
-      return;
-    }
-    setSaving(true);
-    setFormError("");
-    try {
-      const body = { text: text.trim(), containsSpoilers };
-      const response = myReview
-        ? await api.patch(`/reviews/${myReview._id}`, body)
-        : await api.post(titlePath, body);
-      setMyReview(response.data.review);
-      setFormOpen(false);
-      setText("");
-      setContainsSpoilers(false);
-      setPage(1);
-      setReload((value) => value + 1);
-      toast.success(response.data.message);
-    } catch (error) {
-      setFormError(errorMessage(error, "Unable to save your review. Please try again."));
-      if (error.response?.status === 409 || error.response?.status === 404) {
-        setReload((value) => value + 1);
-      }
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const removeReview = async () => {
-    if (saving || !myReview) return;
-    setSaving(true);
-    setFormError("");
-    try {
-      const response = await api.delete(`/reviews/${myReview._id}`);
-      setMyReview(null);
-      setConfirmDelete(false);
-      setFormOpen(false);
-      setPage(1);
-      setReload((value) => value + 1);
-      toast.success(response.data.message);
-    } catch (error) {
-      setFormError(errorMessage(error, "Unable to delete your review. Please try again."));
-      setConfirmDelete(false);
-      if (error.response?.status === 404) setReload((value) => value + 1);
-    } finally {
-      setSaving(false);
-    }
-  };
-
-  const unavailable = loading || Boolean(loadError) || saving;
 
   return (
     <Box component="section" aria-label="Community reviews" sx={{ my: 4, color: "var(--table-text-color)" }}>
@@ -191,64 +125,24 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
           <Button component={Link} to="/login" variant="outlined" sx={buttonStyle}>
             Log in to write a review
           </Button>
-        ) : formOpen ? (
-          <Box component="form" onSubmit={submitReview}>
-            <TextField
-              label={myReview ? "Edit your review" : "Your review"}
-              value={text}
-              onChange={(event) => setText(event.target.value)}
-              multiline
-              minRows={4}
-              fullWidth
-              disabled={saving}
-              inputProps={{ maxLength: 2000 }}
-              helperText={`${text.length}/2,000 characters`}
-              sx={{
-                "& .MuiInputBase-root, & .MuiInputLabel-root, & .MuiFormHelperText-root": {
-                  color: "var(--table-text-color)",
-                },
-                "& .MuiOutlinedInput-notchedOutline": { borderColor: "var(--basic-color)" },
-                "& .MuiInputLabel-root.Mui-focused": { color: "var(--basic-color)" },
-              }}
-            />
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={containsSpoilers}
-                  onChange={(event) => setContainsSpoilers(event.target.checked)}
-                  disabled={saving}
-                  sx={{ color: "var(--basic-color)", "&.Mui-checked": { color: "var(--basic-color)" } }}
-                />
-              }
-              label="Contains spoilers"
-            />
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              <Button type="submit" variant="outlined" disabled={unavailable} sx={buttonStyle}>
-                {saving ? "Saving..." : myReview ? "Save changes" : "Publish review"}
-              </Button>
-              <Button onClick={() => { setFormOpen(false); setFormError(""); }} disabled={saving} sx={buttonStyle}>
-                Cancel
-              </Button>
-            </Stack>
-          </Box>
         ) : (
-          <Stack spacing={1}>
-            <Typography>
-              {myReview ? "You have reviewed this title." : "Share your thoughts about this title."}
-            </Typography>
-            <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-              <Button onClick={openForm} variant="outlined" disabled={unavailable} sx={buttonStyle}>
-                {myReview ? "Edit your review" : "Write a review"}
-              </Button>
-              {myReview && (
-                <Button onClick={() => setConfirmDelete(true)} disabled={unavailable} color="error">
-                  Delete your review
-                </Button>
-              )}
-            </Stack>
-          </Stack>
+          <>
+            {myReview && (
+              <Box sx={{ mb: 2 }}>
+                <ReviewItem key={`${myReview._id}:${myReview.updatedAt}`} review={myReview} userId={userId} />
+              </Box>
+            )}
+            <ReviewEditor
+              review={myReview}
+              tmdbId={tmdbId}
+              mediaType={mediaType}
+              disabled={loading || Boolean(loadError)}
+              onChange={reviewChanged}
+              onSavingChange={setSaving}
+              onStale={() => setReload((value) => value + 1)}
+            />
+          </>
         )}
-        {formError && <Alert severity="error" sx={{ mt: 2 }}>{formError}</Alert>}
       </Box>
       {loading ? (
         <Box role="status" sx={{ textAlign: "center", py: 3 }}>
@@ -264,10 +158,14 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
       ) : (
         <>
           <Stack spacing={2}>
-            {data.reviews.map((review) => (
+            {data.reviews.filter((review) => review._id !== myReview?._id).map((review) => (
               <ReviewItem key={`${review._id}:${review.updatedAt}`} review={review} userId={userId} />
             ))}
-            {data.total === 0 && <Typography>No reviews yet. Be the first to share your thoughts!</Typography>}
+            {data.total === 0 && (
+              <Typography>
+                {myReview ? "No public reviews yet." : "No reviews yet. Be the first to share your thoughts!"}
+              </Typography>
+            )}
           </Stack>
           {data.totalPages > 1 && (
             <Stack direction="row" spacing={2} alignItems="center" justifyContent="center" sx={{ mt: 2 }}>
@@ -282,21 +180,6 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
           )}
         </>
       )}
-      <Dialog
-        open={confirmDelete}
-        onClose={() => { if (!saving) setConfirmDelete(false); }}
-        aria-labelledby="delete-review-title"
-        PaperProps={{ sx: panelStyle }}
-      >
-        <DialogTitle id="delete-review-title">Delete your review?</DialogTitle>
-        <DialogContent>This cannot be undone.</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setConfirmDelete(false)} disabled={saving} sx={buttonStyle}>Cancel</Button>
-          <Button onClick={removeReview} disabled={saving} color="error">
-            {saving ? "Deleting..." : "Delete review"}
-          </Button>
-        </DialogActions>
-      </Dialog>
     </Box>
   );
 };

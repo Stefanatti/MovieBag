@@ -123,7 +123,7 @@ test("logged-in users publish trimmed text and a spoiler flag without sending an
   api.post.mockResolvedValue({ data: { review: ownReview, message: "Review published." } });
   mockReviews([ownReview], ownReview);
   fireEvent.click(screen.getByRole("button", { name: "Publish review" }));
-  await waitFor(() => expect(api.post).toHaveBeenCalledWith("/reviews/tv/123", { text: "Excellent show!", containsSpoilers: true }));
+  await waitFor(() => expect(api.post).toHaveBeenCalledWith("/reviews/tv/123", { text: "Excellent show!", containsSpoilers: true, isPrivate: false }));
   expect(await screen.findByRole("button", { name: "Edit your review" })).toBeInTheDocument();
   await waitFor(() => expect(screen.getByRole("button", { name: "Edit your review" })).toBeEnabled());
   expect(toast.success).toHaveBeenCalledWith("Review published.");
@@ -149,7 +149,7 @@ test("blank and overlong reviews are rejected while the 2,000-character boundary
     fireEvent.click(screen.getByRole("button", { name: "Publish review" }));
   });
   await waitFor(() => expect(api.post).toHaveBeenCalledWith("/reviews/movie/123", {
-    text: "x".repeat(2000), containsSpoilers: false,
+    text: "x".repeat(2000), containsSpoilers: false, isPrivate: false,
   }));
   await waitFor(() => expect(screen.getByRole("button", { name: "Edit your review" })).toBeEnabled());
 });
@@ -184,7 +184,7 @@ test("own reviews can be edited even when they are not on the visible page", asy
     fireEvent.click(screen.getByRole("button", { name: "Save changes" }));
   });
   await waitFor(() => expect(api.patch).toHaveBeenCalledWith(`/reviews/${review._id}`, {
-    text: "Updated review", containsSpoilers: false,
+    text: "Updated review", containsSpoilers: false, isPrivate: false,
   }));
   expect(api.post).not.toHaveBeenCalled();
   await waitFor(() => expect(screen.getByText("Page 1 of 2")).toBeInTheDocument());
@@ -254,10 +254,10 @@ test("pagination recovers when the last page disappears after another user's del
   api.get.mockImplementation((path, options) => Promise.resolve(
     options.params.page === 2 ? page([], 5, 1) : page([review], 5, 1),
   ));
-  fireEvent.click(screen.getByRole("button", { name: "Next" }));
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Next" })));
   await waitFor(() => expect(api.get).toHaveBeenLastCalledWith("/reviews/movie/123", expect.objectContaining({ params: { page: 1 } })));
   expect(await screen.findByText(review.text)).toBeInTheDocument();
-  expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument();
+  await waitFor(() => expect(screen.queryByRole("button", { name: "Next" })).not.toBeInTheDocument());
 });
 
 test("changing titles clears drafts and requests the correct media type", async () => {
@@ -283,4 +283,65 @@ test("logging out clears the private form", async () => {
   expect(screen.queryByRole("textbox")).not.toBeInTheDocument();
   expect(screen.getByRole("link", { name: /log in to write a review/i })).toBeInTheDocument();
   await screen.findByText(/no reviews yet/i);
+});
+
+test("a private review can be created on a title page without entering the public list or count", async () => {
+  const ownReview = { ...review, author: { _id: userId, username: "Me" }, text: "Only my notes", isPrivate: true };
+  renderReviews();
+  await waitFor(() => expect(screen.getByRole("button", { name: "Write a review" })).toBeEnabled());
+  fireEvent.click(screen.getByRole("button", { name: "Write a review" }));
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Only my notes" } });
+  fireEvent.click(screen.getByRole("checkbox", { name: "Private review (only you can see it)" }));
+  expect(screen.getByText("Only you can read this review.")).toBeInTheDocument();
+  api.post.mockResolvedValue({ data: { review: ownReview, message: "Private review saved." } });
+  mockReviews([], ownReview, 0);
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Save private review" })));
+  expect(api.post).toHaveBeenCalledWith("/reviews/movie/123", {
+    text: "Only my notes", containsSpoilers: false, isPrivate: true,
+  });
+  expect(screen.getByText("Private")).toBeInTheDocument();
+  expect(screen.getByText("Only my notes")).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "Community reviews (0)" })).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "Edit your review" })).toBeEnabled();
+});
+
+test("title-page owners can publish and privatize a review while refreshing the public count", async () => {
+  const ownReview = { ...review, author: { _id: userId, username: "Me" }, isPrivate: true };
+  mockReviews([], ownReview, 0);
+  renderReviews();
+  await waitFor(() => expect(screen.getByRole("button", { name: "Publish review" })).toBeEnabled());
+  const published = { ...ownReview, isPrivate: false };
+  api.patch.mockResolvedValueOnce({ data: { review: published, message: "Review updated." } });
+  mockReviews([published], published, 1);
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Publish review" })));
+  expect(api.patch).toHaveBeenLastCalledWith(`/reviews/${review._id}`, { isPrivate: false });
+  expect(screen.getByRole("heading", { name: "Community reviews (1)" })).toBeInTheDocument();
+  expect(screen.getByText("Public")).toBeInTheDocument();
+  expect(screen.getAllByText(review.text)).toHaveLength(1);
+  api.patch.mockResolvedValueOnce({ data: { review: ownReview, message: "Review updated." } });
+  mockReviews([], ownReview, 0);
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Make private" })));
+  expect(api.patch).toHaveBeenLastCalledWith(`/reviews/${review._id}`, { isPrivate: true });
+  expect(screen.getByRole("heading", { name: "Community reviews (0)" })).toBeInTheDocument();
+  expect(screen.getByText("Private")).toBeInTheDocument();
+});
+
+test("private title-page edits preserve visibility and retain drafts and checkbox values on failure", async () => {
+  const ownReview = { ...review, author: { _id: userId, username: "Me" }, isPrivate: true };
+  mockReviews([], ownReview);
+  renderReviews();
+  await waitFor(() => expect(screen.getByRole("button", { name: "Edit your review" })).toBeEnabled());
+  fireEvent.click(screen.getByRole("button", { name: "Edit your review" }));
+  const privacy = screen.getByRole("checkbox", { name: "Private review (only you can see it)" });
+  expect(privacy).toBeChecked();
+  fireEvent.change(screen.getByRole("textbox"), { target: { value: "Updated private notes" } });
+  api.patch.mockRejectedValueOnce({ response: { status: 500, data: { message: "Try again later." } } });
+  await act(async () => fireEvent.click(screen.getByRole("button", { name: "Save changes" })));
+  expect(api.patch).toHaveBeenCalledWith(`/reviews/${review._id}`, {
+    text: "Updated private notes", containsSpoilers: false, isPrivate: true,
+  });
+  expect(screen.getByRole("alert")).toHaveTextContent("Try again later.");
+  expect(screen.getByRole("textbox")).toHaveValue("Updated private notes");
+  expect(privacy).toBeChecked();
+  expect(toast.success).not.toHaveBeenCalled();
 });

@@ -39,6 +39,7 @@ const navItems = [
   { label: "Your Tv Shows", path: "/yourtvshows" },
   { label: "Movies Watchlist", path: "/watchlist/movies" },
   { label: "Tv Watchlist", path: "/watchlist/tvshows" },
+  { label: "My Reviews", path: "/myreviews" },
 ];
 
 const StyledNavbarButton = styled(Button)`
@@ -213,7 +214,7 @@ const Navbar = (props) => {
                 mr: 2,
                 // marginRight: "73%",
                 display: {
-                  lg: "none",
+                  xl: "none",
                 },
                 color: "var(--basic-color)",
               }}
@@ -262,7 +263,8 @@ const Navbar = (props) => {
                   xs: "none",
                   sm: "none",
                   md: "none",
-                  lg: "block",
+                  lg: "none",
+                  xl: "block",
                   flexGrow: "1",
                 },
               }}
@@ -290,7 +292,7 @@ const Navbar = (props) => {
                 gap: "15px",
               }}
             >
-              <Hidden lgDown>
+              <Hidden xlDown>
                 <ThemeSwitcher setTheme={setTheme} theme={theme} />
               </Hidden>
             </Box>
@@ -371,6 +373,17 @@ const Navbar = (props) => {
                     </Typography>
                   </Box>
                 </Box>
+              )}
+              {user._id && (
+                <MenuItem
+                  onClick={() => {
+                    handleCloseUserMenu();
+                    navigate("/myreviews");
+                  }}
+                  sx={{ py: 1.2 }}
+                >
+                  <Typography color="var(--basic-color)">My Reviews</Typography>
+                </MenuItem>
               )}
               {user._id ? (
                 <MenuItem onClick={handleOpen} sx={{ py: 1.2 }}>

@@ -41,6 +41,7 @@ const WatchlistTvShows = lazy(
 );
 const WrongPage404 = lazy(() => import("./Pages/WrongPage404"));
 const ErrorPage = lazy(() => import("./Pages/ErrorPage"));
+const MyReviews = lazy(() => import("./Pages/MyReviews"));
 
 function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
@@ -102,6 +103,9 @@ function MovieApp() {
               </Route>
               <Route path="/yourTvShows" element={<PrivateRoute />}>
                 <Route index element={<YourTvShowsList />} />
+              </Route>
+              <Route path="/myreviews" element={<PrivateRoute />}>
+                <Route index element={<MyReviews />} />
               </Route>
               <Route path="/watchlist/movies" element={<PrivateRoute />}>
                 <Route index element={<WatchlistMovies />} />

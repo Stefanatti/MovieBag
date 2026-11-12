@@ -14,6 +14,7 @@ A full-stack web application for discovering, tracking, and rating movies & TV s
 - **Personal Library** — Add movies and TV shows to your personal collection
 - **Watchlist** — Bookmark titles you want to watch later
 - **Star Ratings** — Rate every title in your library (1–5 stars)
+- **Community Reviews** — Read public movie/TV reviews; publish, edit, or delete your own, with spoiler hiding
 - **Trailers** — Watch YouTube trailers directly in the app
 - **Authentication** — Secure signup/login with JWT & HttpOnly cookies
 - **Password Reset** — Email-based password recovery via Nodemailer
@@ -159,6 +160,51 @@ The client runs on `http://localhost:3000` and the server on `http://localhost:3
 
 ---
 
+## Community Reviews
+
+Movie and TV-show details pages display a shared reviews section above similar
+titles. Everyone can read reviews; an authenticated account is required to write
+one. Each account can publish one review per title and can edit or delete only its
+own review. Reviews accept 1-2,000 characters after trimming whitespace.
+
+- Reviews are ordered newest first, five per page.
+- Authors can mark spoilers; readers must explicitly reveal the text.
+- Reviews are independent of library membership. Removing a title from a library
+  does not remove its review.
+- Existing personal star ratings and TMDB scores are unchanged.
+- Only the author's ID and username are exposed, not private account fields.
+- Movies and TV shows use separate identities even when their TMDB IDs match.
+
+Reviews use a new MongoDB `reviews` collection, with a unique index on
+`author + tmdbId + mediaType` and an index for title-based chronological listing.
+No existing library data needs migration. With Mongoose's default automatic
+index creation enabled, indexes are created when the model connects; deployments
+that disable `autoIndex` must provision these indexes before accepting reviews.
+
+Likes, replies, review ratings, reporting/moderation tools, and posting rate limits
+are not included in this first version. Plan moderation and abuse controls before
+a wider public rollout.
+
+### Review tests
+
+Backend tests use Node's built-in test runner (Node 18.8+; Node 22 recommended):
+
+```powershell
+cd Server
+npm test
+```
+
+They exercise the real Express routes, JWT middleware and Mongoose validation
+with mocked database operations; they do not connect to or change a database.
+Client interaction tests use the existing React test tooling:
+
+```powershell
+cd Client
+node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js
+```
+
+---
+
 ## 📡 API Endpoints
 
 | Method | Endpoint                      | Description                   |
@@ -186,6 +232,22 @@ The client runs on `http://localhost:3000` and the server on `http://localhost:3
 | GET    | `/watchlist/tvShow/:userId`   | Get TV show watchlist         |
 | POST   | `/watchlist/tvShow/`          | Add to TV show watchlist      |
 | DELETE | `/watchlist/tvShow/:id`       | Remove from TV show watchlist |
+| GET    | `/reviews/:mediaType/:tmdbId?page=1` | List public reviews, five per page |
+| GET    | `/reviews/mine/:mediaType/:tmdbId` | Get the authenticated user's review |
+| POST   | `/reviews/:mediaType/:tmdbId` | Publish a review (authentication required) |
+| PATCH  | `/reviews/:reviewId`         | Edit an owned review |
+| DELETE | `/reviews/:reviewId`         | Delete an owned review |
+
+Review `mediaType` is `movie` or `tv`; `tmdbId` is a positive integer represented
+as a string. POST accepts `{ "text": "...", "containsSpoilers": false }`; the
+spoiler flag is optional and defaults to `false`. PATCH accepts either or both
+fields. Author and title identity cannot be supplied or changed in the body.
+GET listing returns `{ reviews, page, total, totalPages }`; the `mine` endpoint
+returns `{ review }`, with `null` when the user has not reviewed the title.
+Creation returns HTTP 201 and `{ message, review }`; edits return
+`{ message, review }`; deletion returns `{ message }`. Duplicate reviews return
+409, invalid input 400, unauthenticated writes 401, and missing/non-owned reviews
+404.
 
 ---
 

@@ -8,6 +8,7 @@ const watchlistMovieRooter = require("./routers/watchlistMovieRoute");
 const tvShowRooter = require("./routers/tvShowRoute");
 const watchlistTvShowRooter = require("./routers/watchlistTvShowRoute");
 const apiRooter = require("./routers/apiRoute");
+const reviewRouter = require("./routers/reviewRoute");
 require("dotenv").config({ path: ".env" });
 
 const cors = require("cors");
@@ -28,6 +29,7 @@ app.use("/tvShow", tvShowRooter);
 app.use("/watchlist/tvShow", watchlistTvShowRooter);
 
 app.use("/api", apiRooter);
+app.use("/reviews", reviewRouter);
 
 // Serve React frontend for any non-API route
 app.get("*", (req, res) => {

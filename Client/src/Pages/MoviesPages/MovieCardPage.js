@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { lazy, Suspense } from "react";
 import { toast } from "react-toastify";
 import SimilarShows from "../../Components/SimilarShows";
+import ReviewSection from "../../Components/ReviewSection";
 const HaveToSignupModal = lazy(
   () => import("../../Components/HaveToSignupModal"),
 );
@@ -156,6 +157,9 @@ const RenderMovie = () => {
           />
         )}
       </Box>
+      {!loading && String(movie.id) === movieID && (
+        <ReviewSection tmdbId={movieID} mediaType="movie" />
+      )}
       <SimilarShows showId={movieID} type="movie" />
       <Suspense>
         <HaveToSignupModal

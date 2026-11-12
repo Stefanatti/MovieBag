@@ -10,6 +10,7 @@ import { useSelector } from "react-redux";
 import { Container, Box } from "@mui/material";
 import useFetchData from "../../Hooks/useFetchData";
 import SimilarShows from "../../Components/SimilarShows";
+import ReviewSection from "../../Components/ReviewSection";
 
 const RenderTvShowCard = () => {
   const params = useQueryParams();
@@ -155,6 +156,9 @@ const RenderTvShowCard = () => {
           />
         )}
       </Box>
+      {!loading && String(tvShow.id) === tvShowID && (
+        <ReviewSection tmdbId={tvShowID} mediaType="tv" />
+      )}
       <SimilarShows showId={tvShowID} type="tv" />
       <HaveToSignupModal
         open={openHaveToSignupModal}

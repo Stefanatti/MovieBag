@@ -11,6 +11,7 @@ A full-stack web application for discovering, tracking, and rating movies & TV s
 ## ✨ Features
 
 - **Search & Discover** — Search for any movie or TV show using TMDB's extensive database
+- **Cinematic Home Page** — A rotating hero of trending titles, quick links to your library, and a masonry **Discover** wall of popular and top-rated movies and TV shows
 - **Personal Library** — Add movies and TV shows to your personal collection
 - **Watchlist** — Bookmark titles you want to watch later, then press **Watched it** to move a title into Your Movies or Your Tv Shows
 - **Star Ratings** — Rate every title in your library (1–5 stars)
@@ -38,7 +39,7 @@ A full-stack web application for discovering, tracking, and rating movies & TV s
 | React Hook Form + Yup         | Form handling & validation |
 | SCSS / CSS Variables          | Styling & theming          |
 | React Toastify                | Toast notifications        |
-| React Slick                   | Carousel/slider            |
+| React Slick                   | Similar-titles carousel    |
 | React YouTube                 | Embedded trailers          |
 
 ### Backend
@@ -160,6 +161,26 @@ The client runs on `http://localhost:3000` and the server on `http://localhost:3
 
 ---
 
+## Home Page
+
+- **Hero** — Up to five trending movies and TV shows rotate every 8 seconds with
+  backdrop art, rating, year and a short overview. It pauses on hover, keyboard
+  focus or the pause button, and does not auto-rotate when the system asks for
+  reduced motion.
+- **Quick access** — Signed-in users get one-click links to Your Movies, Your TV
+  Shows, Watchlist and My Reviews; guests see a sign-up invitation.
+- **Discover wall** — A masonry grid (2–6 columns depending on screen width) that
+  mixes posters with wide backdrop tiles. Switch between **Popular** and **Top
+  rated**, filter by **All / Movies / TV Shows**, and press **Show more** to load
+  the next 20 titles. Tiles stay in reading order for keyboard and screen-reader
+  users.
+
+The home list endpoints return `title`, `id`, `poster_path`, `backdrop_path`,
+`vote_average`, `overview` and `year` for each title. TMDB list data is no longer
+persisted in the browser's local storage, so it is always fetched fresh.
+
+---
+
 ## Community Reviews
 
 Movie and TV-show details pages display a shared reviews section above similar
@@ -233,7 +254,7 @@ Client interaction tests use the existing React test tooling:
 
 ```powershell
 cd Client
-node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js MyReviews.test.js Navbar.test.js ShowsWatchlist.test.js
+node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js MyReviews.test.js Navbar.test.js ShowsWatchlist.test.js Main.test.js MasonryGrid.test.js
 ```
 
 ---
@@ -251,6 +272,10 @@ node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --r
 | GET    | `/api/search/:query`          | Search movies/shows           |
 | GET    | `/api/id/:id`                 | Get movie details             |
 | GET    | `/api/tv/id/:id`              | Get TV show details           |
+| GET    | `/api/popular`                | Popular movies (home page)    |
+| GET    | `/api/top_rated`              | Top-rated movies (home page)  |
+| GET    | `/api/tv/popular`             | Popular TV shows (home page)  |
+| GET    | `/api/tv/top_rated`           | Top-rated TV shows (home page)|
 | GET    | `/movie/:userId`              | Get user's movie library      |
 | POST   | `/movie/`                     | Add movie to library          |
 | DELETE | `/movie/:id`                  | Remove movie                  |

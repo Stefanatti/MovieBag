@@ -13,6 +13,17 @@ const options = {
   method: "GET",
 };
 
+// Shape TMDB list results for the home page (hero + discover wall).
+const toHomeItem = (item) => ({
+  title: item.title || item.name,
+  id: item.id,
+  poster_path: item.poster_path,
+  backdrop_path: item.backdrop_path || null,
+  vote_average: item.vote_average,
+  overview: item.overview || "",
+  year: (item.release_date || item.first_air_date || "").slice(0, 4),
+});
+
 const searchForMoviesAndTvShows = async (req, res) => {
   try {
     const query = req.params.search;
@@ -49,11 +60,7 @@ const getPopularMovies = async (req, res) => {
       options,
     );
     const json = await response.json();
-    const movies = json.results.map((movie) => ({
-      title: movie.title,
-      id: movie.id,
-      poster_path: movie.poster_path,
-    }));
+    const movies = json.results.map(toHomeItem);
 
     cache.set("popularMovies", movies);
     res.send(movies);
@@ -75,11 +82,7 @@ const getTopRatedMovies = async (req, res) => {
       options,
     );
     const json = await response.json();
-    const movies = json.results.map((movie) => ({
-      title: movie.title,
-      id: movie.id,
-      poster_path: movie.poster_path,
-    }));
+    const movies = json.results.map(toHomeItem);
 
     cache.set("topRatedMovies", movies);
     res.send(movies);
@@ -101,11 +104,7 @@ const getPopularTvShows = async (req, res) => {
       options,
     );
     const json = await response.json();
-    const tvShows = json.results.map((tvShow) => ({
-      title: tvShow.name,
-      id: tvShow.id,
-      poster_path: tvShow.poster_path,
-    }));
+    const tvShows = json.results.map(toHomeItem);
 
     cache.set("popularTvShows", tvShows);
     res.send(tvShows);
@@ -127,11 +126,7 @@ const getTopRatedTvShows = async (req, res) => {
       options,
     );
     const json = await response.json();
-    const tvShows = json.results.map((tvShow) => ({
-      title: tvShow.name,
-      id: tvShow.id,
-      poster_path: tvShow.poster_path,
-    }));
+    const tvShows = json.results.map(toHomeItem);
 
     cache.set("topRatedTvShows", tvShows);
     res.send(tvShows);
@@ -263,4 +258,5 @@ module.exports = {
   getTopRatedTvShows,
   getSimilarMovies,
   getSimilarTvShows,
+  toHomeItem,
 };

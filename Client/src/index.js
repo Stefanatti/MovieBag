@@ -24,6 +24,8 @@ const rootReducer = combineReducers({
 const persistConfig = {
   key: "root",
   storage,
+  // RTK Query manages its own cache; persisting it would serve stale API data.
+  blacklist: [movieApi.reducerPath],
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);

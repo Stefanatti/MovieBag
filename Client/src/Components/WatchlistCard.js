@@ -7,13 +7,16 @@ import {
   useMediaQuery,
   IconButton,
   Chip,
+  Button,
+  CircularProgress,
 } from "@mui/material";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useTheme } from "@mui/material/styles";
 
 const ConfirmDialog = lazy(() => import("./ConfirmDialog"));
 
-const WatchlistCard = ({ show, removeShow }) => {
+const WatchlistCard = ({ show, removeShow, markWatched, marking = false }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const navigate = useNavigate();
@@ -197,6 +200,36 @@ const WatchlistCard = ({ show, removeShow }) => {
           >
             {show.year}
           </Typography>
+          {markWatched && (
+            <Button
+              size="small"
+              variant="outlined"
+              disabled={marking}
+              onClick={() => markWatched(show._id)}
+              startIcon={
+                marking ? (
+                  <CircularProgress size={14} color="inherit" />
+                ) : (
+                  <CheckCircleOutlineIcon />
+                )
+              }
+              aria-label={`Mark ${show.title || show.name} as watched and add to Your ${show.type === "movie" ? "Movies" : "Tv Shows"}`}
+              sx={{
+                mt: 0.8,
+                textTransform: "none",
+                fontSize: "0.75rem",
+                color: "var(--basic-color)",
+                borderColor: "rgba(255,255,255,0.15)",
+                "&:hover": {
+                  borderColor: "var(--basic-color)",
+                  backgroundColor: "rgba(255,255,255,0.05)",
+                },
+                "&.Mui-disabled": { color: "rgba(255,255,255,0.4)" },
+              }}
+            >
+              {marking ? "Moving..." : "Watched it"}
+            </Button>
+          )}
         </Box>
       </Card>
 

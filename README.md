@@ -12,7 +12,7 @@ A full-stack web application for discovering, tracking, and rating movies & TV s
 
 - **Search & Discover** — Search for any movie or TV show using TMDB's extensive database
 - **Personal Library** — Add movies and TV shows to your personal collection
-- **Watchlist** — Bookmark titles you want to watch later
+- **Watchlist** — Bookmark titles you want to watch later, then press **Watched it** to move a title into Your Movies or Your Tv Shows
 - **Star Ratings** — Rate every title in your library (1–5 stars)
 - **Community Reviews** — Read public movie/TV reviews; publish, edit, or delete your own, with spoiler hiding
 - **Trailers** — Watch YouTube trailers directly in the app
@@ -218,7 +218,7 @@ Likes, replies, review ratings, reporting/moderation tools, and posting rate lim
 are not included in this first version. Plan moderation and abuse controls before
 a wider public rollout.
 
-### Review tests
+### Tests
 
 Backend tests use Node's built-in test runner (Node 18.8+; Node 22 recommended):
 
@@ -233,7 +233,7 @@ Client interaction tests use the existing React test tooling:
 
 ```powershell
 cd Client
-node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js MyReviews.test.js Navbar.test.js
+node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --runInBand ReviewSection.test.js MyReviews.test.js Navbar.test.js ShowsWatchlist.test.js
 ```
 
 ---
@@ -262,9 +262,11 @@ node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --r
 | GET    | `/watchlist/movie/:userId`    | Get movie watchlist           |
 | POST   | `/watchlist/movie/`           | Add to movie watchlist        |
 | DELETE | `/watchlist/movie/:id`        | Remove from movie watchlist   |
+| POST   | `/watchlist/movie/:id/watched` | Move your watchlist movie into Your Movies (no duplicates) |
 | GET    | `/watchlist/tvShow/:userId`   | Get TV show watchlist         |
 | POST   | `/watchlist/tvShow/`          | Add to TV show watchlist      |
 | DELETE | `/watchlist/tvShow/:id`       | Remove from TV show watchlist |
+| POST   | `/watchlist/tvShow/:id/watched` | Move your watchlist TV show into Your Tv Shows (no duplicates) |
 | GET    | `/reviews/:mediaType/:tmdbId?page=1` | List public reviews, five per page |
 | GET    | `/reviews/mine?page=1`       | List the authenticated user's reviews across movies and TV, five per page |
 | GET    | `/reviews/mine/:mediaType/:tmdbId` | Get the authenticated user's review |

@@ -8,6 +8,11 @@ router.get(
   watchlistTvShowController.getWatchlistTvShows,
 );
 router.post("/", authMiddleware, watchlistTvShowController.addWatchlistTvShow);
+router.post(
+  "/:id/watched",
+  authMiddleware,
+  watchlistTvShowController.markWatchlistTvShowWatched,
+);
 router.delete(
   "/:id",
   authMiddleware,

@@ -1,4 +1,6 @@
 const WatchlistTvShow = require("../modules/watchlistTvShowModule");
+const TvShow = require("../modules/tvShowModule");
+const markWatched = require("./markWatched");
 
 const getWatchlistTvShows = async (req, res) => {
   try {
@@ -48,8 +50,16 @@ const deleteWatchlistTvShow = async (req, res) => {
   }
 };
 
+const markWatchlistTvShowWatched = markWatched({
+  Watchlist: WatchlistTvShow,
+  Library: TvShow,
+  fields: ["id", "name", "year", "type", "creator", "poster"],
+  label: "Tv Show",
+});
+
 module.exports = {
   getWatchlistTvShows,
   addWatchlistTvShow,
   deleteWatchlistTvShow,
+  markWatchlistTvShowWatched,
 };

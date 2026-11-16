@@ -1,4 +1,6 @@
 const WatchlistMovie = require("../modules/watchlistMovieModule");
+const Movie = require("../modules/movieModule");
+const markWatched = require("./markWatched");
 
 const getWatchlistMovies = async (req, res) => {
   try {
@@ -46,8 +48,16 @@ const deleteWatchlistMovie = async (req, res) => {
   }
 };
 
+const markWatchlistMovieWatched = markWatched({
+  Watchlist: WatchlistMovie,
+  Library: Movie,
+  fields: ["id", "title", "year", "type", "director", "poster"],
+  label: "Movie",
+});
+
 module.exports = {
   getWatchlistMovies,
   addWatchlistMovie,
   deleteWatchlistMovie,
+  markWatchlistMovieWatched,
 };

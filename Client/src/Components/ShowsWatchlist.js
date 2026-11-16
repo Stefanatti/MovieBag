@@ -1,5 +1,5 @@
 import api from "../api/axios";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetchData from "./../Hooks/useFetchData";
 import { useSelector } from "react-redux";
@@ -13,6 +13,9 @@ import {
   Box,
   Skeleton,
   Chip,
+  Snackbar,
+  Alert,
+  Button,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
@@ -51,6 +54,48 @@ const ShowsWatchlist = ({ showType }) => {
   }, [data, loading, error, navigate]);
 
   const displayedShows = watchlistShows.slice(startIndex, endIndex);
+  const pageCount = Math.max(1, Math.ceil(watchlistShows.length / showsPerPage));
+
+  useEffect(() => {
+    if (page > pageCount) setPage(pageCount);
+  }, [page, pageCount]);
+
+  const [markingIds, setMarkingIds] = useState([]);
+  const markingRef = useRef(new Set());
+  const [feedback, setFeedback] = useState(null);
+  const libraryLabel = showType === "movie" ? "Your Movies" : "Your Tv Shows";
+  const libraryPath = showType === "movie" ? "/yourmovies" : "/yourTvShows";
+
+  const markShowWatched = async (id) => {
+    if (markingRef.current.has(id)) return;
+    markingRef.current.add(id);
+    setMarkingIds((ids) => [...ids, id]);
+    try {
+      const { data: result } = await api.post(
+        `${url}/watchlist/${showType}/${id}/watched`,
+      );
+      setWatchlistShows((shows) => shows.filter((show) => show._id !== id));
+      setFeedback({
+        severity: "success",
+        message: result?.alreadyInLibrary
+          ? `Already in ${libraryLabel}, removed from your watchlist.`
+          : `Moved to ${libraryLabel}.`,
+      });
+    } catch (error) {
+      if (error.response?.status === 404) {
+        setWatchlistShows((shows) => shows.filter((show) => show._id !== id));
+      }
+      setFeedback({
+        severity: "error",
+        message:
+          error.response?.data?.message ||
+          "Could not move this title. Please try again.",
+      });
+    } finally {
+      markingRef.current.delete(id);
+      setMarkingIds((ids) => ids.filter((markingId) => markingId !== id));
+    }
+  };
 
   const removeWatchlistShow = async (id) => {
     try {
@@ -177,6 +222,8 @@ const ShowsWatchlist = ({ showType }) => {
                     <WatchlistCard
                       show={show}
                       removeShow={removeWatchlistShow}
+                      markWatched={markShowWatched}
+                      marking={markingIds.includes(show._id)}
                     />
                   </Grid>
                 ))}
@@ -229,6 +276,37 @@ const ShowsWatchlist = ({ showType }) => {
           )}
         </>
       )}
+      <Snackbar
+        open={Boolean(feedback)}
+        autoHideDuration={5000}
+        onClose={(event, reason) => {
+          if (reason !== "clickaway") setFeedback(null);
+        }}
+        anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+      >
+        {feedback ? (
+          <Alert
+            severity={feedback.severity}
+            variant="filled"
+            onClose={() => setFeedback(null)}
+            action={
+              feedback.severity === "success" ? (
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={() => navigate(libraryPath)}
+                >
+                  View
+                </Button>
+              ) : undefined
+            }
+          >
+            {feedback.message}
+          </Alert>
+        ) : (
+          <span />
+        )}
+      </Snackbar>
     </Container>
   );
 };

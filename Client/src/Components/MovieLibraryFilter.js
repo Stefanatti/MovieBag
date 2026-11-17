@@ -1,38 +1,40 @@
 import React from "react";
 import Box from "@mui/material/Box";
 import TextField from "@mui/material/TextField";
+import InputAdornment from "@mui/material/InputAdornment";
+import IconButton from "@mui/material/IconButton";
+import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 
 function MovieLibraryFilter({ placeholder, setSearch, search }) {
   return (
-    <Box
-      component="form"
-      sx={{
-        "& > :not(style)": { m: 1, width: "25ch" },
-      }}
-      noValidate
-      autoComplete="off"
-    >
+    <Box className="collection-search">
       <TextField
+        className="collection-search__field"
+        fullWidth
+        label={placeholder}
         onChange={(e) => setSearch(e.target.value)}
-        value={search.toLowerCase()}
-        type="text"
-        placeholder={placeholder}
-        aria-label="Search"
-        title="Type in a name"
+        value={search}
+        type="search"
+        placeholder="Filter your collection"
         InputProps={{
-          style: {
-            color: "var(--basic-color)",
-            border: "2px solid var(--basic-color)",
-          },
-          sx: {
-            "&:hover fieldset": {
-              border: "2px solid var(--basic-color)",
-              borderRadius: 0,
-            },
-            "&:focus-within fieldset, &:focus-visible fieldset": {
-              border: "2px solid var(--basic-color)!important",
-            },
-          },
+          startAdornment: (
+            <InputAdornment position="start">
+              <SearchRoundedIcon aria-hidden="true" />
+            </InputAdornment>
+          ),
+          endAdornment: search && (
+            <InputAdornment position="end">
+              <IconButton
+                aria-label={`Clear ${placeholder.toLowerCase()}`}
+                onClick={() => setSearch("")}
+                edge="end"
+                size="small"
+              >
+                <CloseRoundedIcon fontSize="small" />
+              </IconButton>
+            </InputAdornment>
+          ),
         }}
       />
     </Box>

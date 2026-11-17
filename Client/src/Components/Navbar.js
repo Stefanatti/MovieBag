@@ -1,5 +1,5 @@
 import "../Styles/Navbar.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { styled, alpha } from "@mui/material/styles";
@@ -81,11 +81,12 @@ const Search = styled("form")(({ theme }) => ({
   },
 }));
 
-const SearchIconWrapper = styled("div")(({ theme }) => ({
+const SearchIconButton = styled(IconButton)(({ theme }) => ({
   padding: theme.spacing(0, 2),
   height: "100%",
   position: "absolute",
-  pointerEvents: "none",
+  left: 0,
+  top: 0,
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
@@ -121,6 +122,15 @@ const Navbar = (props) => {
   const [theme, setTheme] = useState("other-theme");
 
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (location.pathname.toLowerCase() === "/moviesearch") {
+      setTitle(new URLSearchParams(location.search).get("title") || "");
+    } else {
+      setTitle("");
+    }
+  }, [location.pathname, location.search]);
+
   const handleOpen = () => {
     setOpen(true);
     handleCloseUserMenu();
@@ -141,10 +151,12 @@ const Navbar = (props) => {
 
   const getTitle = (e) => {
     e.preventDefault();
-    if (title !== "") {
-      navigate(`/MovieSearch?title=${title}`);
-      setTitle("");
-    }
+    const query = title.trim();
+    if (!query) return;
+
+    const params = new URLSearchParams({ title: query });
+    navigate(`/movieSearch?${params.toString()}`);
+    setTitle("");
   };
 
   const handleItemClick = (item) => {
@@ -242,9 +254,9 @@ const Navbar = (props) => {
               component="form"
               onSubmit={getTitle}
             >
-              <SearchIconWrapper>
-                <SearchIcon onClick={getTitle} />
-              </SearchIconWrapper>
+              <SearchIconButton type="submit" aria-label="Submit search">
+                <SearchIcon aria-hidden="true" />
+              </SearchIconButton>
               <StyledInputBase
                 type="text"
                 value={title}
@@ -252,7 +264,7 @@ const Navbar = (props) => {
                   setTitle(e.target.value);
                 }}
                 placeholder="Search for a movie or Tv show…"
-                inputProps={{ "aria-label": "search" }}
+                inputProps={{ "aria-label": "Search movies and TV shows" }}
               />
             </Search>
           </Box>

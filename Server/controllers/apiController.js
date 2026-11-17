@@ -31,17 +31,28 @@ const searchForMoviesAndTvShows = async (req, res) => {
     const cached = cache.get(cacheKey);
     if (cached) return res.send(cached);
 
+    const searchParams = new URLSearchParams({
+      query,
+      api_key: apikey,
+    });
     const response = await fetch(
-      `${url}search/multi?query=${query}&api_key=${apikey}`,
+      `${url}search/multi?${searchParams.toString()}`,
       options,
     );
+    if (!response.ok) {
+      throw new Error(`TMDB search failed with status ${response.status}`);
+    }
+
     const json = await response.json();
-    const sortedResults = json.results.sort(
-      (a, b) => b.vote_count - a.vote_count,
+    if (!Array.isArray(json.results)) {
+      throw new Error("TMDB search response did not contain a results list");
+    }
+    const results = json.results.filter(
+      (item) => item.media_type === "movie" || item.media_type === "tv",
     );
 
-    cache.set(cacheKey, sortedResults, 600); // 10 min TTL for searches
-    res.send(sortedResults);
+    cache.set(cacheKey, results, 600); // 10 min TTL for searches
+    res.send(results);
   } catch (err) {
     console.error("error:" + err);
     res

@@ -12,9 +12,12 @@ jest.mock("./HaveToSignupModal", () => ({ open }) =>
   open ? <div role="dialog" aria-label="Account required" /> : null,
 );
 
-const CurrentPath = () => <div data-testid="current-path">{useLocation().pathname}</div>;
+const CurrentPath = () => {
+  const { pathname, search } = useLocation();
+  return <div data-testid="current-path">{pathname + search}</div>;
+};
 
-const renderNavbar = async (guest = false) => {
+const renderNavbar = async (guest = false, initialEntry = "/") => {
   const store = configureStore({
     reducer: { user: userReducer },
     preloadedState: {
@@ -27,7 +30,10 @@ const renderNavbar = async (guest = false) => {
   await act(async () => {
     render(
       <Provider store={store}>
-        <MemoryRouter><Navbar /><CurrentPath /></MemoryRouter>
+        <MemoryRouter initialEntries={[initialEntry]}>
+          <Navbar />
+          <CurrentPath />
+        </MemoryRouter>
       </Provider>,
     );
   });
@@ -37,6 +43,30 @@ test("the desktop navigation opens My Reviews for logged-in users", async () => 
   await renderNavbar();
   fireEvent.click(screen.getByRole("button", { name: "My Reviews" }));
   expect(screen.getByTestId("current-path")).toHaveTextContent("/myreviews");
+});
+
+test("the search button submits a trimmed and URL-encoded query", async () => {
+  await renderNavbar();
+  fireEvent.change(
+    screen.getByRole("textbox", { name: "Search movies and TV shows" }),
+    { target: { value: "  Dune? #Part 2 & 3  " } },
+  );
+  fireEvent.click(screen.getByRole("button", { name: "Submit search" }));
+
+  expect(screen.getByTestId("current-path")).toHaveTextContent(
+    "/movieSearch?title=Dune%3F+%23Part+2+%26+3",
+  );
+  expect(
+    screen.getByRole("textbox", { name: "Search movies and TV shows" }),
+  ).toHaveValue("Dune? #Part 2 & 3");
+});
+
+test("the navbar search field is restored from the search URL", async () => {
+  await renderNavbar(false, "/movieSearch?title=Blade+Runner+%26+2049");
+
+  expect(
+    screen.getByRole("textbox", { name: "Search movies and TV shows" }),
+  ).toHaveValue("Blade Runner & 2049");
 });
 
 test("the mobile drawer includes My Reviews and navigates to the same page", async () => {

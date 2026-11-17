@@ -5,33 +5,53 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";
 import MoviesResultCards from "../Components/MoviesResultCards";
-import { Box, Typography } from "@mui/material";
+import { Alert, Box, Button, Typography } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 
 const MovieSearchResult = () => {
   const url = process.env.REACT_APP_URL;
   const params = useQueryParams();
-  const movieTitle = params.get("title");
+  const movieTitle = params.get("title")?.trim() || "";
   const navigate = useNavigate();
   const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     if (!movieTitle) {
+      setMovies([]);
+      setError(null);
       setLoading(false);
       return;
     }
+
+    const controller = new AbortController();
     setLoading(true);
+    setError(null);
+    setMovies([]);
     api
-      .get(url + `/api/${movieTitle}`)
+      .get(url + `/api/${encodeURIComponent(movieTitle)}`, {
+        signal: controller.signal,
+      })
       .then(({ data }) => {
+        if (!Array.isArray(data)) {
+          throw new Error("Search response was not a list.");
+        }
         setMovies(data);
       })
-      .catch((err) => console.log(err))
+      .catch((err) => {
+        if (controller.signal.aborted) return;
+        console.error("Error fetching search results:", err);
+        setMovies([]);
+        setError("Search failed. Check your connection and try again.");
+      })
       .finally(() => {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       });
-  }, [movieTitle, url]);
+
+    return () => controller.abort();
+  }, [movieTitle, retryCount, url]);
 
   return (
     <div>
@@ -43,6 +63,26 @@ const MovieSearchResult = () => {
           cssOverride={{ marginLeft: "50vw", marginTop: "10vw" }}
           size={50}
         />
+      ) : error ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "60vh",
+            gap: 2,
+            px: 2,
+          }}
+        >
+          <Alert severity="error">{error}</Alert>
+          <Button
+            variant="outlined"
+            onClick={() => setRetryCount((count) => count + 1)}
+          >
+            Retry
+          </Button>
+        </Box>
       ) : !movieTitle ? (
         <Box
           sx={{

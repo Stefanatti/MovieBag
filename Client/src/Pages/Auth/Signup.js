@@ -1,253 +1,41 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { userSignInSchema } from "../../Validations/UserValidation";
-import { useState } from "react";
-import { toast } from "react-toastify";
-import axios from "axios";
-import { useNavigate } from "react-router-dom";
-import {
-  Grid,
-  Paper,
-  CssBaseline,
-  Button,
-  Typography,
-  Container,
-  Box,
-  TextField,
-  InputAdornment,
-  IconButton,
-} from "@mui/material";
-import Visibility from "@mui/icons-material/Visibility";
-import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import { useLocation, useNavigate } from "react-router-dom";
+import { authErrorMessage, createAccount } from "../../api/auth";
+import { signupPasswordMinimum, signupSchema } from "../../Validations/UserValidation";
+import { AuthField, AuthForm, AuthLayout, AuthLink, AuthSubmit } from "./AuthLayout";
+import PasswordField from "./PasswordField";
+import { safeReturnTo } from "./returnTo";
+import useAuthForm from "./useAuthForm";
 
-const fields = [
-  { label: "Username", name: "username" },
-  { label: "Email", name: "email" },
-  { label: "Password", name: "password" },
-];
-
-const Signup = () => {
-  const url = process.env.REACT_APP_URL;
-
+export default function Signup() {
+  const { state } = useLocation();
   const navigate = useNavigate();
-  const [formData, setFormData] = useState({
-    username: "",
-    email: "",
-    password: "",
-  });
-  const [showPassword, setShowPassword] = useState(false);
+  const returnTo = safeReturnTo(state?.returnTo);
+  const form = useAuthForm(signupSchema);
 
-  const handleClickShowPassword = () =>
-    setShowPassword((prevShowPassword) => !prevShowPassword);
-
-  const handleMouseDownPassword = (event) => {
-    event.preventDefault();
-  };
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const {
-    reset,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(userSignInSchema),
-  });
-
-  const createUser = async () => {
+  const submit = async (values) => {
     try {
-      const response = await axios.post(`${url}/user/signup`, formData);
-
-      if (response.status === 200 || response.status === 201) {
-        toast.success(response.data.message);
-        setTimeout(() => {
-          navigate("/login");
-        }, 3000);
-      } else {
-        throw new Error(`Unexpected status code: ${response.status}`);
-      }
+      await createAccount(values);
+      navigate("/login", {
+        replace: true,
+        state: { username: values.username, returnTo, notice: "Account created. Log in to get started." },
+      });
     } catch (error) {
-      if (error.response) {
-        const { status, data } = error.response;
-        if (status === 400) {
-          toast.warning(data.message);
-        } else {
-          toast.error(`Unexpected error occurred: ${status}`);
-        }
-      } else {
-        toast.error("An unexpected error occurred. Please try again.");
-      }
-      reset();
+      form.setError(
+        authErrorMessage(error, "Could not create an account. Please try again."),
+        error.response?.data?.fieldErrors,
+      );
     }
   };
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Box
-        sx={{
-          marginBottom: 5,
-          overflow: "hidden",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              height: "550px",
-              display: { xs: "none", sm: "block" },
-
-              backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2021/12/Beth-Morris_EyesWideShut.jpg)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              border: "2px solid var(--home-page-posters-color)",
-              borderRadius: "2%",
-              marginBottom: 5,
-            }}
-          />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-            sx={{ backgroundColor: "var(--main-card-color)" }}
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{
-                  color: "var(--basic-color)",
-                  fontFamily: "Limelight",
-                  marginBottom: 3,
-                }}
-              >
-                Sign In
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleSubmit(createUser)}
-                sx={{
-                  mt: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {fields.map((field) => (
-                  <TextField
-                    key={field.name}
-                    margin="normal"
-                    required
-                    fullWidth
-                    placeholder={field.label}
-                    name={field.name}
-                    type={
-                      field.name === "password"
-                        ? showPassword
-                          ? "text"
-                          : "password"
-                        : "text"
-                    }
-                    {...register(`${field.name}`)}
-                    error={Boolean(errors[field.name])}
-                    helperText={errors[field.name]?.message}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    InputProps={{
-                      style: {
-                        color: "var(--basic-color)",
-                        border: "2px solid var(--basic-color)",
-                      },
-                      sx: {
-                        "&:hover fieldset": {
-                          border: "2px solid var(--basic-color)",
-                          borderRadius: 0,
-                        },
-                        "&:focus-within fieldset, &:focus-visible fieldset": {
-                          border: "2px solid var(--basic-color)!important",
-                        },
-                        "& input:-webkit-autofill, & textarea:-webkit-autofill, & select:-webkit-autofill":
-                          {
-                            WebkitTextFillColor: "var(--basic-color)",
-                            WebkitBoxShadow: "red inset",
-                            transition: "background-color 5000s ease-in-out 0s",
-                          },
-                      },
-                      endAdornment: field.name === "password" && (
-                        <InputAdornment position="end">
-                          <IconButton
-                            sx={{ color: "var(--basic-color)" }}
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            onMouseDown={handleMouseDownPassword}
-                            edge="end"
-                          >
-                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                  />
-                ))}
-                ;
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    background: "var(--basic-color)",
-                    "&:hover": { bgcolor: "var(--basic-color)" },
-                  }}
-                >
-                  Sign in
-                </Button>
-                <Grid container>
-                  <Grid item>
-                    <Typography
-                      variant="body2"
-                      color={"var(--basic-color)"}
-                      onClick={() => navigate("/login")}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      Have you already an account? Login
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+    <AuthLayout variant="signup" title="Create account" description="Save what you want to watch and keep track of what you thought.">
+      <AuthForm busy={form.busy} error={form.error} onSubmit={form.submit(submit)}>
+        <AuthField label="Username" autoComplete="username" {...form.field("username")} />
+        <AuthField label="Email" type="email" autoComplete="email" {...form.field("email")} />
+        <PasswordField label="Password" autoComplete="new-password" hint={`Use at least ${signupPasswordMinimum} characters. A longer passphrase is safer.`} {...form.field("password")} />
+        <AuthSubmit busy={form.busy} label="Create account" pendingLabel="Creating account..." />
+      </AuthForm>
+      <AuthLink to="/login" state={{ returnTo }}>Already have an account? Log in</AuthLink>
+    </AuthLayout>
   );
-};
-
-export default Signup;
+}

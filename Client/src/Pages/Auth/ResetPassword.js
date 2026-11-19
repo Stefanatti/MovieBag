@@ -1,215 +1,50 @@
-import { useForm } from "react-hook-form";
-import { yupResolver } from "@hookform/resolvers/yup";
-import { userLogInSchema } from "../../Validations/UserValidation";
-import {
-  Grid,
-  Paper,
-  CssBaseline,
-  Button,
-  Typography,
-  Container,
-  Box,
-  TextField,
-} from "@mui/material";
 import { useState } from "react";
+import { Alert } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { useNavigate, useParams } from "react-router-dom";
+import { authErrorMessage, resetAccountPassword } from "../../api/auth";
+import { logout } from "../../Features/user";
+import { resetPasswordSchema } from "../../Validations/UserValidation";
+import { AuthForm, AuthLayout, AuthLink, AuthSubmit } from "./AuthLayout";
+import PasswordField from "./PasswordField";
+import useAuthForm from "./useAuthForm";
 
-import axios from "axios";
-import { useParams, useNavigate } from "react-router-dom";
-
-const fields = [
-  { label: "New Password", name: "newPassword" },
-  { label: "Confirm New Password", name: "confirmNewPassword" },
-];
-
-const ResetPassword = () => {
-  const navigate = useNavigate();
-  const url = process.env.REACT_APP_URL;
+export default function ResetPassword() {
   const { token } = useParams();
-  const [formData, setFormData] = useState({
-    newPassword: "",
-    confirmNewPassword: "",
-  });
-  const [message, setMessage] = useState("");
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [invalidLink, setInvalidLink] = useState(!token);
+  const form = useAuthForm(resetPasswordSchema);
 
-  const {
-    // reset,
-    register,
-    // handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: yupResolver(userLogInSchema),
-  });
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleNewPasswordSubmit = async (e) => {
-    e.preventDefault();
-
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      setMessage("Passwords do not match!");
-      return;
-    }
-
+  const submit = async ({ newPassword }) => {
     try {
-      const response = await axios.post(`${url}/user/reset_password/${token}`, {
-        newPassword: formData.newPassword,
+      await resetAccountPassword(token, { newPassword });
+      dispatch(logout());
+      navigate("/login", {
+        replace: true,
+        state: { notice: "Password updated. Log in with your new password." },
       });
-      setMessage(response.data.message);
-      setTimeout(() => {
-        navigate("/login");
-      }, 3000);
     } catch (error) {
-      setMessage("Error resetting password");
+      const message = authErrorMessage(error, "Could not reset your password. Please try again.");
+      if (error.response?.status === 400 && /invalid or expired/i.test(message)) setInvalidLink(true);
+      else form.setError(message);
     }
   };
 
   return (
-    <Container component="main" maxWidth="lg">
-      <Box
-        sx={{
-          marginBottom: 5,
-          overflow: "hidden",
-        }}
-      >
-        <Grid container>
-          <CssBaseline />
-          <Grid
-            item
-            xs={false}
-            sm={4}
-            md={7}
-            sx={{
-              height: "550px",
-              display: { xs: "none", sm: "block" },
-
-              backgroundImage:
-                "url(https://alternativemovieposters.com/wp-content/uploads/2020/09/JuanRomero_Recall.jpg)",
-              backgroundRepeat: "no-repeat",
-              backgroundColor: (t) =>
-                t.palette.mode === "light"
-                  ? t.palette.grey[50]
-                  : t.palette.grey[900],
-              backgroundSize: "cover",
-              border: "2px solid var(--home-page-posters-color)",
-              marginBottom: 5,
-            }}
-          />
-          <Grid
-            item
-            xs={12}
-            sm={8}
-            md={5}
-            component={Paper}
-            elevation={6}
-            square
-            sx={{ backgroundColor: "var(--main-card-color)" }}
-          >
-            <Box
-              sx={{
-                my: 8,
-                mx: 4,
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-              }}
-            >
-              <Typography
-                component="h1"
-                variant="h5"
-                sx={{
-                  color: "var(--basic-color)",
-                  fontFamily: "Limelight",
-                  marginBottom: 3,
-                }}
-              >
-                Reset Password
-              </Typography>
-              <Box
-                component="form"
-                noValidate
-                onSubmit={handleNewPasswordSubmit}
-                sx={{
-                  mt: 1,
-                  display: "flex",
-                  flexDirection: "column",
-                }}
-              >
-                {fields.map((field) => (
-                  <TextField
-                    key={field.name}
-                    margin="normal"
-                    required
-                    fullWidth
-                    placeholder={field.label}
-                    name={field.name}
-                    type={"text"}
-                    {...register(`${field.name}`)}
-                    error={Boolean(errors[field.name])}
-                    helperText={errors[field.name]?.message}
-                    value={formData[field.name]}
-                    onChange={handleChange}
-                    InputProps={{
-                      style: {
-                        color: "var(--basic-color)",
-                        border: "2px solid var(--basic-color)",
-                      },
-                      sx: {
-                        "&:hover fieldset": {
-                          border: "2px solid var(--basic-color)",
-                          borderRadius: 0,
-                        },
-                        "&:focus-within fieldset, &:focus-visible fieldset": {
-                          border: "2px solid var(--basic-color)!important",
-                        },
-                        "& input:-webkit-autofill, & textarea:-webkit-autofill, & select:-webkit-autofill":
-                          {
-                            WebkitTextFillColor: "var(--basic-color)",
-                            WebkitBoxShadow: "red inset",
-                            transition: "background-color 5000s ease-in-out 0s",
-                          },
-                      },
-                    }}
-                  />
-                ))}
-
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{
-                    mt: 3,
-                    mb: 2,
-                    background: "var(--basic-color)",
-                    "&:hover": { bgcolor: "var(--basic-color)" },
-                  }}
-                >
-                  Reset
-                </Button>
-
-                <Grid container>
-                  <Grid item>
-                    <Typography
-                      variant="body2"
-                      color={"var(--basic-color)"}
-                      onClick={() => navigate("/login")}
-                      sx={{ cursor: "pointer" }}
-                    >
-                      Go Back to Login
-                    </Typography>
-                  </Grid>
-                </Grid>
-              </Box>
-            </Box>
-          </Grid>
-        </Grid>
-      </Box>
-    </Container>
+    <AuthLayout variant="recovery" title="Reset password" description="Choose a new password for your MovieBag account.">
+      {invalidLink ? (
+        <Alert severity="warning">This password reset link is invalid or expired.</Alert>
+      ) : (
+        <AuthForm busy={form.busy} error={form.error} onSubmit={form.submit(submit)}>
+          <PasswordField label="New password" autoComplete="new-password" hint="Use at least 15 characters." {...form.field("newPassword")} />
+          <PasswordField label="Confirm new password" autoComplete="new-password" {...form.field("confirmNewPassword")} />
+          <AuthSubmit busy={form.busy} label="Reset password" pendingLabel="Updating password..." />
+        </AuthForm>
+      )}
+      <AuthLink to={invalidLink ? "/forgot_password" : "/login"}>
+        {invalidLink ? "Request a new reset link" : "Back to log in"}
+      </AuthLink>
+    </AuthLayout>
   );
-};
-
-export default ResetPassword;
+}

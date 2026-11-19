@@ -1,9 +1,10 @@
 import { logout } from "../Features/user";
 import { useDispatch } from "react-redux";
-import * as React from "react";
-import axios from "axios";
+import { useState } from "react";
+import { authErrorMessage, logoutAccount } from "../api/auth";
 import {
   Dialog,
+  Alert,
   DialogContent,
   DialogActions,
   Typography,
@@ -15,22 +16,34 @@ import LogoutIcon from "@mui/icons-material/Logout";
 
 const LogoutModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
-  const url = process.env.REACT_APP_URL || "http://localhost:3000";
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState("");
+
+  const close = () => {
+    if (busy) return;
+    setError("");
+    onClose();
+  };
 
   const logOut = async () => {
+    setBusy(true);
+    setError("");
     try {
-      await axios.post(`${url}/user/logout`, {}, { withCredentials: true });
+      await logoutAccount();
+      dispatch(logout());
+      onClose();
     } catch (err) {
-      console.error("Logout error:", err);
+      setError(authErrorMessage(err, "Could not log out. Please try again."));
+    } finally {
+      setBusy(false);
     }
-    dispatch(logout());
-    onClose();
   };
 
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={close}
+      aria-labelledby="logout-heading"
       PaperProps={{
         sx: {
           borderRadius: "14px",
@@ -75,6 +88,7 @@ const LogoutModal = ({ open, onClose }) => {
       </Box>
       <DialogContent sx={{ textAlign: "center", pt: 2, pb: 1 }}>
         <Typography
+          id="logout-heading"
           variant="h6"
           sx={{
             color: "var(--basic-color)",
@@ -91,6 +105,7 @@ const LogoutModal = ({ open, onClose }) => {
         >
           Are you sure you want to log out of your account?
         </Typography>
+        {error && <Alert severity="error" sx={{ mt: 2 }}>{error}</Alert>}
       </DialogContent>
       <DialogActions
         sx={{
@@ -101,7 +116,8 @@ const LogoutModal = ({ open, onClose }) => {
         }}
       >
         <Button
-          onClick={onClose}
+          onClick={close}
+          disabled={busy}
           variant="outlined"
           sx={{
             borderColor: "var(--basic-color)",
@@ -120,6 +136,7 @@ const LogoutModal = ({ open, onClose }) => {
         </Button>
         <Button
           onClick={logOut}
+          disabled={busy}
           variant="contained"
           sx={{
             backgroundColor: "var(--basic-color)",
@@ -132,7 +149,7 @@ const LogoutModal = ({ open, onClose }) => {
             },
           }}
         >
-          Log Out
+          {busy ? "Logging out..." : "Log Out"}
         </Button>
       </DialogActions>
     </Dialog>

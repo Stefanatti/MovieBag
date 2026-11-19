@@ -12,14 +12,17 @@ require.cache[connectionPath] = { id: connectionPath, filename: connectionPath, 
 const Review = require("../modules/reviewModule");
 const User = require("../modules/userModule");
 const reviewRouter = require("../routers/reviewRoute");
+const { signSession } = require("../utils/sessionToken");
 
 const authorId = "507f1f77bcf86cd799439011";
 const otherId = "507f1f77bcf86cd799439012";
 const reviewId = "507f1f77bcf86cd799439013";
 const secret = "local-review-test-key";
+const sessionFor = (_id) => signSession({ _id });
 const originalKey = process.env.TOKEN_KEY;
 let server;
 let baseUrl;
+const findUserById = User.findById;
 
 const review = {
   _id: reviewId,
@@ -44,7 +47,7 @@ const request = async (path, { method = "GET", body, authenticated = false, toke
   const headers = {};
   if (body !== undefined) headers["Content-Type"] = "application/json";
   if (authenticated || token) {
-    headers.Cookie = `token=${token || jwt.sign({ id: authorId }, secret, { expiresIn: "1h" })}`;
+    headers.Cookie = `token=${token || sessionFor(authorId)}`;
   }
   const response = await fetch(`${baseUrl}${path}`, {
     method,
@@ -56,6 +59,7 @@ const request = async (path, { method = "GET", body, authenticated = false, toke
 
 before(async () => {
   process.env.TOKEN_KEY = secret;
+  User.findById = async (_id) => ({ _id, sessionVersion: 0 });
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
@@ -67,6 +71,7 @@ before(async () => {
 });
 
 after(async () => {
+  User.findById = findUserById;
   if (server) await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
   if (originalKey === undefined) delete process.env.TOKEN_KEY;
   else process.env.TOKEN_KEY = originalKey;
@@ -338,7 +343,7 @@ test("public lists and counts exclude private reviews for guests, owners and oth
     assert.deepEqual(filter, expected);
     return 2;
   });
-  for (const options of [{}, { authenticated: true }, { token: jwt.sign({ id: otherId }, secret) }]) {
+  for (const options of [{}, { authenticated: true }, { token: sessionFor(otherId) }]) {
     const result = await request("/movie/123?isPrivate=true", options);
     assert.equal(result.status, 200);
     assert.equal(result.body.total, 2);
@@ -375,7 +380,7 @@ test("another account's own-review endpoint cannot retrieve the author's private
     return query(null);
   });
   assert.deepEqual((await request("/mine/movie/123", {
-    token: jwt.sign({ id: otherId }, secret),
+    token: sessionFor(otherId),
   })).body, { review: null });
 });
 
@@ -423,7 +428,7 @@ test("non-owners cannot publish or make another user's review private", async (t
   });
   for (const isPrivate of [true, false]) {
     const result = await request(`/${reviewId}`, {
-      method: "PATCH", token: jwt.sign({ id: otherId }, secret), body: { isPrivate },
+      method: "PATCH", token: sessionFor(otherId), body: { isPrivate },
     });
     assert.equal(result.status, 404);
   }
@@ -466,7 +471,7 @@ test("visibility lifecycle removes private text and counts from public responses
   });
 
   const assertPublic = async (texts) => {
-    for (const options of [{}, { authenticated: true }, { token: jwt.sign({ id: otherId }, secret) }]) {
+    for (const options of [{}, { authenticated: true }, { token: sessionFor(otherId) }]) {
       const result = await request("/movie/123", options);
       assert.equal(result.body.total, texts.length);
       assert.deepEqual(result.body.reviews.map((item) => item.text), texts);
@@ -485,7 +490,7 @@ test("visibility lifecycle removes private text and counts from public responses
   assert.equal(ownHistory.body.total, 1);
   assert.equal(ownHistory.body.reviews[0].isPrivate, true);
   const denied = await request(`/${reviewId}`, {
-    method: "PATCH", token: jwt.sign({ id: otherId }, secret), body: { isPrivate: false },
+    method: "PATCH", token: sessionFor(otherId), body: { isPrivate: false },
   });
   assert.equal(denied.status, 404);
   await assertPublic(["Legacy public text"]);

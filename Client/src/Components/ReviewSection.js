@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { returnToFrom } from "../Pages/Auth/returnTo";
 import {
   Alert,
   Box,
@@ -68,6 +69,7 @@ export const ReviewItem = ({ review, userId }) => {
 };
 
 const Reviews = ({ tmdbId, mediaType, userId }) => {
+  const location = useLocation();
   const [data, setData] = useState({ reviews: [], total: 0, totalPages: 0 });
   const [myReview, setMyReview] = useState(null);
   const [page, setPage] = useState(1);
@@ -122,7 +124,7 @@ const Reviews = ({ tmdbId, mediaType, userId }) => {
       </Typography>
       <Box sx={{ ...panelStyle, mb: 2 }}>
         {!userId ? (
-          <Button component={Link} to="/login" variant="outlined" sx={buttonStyle}>
+          <Button component={Link} to="/login" state={{ returnTo: returnToFrom(location) }} variant="outlined" sx={buttonStyle}>
             Log in to write a review
           </Button>
         ) : (

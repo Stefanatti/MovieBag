@@ -14,8 +14,10 @@ const UserSchema = new mongoose.Schema({
   password: {
     type: String,
     required: [true, "Please enter a valid password"],
-    minlength: [3, "Minimum password length must be 3 characters"],
   },
+  sessionVersion: { type: Number, default: 0 },
+  passwordResetDigest: { type: String, select: false },
+  passwordResetExpiresAt: { type: Date, select: false },
   otpSecret: {
     type: String,
   },

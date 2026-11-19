@@ -13,6 +13,7 @@ import storage from "redux-persist/lib/storage";
 import { persistStore, persistReducer } from "redux-persist";
 import { PersistGate } from "redux-persist/integration/react";
 import { movieApi } from "./Features/showsSlice";
+import { syncExpiredSession } from "./api/axios";
 
 const rootReducer = combineReducers({
   user: userReducer,
@@ -21,11 +22,14 @@ const rootReducer = combineReducers({
   [movieApi.reducerPath]: movieApi.reducer,
 });
 
+const persistedKeys = ["movies", "theme"];
 const persistConfig = {
   key: "root",
   storage,
-  // RTK Query manages its own cache; persisting it would serve stale API data.
-  blacklist: [movieApi.reducerPath],
+  whitelist: persistedKeys,
+  migrate: async (state) => state && Object.fromEntries(
+    Object.entries(state).filter(([key]) => persistedKeys.includes(key)),
+  ),
 };
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
@@ -39,6 +43,7 @@ const store = configureStore({
 });
 
 export const persistor = persistStore(store);
+syncExpiredSession(store);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

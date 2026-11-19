@@ -1,17 +1,16 @@
 import "./MovieApp.scss";
-import { lazy, Suspense, useEffect } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
-  Navigate,
-  Outlet,
 } from "react-router-dom";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
 import { useSelector, useDispatch } from "react-redux";
 import { login, logout } from "./Features/user";
-import axios from "axios";
+import { verifyAccountSession } from "./api/auth";
+import SessionRoutes from "./Pages/Auth/SessionRoutes";
 import { Box } from "@mui/material";
 import ClipLoader from "react-spinners/ClipLoader";
 import { ToastContainer } from "react-toastify";
@@ -21,6 +20,7 @@ import "react-toastify/dist/ReactToastify.css";
 const Home = lazy(() => import("./Pages/Home"));
 const Signup = lazy(() => import("./Pages/Auth/Signup"));
 const Login = lazy(() => import("./Pages/Auth/Login"));
+const ForgotPassword = lazy(() => import("./Pages/Auth/ForgotPassword"));
 const ResetPassword = lazy(() => import("./Pages/Auth/ResetPassword"));
 const MovieSearchResult = lazy(() => import("./Pages/SearchResults"));
 const YourMoviesLibrary = lazy(
@@ -47,34 +47,41 @@ function MovieApp() {
   let theme = useSelector((state) => state.theme.value);
   const dispatch = useDispatch();
 
-  const url = process.env.REACT_APP_URL || "http://localhost:3000";
+  const [session, setSession] = useState("checking");
+  const [attempt, setAttempt] = useState(0);
 
-  // Verify session on app load using HttpOnly cookie
   useEffect(() => {
+    const controller = new AbortController();
     const verifySession = async () => {
       try {
-        const response = await axios.get(`${url}/user/verify`, {
-          withCredentials: true,
-        });
-        dispatch(
-          login({ _id: response.data._id, username: response.data.username }),
-        );
+        const { data } = await verifyAccountSession(controller.signal);
+        if (controller.signal.aborted) return;
+        if (!data?._id) throw new Error("Missing session user");
+        dispatch(login(data));
+        setSession("ready");
       } catch (err) {
-        dispatch(logout());
+        if (controller.signal.aborted) return;
+        if (err.response?.status === 401) {
+          dispatch(logout());
+          setSession("ready");
+        } else {
+          setSession("unavailable");
+        }
       }
     };
     verifySession();
-  }, [dispatch, url]);
+    return () => controller.abort();
+  }, [dispatch, attempt]);
+
+  const retrySession = () => {
+    setSession("checking");
+    setAttempt((value) => value + 1);
+  };
 
   // Sync theme class on <body> so MUI portals (Dialogs) inherit CSS variables
   useEffect(() => {
     document.body.className = theme.theme || "";
   }, [theme.theme]);
-
-  const PrivateRoute = ({ element, ...rest }) => {
-    const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-    return isAuthenticated ? <Outlet /> : <Navigate to="/login" replace />;
-  };
 
   return (
     <div className={`App ${theme.theme}`}>
@@ -92,26 +99,18 @@ function MovieApp() {
           >
             <Routes>
               <Route path="/" element={<Home />} />
-              <Route path="/signup" element={<Signup />} />
-              <Route path="/login" element={<Login />} />
-              <Route
-                path="/reset_password/:token?"
-                element={<ResetPassword />}
-              />
-              <Route path="/yourmovies" element={<PrivateRoute />}>
-                <Route index element={<YourMoviesLibrary />} />
+              <Route element={<SessionRoutes session={session} />}>
+                <Route path="/signup" element={<Signup />} />
+                <Route path="/login" element={<Login />} />
+                <Route path="/forgot_password" element={<ForgotPassword />} />
+                <Route path="/reset_password/:token?" element={<ResetPassword />} />
               </Route>
-              <Route path="/yourTvShows" element={<PrivateRoute />}>
-                <Route index element={<YourTvShowsList />} />
-              </Route>
-              <Route path="/myreviews" element={<PrivateRoute />}>
-                <Route index element={<MyReviews />} />
-              </Route>
-              <Route path="/watchlist/movies" element={<PrivateRoute />}>
-                <Route index element={<WatchlistMovies />} />
-              </Route>
-              <Route path="/watchlist/TvShows" element={<PrivateRoute />}>
-                <Route index element={<WatchlistTvShows />} />
+              <Route element={<SessionRoutes privateOnly session={session} retry={retrySession} />}>
+                <Route path="/yourmovies" element={<YourMoviesLibrary />} />
+                <Route path="/yourTvShows" element={<YourTvShowsList />} />
+                <Route path="/myreviews" element={<MyReviews />} />
+                <Route path="/watchlist/movies" element={<WatchlistMovies />} />
+                <Route path="/watchlist/TvShows" element={<WatchlistTvShows />} />
               </Route>
               <Route path="/movieSearch" element={<MovieSearchResult />} />
               <Route path="/movie" element={<RenderMovie />} />

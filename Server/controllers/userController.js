@@ -1,252 +1,174 @@
 const User = require("../modules/userModule");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
-//const speakeasy = require("speakeasy");
+const { signSession } = require("../utils/sessionToken");
+const {
+  isEmail, normalizeEmail, isUsername, isNewPassword, passwordPolicyMessage,
+  signupPasswordMinimum, resetPasswordMinimum,
+} = require("../utils/authValidation");
 require("dotenv").config({ path: ".env" });
 
-const appUrl = process.env.APP_URL;
+const bcryptCost = 10;
+const dummyHash = bcrypt.hashSync(crypto.randomBytes(32).toString("hex"), bcryptCost);
+const resetLifetime = 10 * 60 * 1000;
+const resetPattern = /^([a-f0-9]{24})\.([a-f0-9]{64})$/;
+const digest = (secret) => crypto.createHash("sha256").update(secret).digest("hex");
+const invalidCredentials = { message: "Incorrect username or password." };
+const invalidReset = { message: "This password reset link is invalid or expired." };
+const recoveryResponse = { message: "If an account exists for that email, we'll send a reset link." };
+const cookieOptions = () => ({
+  httpOnly: true,
+  secure: process.env.NODE_ENV === "production",
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+});
+
+const fail = (res, operation, err) => {
+  console.error(`Auth ${operation} failed:`, err.code || err.name);
+  return res.status(500).send({ message: "Something went wrong. Please try again." });
+};
 
 const signupUser = async (req, res) => {
+  const { username, password } = req.body || {};
+  const email = normalizeEmail(req.body?.email);
+  const fieldErrors = {};
+  if (!isUsername(username)) {
+    fieldErrors.username = "Enter a username between 1 and 256 characters.";
+  }
+  if (!isEmail(email)) fieldErrors.email = "Enter a valid email address.";
+  if (!isNewPassword(password, signupPasswordMinimum)) {
+    fieldErrors.password = passwordPolicyMessage(signupPasswordMinimum);
+  }
+  if (Object.keys(fieldErrors).length) {
+    return res.status(400).send({ message: "Please correct the highlighted fields.", fieldErrors });
+  }
+
   try {
-    if (!req.body.username || !req.body.email || !req.body.password) {
-      return res
-        .status(400)
-        .send({ message: "Please complete all the fields" });
-    }
-
-    let user = await User.findOne({ email: req.body.email });
-    if (user) {
-      return res
-        .status(400)
-        .send({ message: "The user already exists, please try to log in!" });
-    }
-
-    bcrypt.hash(req.body.password, 10, async (err, hash) => {
-      if (err) {
-        console.error(err);
-        return res
-          .status(500)
-          .send({ message: "An error occurred while hashing the password" });
-      }
-
-      const secret = crypto.randomBytes(20).toString("hex");
-
-      let newUser = new User({
-        username: req.body.username,
-        email: req.body.email,
-        password: hash,
-        otpSecret: secret,
-      });
-
-      try {
-        await newUser.save();
-        res.status(201).send({
-          message: "User created successfully! Please login now!",
-        });
-      } catch (saveErr) {
-        console.error(saveErr);
-        res
-          .status(500)
-          .send({ message: "An error occurred while saving the user" });
-      }
-    });
+    const hash = await bcrypt.hash(password, bcryptCost);
+    await User.create({ username: username.trim(), email, password: hash });
+    return res.status(201).send({ message: "Account created. You can now log in." });
   } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "An  error occurred" });
+    if (err.code === 11000) {
+      if (err.keyPattern?.email || Object.prototype.hasOwnProperty.call(err.keyValue || {}, "email")) {
+        const message = "This email is already registered. Log in or reset your password.";
+        return res.status(409).send({ message, fieldErrors: { email: message } });
+      }
+      return res.status(409).send({ message: "Could not create an account with those details." });
+    }
+    return fail(res, "sign-up", err);
   }
 };
 
 const loginUser = async (req, res) => {
+  const { username, password } = req.body || {};
+  // Do not impose the new password policy on existing credentials.
+  const fieldErrors = {};
+  if (typeof username !== "string" || !username.length || username.length > 1024) {
+    fieldErrors.username = "Enter your username (up to 1024 characters).";
+  }
+  if (typeof password !== "string" || !password.length || password.length > 1024) {
+    fieldErrors.password = "Enter your password (up to 1024 characters).";
+  }
+  if (Object.keys(fieldErrors).length) {
+    return res.status(400).send({ message: "Please correct the highlighted fields.", fieldErrors });
+  }
+
   try {
-    let user = await User.findOne({ username: req.body.username });
-    if (!user) {
-      return res.status(400).send({ message: "Wrong username" });
-    }
+    const user = await User.findOne({ username });
+    const matches = await bcrypt.compare(password, user?.password || dummyHash);
+    if (!user || !matches) return res.status(401).send(invalidCredentials);
 
-    bcrypt.compare(req.body.password, user.password, function (err, result) {
-      if (err) {
-        console.error(err);
-        return res
-          .status(500)
-          .send({ message: "An error occurred while comparing passwords" });
-      }
-
-      if (result) {
-        let token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, {
-          expiresIn: process.env.TOKEN_EXPIRES_IN,
-        });
-
-        res.cookie("token", token, {
-          httpOnly: true,
-          secure: process.env.NODE_ENV === "production",
-          sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
-          maxAge: 24 * 60 * 60 * 1000, // 1 day
-        });
-
-        res.status(200).send({
-          user: { _id: user._id, username: user.username },
-        });
-      } else {
-        res.status(401).send({ message: "Wrong password" });
-      }
+    res.cookie("token", signSession(user), {
+      ...cookieOptions(),
+      maxAge: 24 * 60 * 60 * 1000,
     });
+    return res.status(200).send({ user: { _id: user._id, username: user.username } });
   } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "An error occurred" });
+    return fail(res, "login", err);
   }
 };
 
-const verifyUser = async (req, res) => {
-  try {
-    const token = req.cookies?.token;
-    if (!token) {
-      return res.status(401).send({ message: "Session expired" });
-    }
-
-    jwt.verify(token, process.env.TOKEN_KEY, async (err, payload) => {
-      if (err) {
-        console.error(err);
-        return res.status(401).send({ message: "Session expired" });
-      }
-
-      if (payload) {
-        let user = await User.findOne({ _id: payload.id });
-        if (user) {
-          res.status(200).send({ _id: user._id, username: user.username });
-        } else {
-          res.status(404).send({ message: "User not found" });
-        }
-      } else {
-        res.status(401).send({ message: "Session expired" });
-      }
-    });
-  } catch (err) {
-    console.error(err);
-    res.status(500).send({ message: "An error occurred" });
-  }
-};
+const verifyUser = (req, res) =>
+  res.status(200).send({ _id: req.user.id, username: req.user.username });
 
 const logoutUser = (req, res) => {
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+  res.clearCookie("token", cookieOptions());
+  return res.status(200).send({ message: "Logged out successfully" });
+};
+
+const sendResetLink = async (user) => {
+  const secret = crypto.randomBytes(32).toString("hex");
+  const resetUrl = new URL(
+    `/reset_password/${user._id}.${secret}`,
+    process.env.CLIENT_URL || process.env.APP_URL || "http://localhost:3000",
+  );
+  const result = await User.updateOne({ _id: user._id }, {
+    $set: {
+      passwordResetDigest: digest(secret),
+      passwordResetExpiresAt: new Date(Date.now() + resetLifetime),
+    },
   });
-  res.status(200).send({ message: "Logged out successfully" });
+  if (!result.matchedCount) return;
+
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS },
+  });
+  await transporter.sendMail({
+    from: process.env.EMAIL_USER,
+    to: user.email,
+    subject: "Reset your MovieBag password",
+    text: `Reset your password: ${resetUrl}\n\nThis link expires in 10 minutes and can be used once. If you did not request it, ignore this email.`,
+  });
 };
 
 const forgotPassword = async (req, res) => {
+  const email = normalizeEmail(req.body?.email);
+  if (!isEmail(email)) {
+    return res.status(400).send({ message: "Enter a valid email address." });
+  }
+
   try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      return res.status(404).send({ message: "User's email don't found" });
+    const user = await User.findOne({ email }, "email");
+    // Keep mail delivery time and failures out of the public recovery response.
+    if (user) {
+      sendResetLink(user).catch((err) => {
+        console.error("Auth reset email failed:", err.code || err.name);
+      });
     }
-    const token = jwt.sign({ id: user._id }, process.env.TOKEN_KEY, {
-      expiresIn: "10m",
-    });
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-      tls: {
-        rejectUnauthorized: false,
-      },
-    });
-    const resetUrl = `${appUrl}/reset_password/${token}`;
-
-    const emailOptions = {
-      from: process.env.EMAIL_USER,
-      to: req.body.email,
-      subject: "Reset Password",
-      html: `<h1>Reset Your Password</h1>
-      <p>Click on the following link to reset your password:</p>
-      <a href=${resetUrl}>${resetUrl}</a>
-      <p>The link will expire in 10 minutes.</p>
-      <p>If you didn't request a password reset, please ignore this email.</p>`,
-    };
-
-    transporter.sendMail(emailOptions, (err, info) => {
-      if (err) {
-        return res.status(500).send({ message: err.message });
-      }
-      res.status(200).send({ message: "Email sent, check your email." });
-    });
+    return res.status(200).send(recoveryResponse);
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    return fail(res, "recovery", err);
   }
 };
 
 const resetPassword = async (req, res) => {
+  const token = resetPattern.exec(req.params.token);
+  if (!token) return res.status(400).send(invalidReset);
+  const { newPassword } = req.body || {};
+  if (!isNewPassword(newPassword, resetPasswordMinimum)) {
+    return res.status(400).send({ message: passwordPolicyMessage(resetPasswordMinimum) });
+  }
+
+  const filter = () => ({
+    _id: token[1],
+    passwordResetDigest: digest(token[2]),
+    passwordResetExpiresAt: { $gt: new Date() },
+  });
   try {
-    const decodedToken = jwt.verify(req.params.token, process.env.TOKEN_KEY);
+    if (!(await User.exists(filter()))) return res.status(400).send(invalidReset);
+    const password = await bcrypt.hash(newPassword, bcryptCost);
+    const result = await User.updateOne(filter(), {
+      $set: { password },
+      $unset: { passwordResetDigest: "", passwordResetExpiresAt: "" },
+      $inc: { sessionVersion: 1 },
+    });
+    if (!result.modifiedCount) return res.status(400).send(invalidReset);
 
-    if (!decodedToken) {
-      return res.status(401).send({ message: "Invalid token" });
-    }
-    const user = await User.findOne({ _id: decodedToken.id });
-    if (!user) {
-      return res.status(401).send({ message: "No user found" });
-    }
-
-    const salt = await bcrypt.genSalt(10);
-    req.body.newPassword = await bcrypt.hash(req.body.newPassword, salt);
-
-    user.password = req.body.newPassword;
-    await user.save();
-
-    res.status(200).send({ message: "Password updated" });
+    return res.status(200).send({ message: "Password updated. Log in with your new password." });
   } catch (err) {
-    res.status(500).send({ message: err.message });
+    return fail(res, "password reset", err);
   }
 };
 
-// const generateOtp = async (req, res) => {
-//   const userId = req.body.id;
-//   try {
-//     const token = speakeasy.totp({
-//       secret: userId.otpSecret,
-//       encoding: "base32",
-//     });
-
-//     res.send({ token });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({ error: "Failed to generate OTP." });
-//   }
-// };
-
-// const verifyOtp = async (req, res) => {
-//   const { userId, token } = req.body;
-
-//   try {
-//     const verified = speakeasy.totp.verify({
-//       secret: userId.otpSecret,
-//       encoding: "base32",
-//       token,
-//     });
-
-//     if (verified) {
-//       res.send({ success: true, message: "OTP verified successfully." });
-//     } else {
-//       res.send({ success: false, message: "Invalid OTP." });
-//     }
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).send({ error: "Failed to verify OTP." });
-//   }
-// };
-
-module.exports = {
-  signupUser,
-  loginUser,
-  verifyUser,
-  logoutUser,
-  forgotPassword,
-  resetPassword,
-  // generateOtp,
-  // verifyOtp,
-};
+module.exports = { signupUser, loginUser, verifyUser, logoutUser, forgotPassword, resetPassword };

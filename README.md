@@ -134,6 +134,8 @@ CLIENT_URL=http://localhost:3000
 MONGO_URI=your_mongodb_connection_string
 TOKEN_KEY=your_jwt_secret
 TOKEN_EXPIRES_IN=1d
+# Optional: set only if every path to Express has the same number of trusted proxy hops.
+# TRUST_PROXY_HOPS=1
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_google_app_password
 NODE_ENV=development
@@ -259,6 +261,31 @@ node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --r
 
 ---
 
+## Account Security
+
+- The account screens share one form layout with inline errors, pending states,
+  password-manager support, and a dedicated password recovery page.
+- Sign-up identifies registered emails and highlights field-specific errors.
+  Login deliberately uses the same "Incorrect username or password" message for
+  unknown usernames and incorrect passwords to avoid exposing account existence.
+- Protected pages wait for cookie verification. When login is required, the app
+  returns you to the original page after login, including its query and fragment.
+  The browser no longer restores a signed-in identity from local storage.
+
+- Password reset links point to `CLIENT_URL` (falling back to `APP_URL` when
+  unset). Configure this to serve the frontend reset page. Links expire after
+  10 minutes, can be used once, and only the latest issued link stays valid.
+  A successful reset signs the account out on all devices.
+- Sign-up requires at least 5 characters; password reset still requires at least
+  15. Both accept up to 72 UTF-8 bytes (bcrypt's input limit). Existing accounts can still log in
+  with their current username and password. Deploying this change invalidates
+  pre-existing session cookies and reset links; no database backfill is needed.
+- Limits per client IP per 15 minutes: 20 login attempts, 10 sign-ups,
+  5 recovery requests, and 10 reset requests. These limits use process memory
+  and restart with the server. Use a shared rate-limit store if deploying
+  multiple instances. Only set `TRUST_PROXY_HOPS` after confirming the proxy
+  topology and that clients cannot bypass the trusted proxy.
+
 ## 📡 API Endpoints
 
 | Method | Endpoint                      | Description                   |
@@ -267,7 +294,7 @@ node .\node_modules\react-scripts\bin\react-scripts.js test --watchAll=false --r
 | POST   | `/user/login`                 | Login & receive auth cookie   |
 | GET    | `/user/verify`                | Verify session                |
 | POST   | `/user/logout`                | Logout & clear cookie         |
-| POST   | `/user/forgot_password`       | Send password reset email     |
+| POST   | `/user/forgot_password`       | Request a reset link (generic confirmation) |
 | POST   | `/user/reset_password/:token` | Reset password                |
 | GET    | `/api/search/:query`          | Search movies/shows           |
 | GET    | `/api/id/:id`                 | Get movie details             |

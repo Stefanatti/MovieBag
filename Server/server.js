@@ -12,6 +12,13 @@ const reviewRouter = require("./routers/reviewRoute");
 require("dotenv").config({ path: ".env" });
 
 const cors = require("cors");
+if (process.env.TRUST_PROXY_HOPS !== undefined) {
+  const hops = Number(process.env.TRUST_PROXY_HOPS);
+  if (!/^\d+$/.test(process.env.TRUST_PROXY_HOPS) || !Number.isSafeInteger(hops)) {
+    throw new Error("TRUST_PROXY_HOPS must be a non-negative integer");
+  }
+  app.set("trust proxy", hops);
+}
 app.use(express.json());
 app.use(cookieParser());
 app.use(

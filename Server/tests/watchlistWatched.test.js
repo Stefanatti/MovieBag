@@ -2,8 +2,8 @@ const { test, before, after, beforeEach } = require("node:test");
 const assert = require("node:assert/strict");
 const express = require("express");
 const cookieParser = require("cookie-parser");
-const jwt = require("jsonwebtoken");
 const mongoose = require("mongoose");
+const { signSession } = require("../utils/sessionToken");
 
 // Keep route tests offline while using the real Mongoose models.
 const connectionPath = require.resolve("../modules/connection");
@@ -13,6 +13,7 @@ const WatchlistMovie = require("../modules/watchlistMovieModule");
 const WatchlistTvShow = require("../modules/watchlistTvShowModule");
 const Movie = require("../modules/movieModule");
 const TvShow = require("../modules/tvShowModule");
+const User = require("../modules/userModule");
 const watchlistMovieRouter = require("../routers/watchlistMovieRoute");
 const watchlistTvShowRouter = require("../routers/watchlistTvShowRoute");
 
@@ -23,6 +24,7 @@ const originalKey = process.env.TOKEN_KEY;
 const originals = [];
 let server;
 let baseUrl;
+const findUserById = User.findById;
 
 const stub = (Model, method, impl) => {
   originals.push([Model, method, Model[method]]);
@@ -31,7 +33,7 @@ const stub = (Model, method, impl) => {
 
 const request = async (path, { authenticated = true } = {}) => {
   const headers = {};
-  if (authenticated) headers.Cookie = `token=${jwt.sign({ id: ownerId }, secret, { expiresIn: "1h" })}`;
+  if (authenticated) headers.Cookie = `token=${signSession({ _id: ownerId })}`;
   const response = await fetch(`${baseUrl}${path}`, { method: "POST", headers });
   return { status: response.status, body: await response.json() };
 };
@@ -57,6 +59,7 @@ const cases = [
 
 before(async () => {
   process.env.TOKEN_KEY = secret;
+  User.findById = async (_id) => ({ _id, sessionVersion: 0 });
   const app = express();
   app.use(express.json());
   app.use(cookieParser());
@@ -76,6 +79,7 @@ beforeEach(() => {
 });
 
 after(async () => {
+  User.findById = findUserById;
   originals.forEach(([Model, method, original]) => { Model[method] = original; });
   if (server) await new Promise((resolve, reject) => server.close((error) => error ? reject(error) : resolve()));
   if (originalKey === undefined) delete process.env.TOKEN_KEY;
